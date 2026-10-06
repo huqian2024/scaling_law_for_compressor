@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# CFD large files
+*.res
+*.def
+*.cgns
+*.igg
+*.h5
+
+# Large generated directories
+mesh/cases/
+cfx/res/
+
+# Temporary/log files
+*.tmp
+*.log
+

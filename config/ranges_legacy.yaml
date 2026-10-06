@@ -1,0 +1,14 @@
+dataset_version: legacy
+
+sampling:
+  method: lhs
+  seed: 1
+  optimization: random-cd
+
+ranges:
+  Xthick: [0.15, 0.45]
+  Tmax: [0.04, 0.07]
+  Metal2: [6.0, 24.0]
+  Solidity: [1.0, 2.0]
+  Incidence: [-4.0, 4.0]
+  Mach: [0.3, 0.7]

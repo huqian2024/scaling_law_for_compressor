@@ -1,0 +1,7 @@
+name: ai4s
+channels:
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - python=3.10
+prefix: /home/qian/anaconda3/envs/ai4s
