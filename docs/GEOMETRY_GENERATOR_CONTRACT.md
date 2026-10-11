@@ -1,13 +1,17 @@
 # Geometry Generator Contract
 
 ```text
-Status: FROZEN V1 — implementation contract
+Status: FROZEN V1.1 — implementation contract
 Baseline commit: 1952186703e32ec60a4e82fb6ffc42e38e6f5d99
 Program: code/02_generate_geometry.py
 ```
 
 This document freezes the **interface** of the future geometry generator. It does
 **not** implement, and it does **not** restate the legacy geometry mathematics.
+
+> **V1.1 note** — V1.1 is a template-newline clarification only.
+> It does not change the CLI, action state machine, output paths, overwrite
+> semantics, or exit-code contract. See section 11.
 
 Two contracts are kept strictly separate:
 
@@ -504,6 +508,83 @@ sha256 = 92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
 But the production generator **must not hard-code this hash as the only allowed
 value**. A future GT_V2 must be able to enter a new versioned pipeline through an
 explicit `--template`.
+
+### Template provenance bytes vs rendering text (V1.1)
+
+Two distinct concepts MUST be kept separate.
+
+#### A. Provenance bytes
+
+```text
+template_raw_bytes = Path(template).read_bytes()
+template_sha256    = SHA256(template_raw_bytes)
+```
+
+The SHA256 MUST be computed over the **raw** bytes. It MUST NOT be computed after
+any newline normalization. For GT_V1 the value
+
+```text
+92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
+```
+
+therefore remains the true provenance of the original **CRLF** file.
+
+#### B. Rendering text
+
+The raw bytes MUST first be UTF-8 decoded, and then line-ending normalized
+equivalent to a Python text-mode read with universal newlines:
+
+```text
+CRLF -> LF
+remaining lone CR -> LF
+```
+
+i.e. `\r\n` becomes `\n`, then any remaining `\r` becomes `\n`. The order MUST avoid
+turning a single CRLF into two LF. An explicit helper is acceptable, e.g.::
+
+    def _decode_template_for_rendering(raw: bytes) -> str:
+        text = raw.decode("utf-8")
+        return text.replace("\r\n", "\n").replace("\r", "\n")
+
+This is a **legacy compatibility behavior**, not a generic whitespace cleanup.
+
+### No other normalization is permitted
+
+Only **line terminators** may be normalized. It is forbidden to:
+
+```text
+strip trailing spaces
+expand tabs
+collapse spaces
+rstrip lines
+reindent the template
+normalize internal whitespace
+```
+
+Spaces, tabs and legacy trailing whitespace inside the template body MUST be
+preserved as-is.
+
+### Output newline
+
+GT_V1 serialization output uses LF (`\n`). This is the result of legacy text-mode
+execution together with the frozen oracle. Consequently, the same textual template
+content with a different source newline encoding may produce:
+
+```text
+template_sha256 different
+rendered geometry bytes identical
+```
+
+This is **not** a provenance conflict.
+
+### Oracle priority
+
+```text
+legacy_geometry_v1 exact byte oracle remains authoritative
+for GT_V1 rendering compatibility.
+```
+
+The acceptance standard is unchanged: 13 profile exact + 13 geomTurbo exact.
 
 ## 12. Legacy regression acceptance contract
 
