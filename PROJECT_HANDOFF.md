@@ -25,13 +25,14 @@ DOE design review               PASS
 DOE benchmark                   PASS
 DOE decision memo               PASS
 Scaling statistical design      PASS
+Geometry regression fixtures    PASS
+Geometry generator contract     PASS
 
 FINAL_DOE                       PENDING HUMAN DECISION
 FINAL_N_LADDER                  PENDING
 FINAL_NMAX                      PENDING
 
 01_generate_design.py           NOT STARTED
-Geometry regression fixtures    NOT STARTED
 02_generate_geometry.py         NOT STARTED
 03_geometry_qc.py               NOT STARTED
 NUMECA / CFX / HPC              NOT STARTED
@@ -87,12 +88,11 @@ References:
 
 ```text
 NEXT ENGINEERING TASK:
-Establish fixed legacy geometry regression fixtures
-before implementing 02_generate_geometry.py.
+Implement code/02_generate_geometry.py against the frozen
+GEOMETRY_GENERATOR_CONTRACT.md and legacy_geometry_v1 regression baseline.
 ```
 
-`01_generate_design.py` is deliberately **not** the next step: it remains blocked by
-the `FINAL_DOE` decision.
+`01_generate_design.py` remains blocked by `FINAL_DOE`.
 
 ## OPEN HUMAN DECISIONS
 
