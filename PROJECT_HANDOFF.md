@@ -33,7 +33,7 @@ FINAL_N_LADDER                  PENDING
 FINAL_NMAX                      PENDING
 
 01_generate_design.py           NOT STARTED
-02_generate_geometry.py         NOT STARTED
+02_generate_geometry.py         PASS
 03_geometry_qc.py               NOT STARTED
 NUMECA / CFX / HPC              NOT STARTED
 ```
@@ -88,8 +88,7 @@ References:
 
 ```text
 NEXT ENGINEERING TASK:
-Implement code/02_generate_geometry.py against the frozen
-GEOMETRY_GENERATOR_CONTRACT.md and legacy_geometry_v1 regression baseline.
+Design and implement code/03_geometry_qc.py.
 ```
 
 `01_generate_design.py` remains blocked by `FINAL_DOE`.
