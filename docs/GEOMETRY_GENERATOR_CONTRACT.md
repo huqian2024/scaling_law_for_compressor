@@ -1,7 +1,7 @@
 # Geometry Generator Contract
 
 ```text
-Status: FROZEN V1.1 — implementation contract
+Status: FROZEN V1.2 — implementation contract
 Baseline commit: 1952186703e32ec60a4e82fb6ffc42e38e6f5d99
 Program: code/02_generate_geometry.py
 ```
@@ -12,6 +12,11 @@ This document freezes the **interface** of the future geometry generator. It doe
 > **V1.1 note** — V1.1 is a template-newline clarification only.
 > It does not change the CLI, action state machine, output paths, overwrite
 > semantics, or exit-code contract. See section 11.
+>
+> **V1.2 note** — V1.2 only clarifies operational filesystem/I-O failure
+> classification. It does not change the CLI, geometry mathematics, action
+> vocabulary, overwrite semantics, output layout, or existing success/conflict
+> rules. See section 18.
 
 Two contracts are kept strictly separate:
 
@@ -355,7 +360,8 @@ Definitions:
   a partial/content conflict.
 - `OVERWRITE` — only for a non-dry-run run with `--overwrite`, and only when the
   replacement actually completed.
-- `ERROR` — the case generation itself failed.
+- `ERROR` — the case execution failed (geometry-core calculation failure OR a
+  per-case output I/O failure; see section 18).
 
 The only valid conflict tokens are `CONFLICT_PARTIAL` and `CONFLICT_CONTENT`.
 Plain-English descriptions may say "partial-output conflict" / "content conflict".
@@ -468,6 +474,9 @@ generation error during dry-run (ERROR)
 input / CLI failure
     => exit 2
 ```
+
+See section 18 for the operational I/O failure classification (V1.2) and the
+exit-2 vs exit-4 boundary.
 
 ## 10. Determinism contract
 
@@ -696,3 +705,92 @@ A read-only cross-check against `AGENT_INSTRUCTION.md`, `PROJECT_HANDOFF.md`,
 `docs/DOE_DECISION.md`, `docs/SCALING_EXPERIMENT_DESIGN.md` and
 `tests/fixtures/legacy_geometry_v1/` is recorded in the conversation report.
 Any conflict found there is reported only; other documents are not modified here.
+
+## 18. Operational filesystem / I-O failure classification (V1.2)
+
+`ERROR` covers not only geometry-core calculation failure but also per-case
+output I/O failure:
+
+```text
+output directory preparation failure
+temporary-file creation failure
+write failure
+flush / fsync failure
+atomic replace failure
+filesystem obstruction
+other per-case output I/O failure
+```
+
+These are all **case execution failures** and yield overall `exit 4`. The `reason`
+field MUST be non-empty. No new action token and no new exit code are introduced.
+
+### exit 2 vs exit 4
+
+`exit 2` is only for pre-execution CLI / source-input contract errors:
+
+```text
+argparse failure
+input CSV missing / unreadable
+required CSV column missing
+invalid / duplicate case_id
+invalid / non-finite numeric input
+requested case_id missing
+template missing / unreadable
+template invalid UTF-8
+```
+
+They must be detected before any production output writing starts.
+
+`exit 4` is for failures during selected-case execution:
+
+```text
+geometry calculation exception
+output path obstruction
+mkdir failure
+mkstemp failure
+write / fsync failure
+os.replace failure
+```
+
+If at least one `ERROR` occurs, the overall exit is `4`, even if other cases
+succeeded or reported conflicts.
+
+### batch continuation
+
+Operational `ERROR` and geometry-calculation `ERROR` share the same batch
+semantics:
+
+```text
+record ERROR for the failed case
+preserve a non-empty reason
+continue the remaining selected cases where possible
+emit the final summary
+overall exit 4
+```
+
+A single-case filesystem error MUST NOT drop the summary of the remaining cases.
+
+### dry-run filesystem semantics
+
+`--dry-run` still MUST NOT mkdir, create temp files, probe by writing, or modify
+the filesystem. However, if the normal run would deterministically fail based only
+on existing filesystem metadata — for example:
+
+```text
+--output path already exists as a regular file
+profiles path exists as a regular file
+geomturbo path exists as a regular file
+```
+
+then that case:
+
+```text
+action = ERROR
+predicted_error_count += 1
+overall exit 4
+```
+
+and the `reason` describes the output-path obstruction. A dry-run is NOT required
+to predict failures that only a real write could expose (future disk-full,
+transient fsync failure, injected replace failure, uncertain permission failure);
+probing by writing a temp file is forbidden.
