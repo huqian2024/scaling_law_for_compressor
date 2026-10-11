@@ -1,0 +1,19 @@
+fixture_version: legacy_geometry_v1
+purpose: legacy_geometry_regression_baseline
+source:
+  git_commit: ebbf7bd9a74ef2db1edd84f5c83ddec4e752c07f
+  legacy_script:
+    path: legacy/blade_batch_generation.py
+    sha256: 48ed9ead4b1260790dcc2d3ad9fe05c79e745a82ad19fe2ce918268adfc36e03
+  geomturbo_template:
+    path: legacy/blade_batch_generation_template.geomTurbo
+    sha256: 92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
+  ranges:
+    path: config/ranges_legacy.yaml
+    sha256: 237ce3f4c1da022a57c7a82e8057248871ce673c96dcba6d0add5763dcc558ef
+environment:
+  conda_env: ai4s
+  python: 3.10.20
+  numpy: 2.2.6
+  scipy: 1.15.3
+fixture_count: 13
