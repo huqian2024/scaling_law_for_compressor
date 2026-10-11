@@ -365,10 +365,10 @@ legacy 1891 role  = historical reference / regression / Golden-Case source only
                                                 (CLOSED)
 ```
 
-Still open:
+Still open (priority order — the first two are the current production blockers):
 
-1. scaling N ladder
-2. Nmax
+1. FINAL_NMAX
+2. FINAL_N_LADDER
 3. validation / test split policy
 4. validation / test sample sizes
 5. number of training repetitions

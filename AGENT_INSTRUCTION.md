@@ -8,6 +8,57 @@
 
 ---
 
+# 0. 当前权威项目状态（截至 2026-10-11）
+
+> 本节记录**当前已冻结的事实**。若与下文历史描述冲突，**以本节为准**。
+
+```text
+FINAL_DOE  = SCRAMBLED_SOBOL          （已获 owner 批准 / FINAL）
+SOBOL_SEED = 1                        （来源：analysis/doe_compare_benchmark.py L44，可验证）
+             scipy.stats.qmc.Sobol(d=6, scramble=True, seed=1)
+ordering   = native Sobol sequence order
+nested     = D_N = 前 N 个点（prefix nesting）
+参数顺序   = [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
+```
+
+```text
+FINAL_NMAX     = PENDING（待 research-group meeting 决定）
+FINAL_N_LADDER = PENDING（待 research-group meeting 决定）
+```
+
+```text
+Geometry local pipeline = COMPLETE / PASS
+  legacy regression fixture       PASS（26/26 exact）
+  geometry core exact regression  PASS（26/26）
+  geometry generator              PASS（generator contract FROZEN V1.2）
+  Geometry QC                     PASS（QC contract FROZEN V1；frozen baseline 13/13 PASS）
+```
+
+下一步规则：
+
+```text
+Do not implement 01_generate_design.py until
+FINAL_NMAX and FINAL_N_LADDER are frozen.
+```
+
+新会话 Console 必须先：
+
+```text
+ask/resolve production scale first
+before starting new DOE implementation work
+```
+
+长期红线（不变）：
+
+```text
+do not guess CFX Incidence implementation
+do not guess Mach implementation
+do not modify legacy files
+do not fake-repair failed CFD cases
+```
+
+---
+
 # 1. 项目背景
 
 本项目目标是研究：

@@ -21,22 +21,25 @@ Legacy preservation             PASS
 Legacy audit                    PASS
 Environment freeze              PASS
 Legacy range freeze             PASS
+
 DOE design review               PASS
 DOE benchmark                   PASS
-DOE decision memo               PASS
+DOE decision                    PASS / FROZEN
 Scaling statistical design      PASS
+
+FINAL_DOE                       SCRAMBLED_SOBOL — APPROVED / FINAL
+SOBOL_SEED                      1
+FINAL_N_LADDER                  PENDING GROUP-MEETING DECISION
+FINAL_NMAX                      PENDING GROUP-MEETING DECISION
+
 Geometry regression fixtures    PASS
 Geometry generator contract     PASS
+02_generate_geometry.py         PASS
 Geometry QC contract            PASS
+03_geometry_qc.py               PASS
 Local geometry pipeline         PASS
 
-FINAL_DOE                       SCRAMBLED_SOBOL (APPROVED)
-FINAL_N_LADDER                  PENDING
-FINAL_NMAX                      PENDING
-
-01_generate_design.py           NOT STARTED
-02_generate_geometry.py         PASS
-03_geometry_qc.py               PASS
+01_generate_design.py           NOT STARTED / BLOCKED
 NUMECA / CFX / HPC              NOT STARTED
 ```
 
@@ -97,20 +100,66 @@ historical 1891 =
   NOT part of the new production Sobol pool
 ```
 
+Parameter order (frozen):
+
+```text
+0 Xthick
+1 Tmax
+2 Metal2
+3 Solidity
+4 Incidence
+5 Mach
+```
+
+Production principles (frozen):
+
+```text
+one fixed master Sobol sequence
+generated once
+D_N = first N points
+no independent redraw per N
+no sorting / reordering
+no LHS / Sobol mixing in the main production pool
+```
+
 References:
 
 - `docs/DOE_DECISION.md`
 - `docs/SCALING_EXPERIMENT_DESIGN.md`
 
-## NEXT STEP
+## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
 ```text
-NEXT ENGINEERING TASK:
-Freeze FINAL_N_LADDER and FINAL_NMAX, then define the
+Before implementing code/01_generate_design.py,
+the project must first freeze production scale:
+
+1. FINAL_NMAX
+2. FINAL_N_LADDER
+```
+
+Production scale means:
+
+```text
+- how many new CFD cases the project intends to produce at maximum;
+- which nested training sizes N will be used for scaling-law experiments.
+```
+
+Owner context:
+
+```text
+Owner expects the new project to reach O(10^4)–O(10^5) CFD cases.
+The exact Nmax and ladder must be discussed at the research-group meeting.
+```
+
+The exact values MUST NOT be decided by an AI agent.
+
+## NEXT ENGINEERING TASK
+
+```text
+FREEZE FINAL_NMAX + FINAL_N_LADDER first, then define the
 01_generate_design.py production contract.
 
-Do not implement 01_generate_design.py until the required
-production DOE parameters are fully frozen.
+Do not implement 01_generate_design.py before those decisions are frozen.
 ```
 
 ## OPEN HUMAN DECISIONS
@@ -136,7 +185,14 @@ Still open:
 Golden Case / NUMECA / CFX / HPC details are still pending confirmation at the
 school environment.
 
-## NEW CHAT RESUME
+## NEW CHAT START HERE
+
+```text
+FIRST TASK:
+Discuss and freeze FINAL_NMAX and FINAL_N_LADDER.
+
+DO NOT start 01_generate_design.py before those decisions are frozen.
+```
 
 For a new AI conversation, upload first:
 
@@ -145,12 +201,20 @@ For a new AI conversation, upload first:
 2. AGENT_INSTRUCTION.md
 3. docs/DOE_DECISION.md
 4. docs/SCALING_EXPERIMENT_DESIGN.md
+5. docs/SESSION_DELIVERY_2026-10-11.md
 ```
 
 When continuing geometry work, also provide:
 
 ```text
-5. legacy/blade_batch_generation.py
-6. legacy/blade_batch_generation_template.geomTurbo
-7. config/ranges_legacy.yaml
+6. docs/GEOMETRY_GENERATOR_CONTRACT.md
+7. docs/GEOMETRY_QC_CONTRACT.md
+```
+
+Only when a legacy audit is actually needed, also provide:
+
+```text
+legacy/blade_batch_generation.py
+legacy/blade_batch_generation_template.geomTurbo
+config/ranges_legacy.yaml
 ```

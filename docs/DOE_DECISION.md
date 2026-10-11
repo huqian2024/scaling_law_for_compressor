@@ -391,3 +391,27 @@ MUST NOT be mixed into one master pool with the production Sobol sequence
 
 A2 does not enter the production main DOE.
 
+## 16. NEXT DECISION (not frozen yet)
+
+```text
+FINAL_NMAX and FINAL_N_LADDER are intentionally not frozen yet.
+```
+
+They require owner / research-group discussion because the intended production scale
+is:
+
+```text
+O(10^4)–O(10^5) CFD cases
+```
+
+The historical benchmark sizes
+
+```text
+64 / 128 / 256 / 512 / 1024
+```
+
+remain **DOE-method comparison values** and are still NOT the production ladder.
+
+No candidate `N` values are proposed in this document; they must not be invented by
+an AI agent.
+
