@@ -37,6 +37,17 @@ preprocessing step does **not** count toward trainable parameter count.
 
 ## 2. Nested training principle
 
+Production DOE family (frozen): **scrambled Sobol**.
+
+The nested training pool is now supported by:
+
+```text
+fixed Sobol master sequence prefixes
+D_N = first N cases of the frozen production master sequence
+```
+
+See `docs/DOE_DECISION.md` sections 12-13.
+
 Main-experiment principle:
 
 ```text
@@ -346,17 +357,25 @@ scaling-law analysis
 
 ## 11. OPEN DECISIONS
 
-1. FINAL_DOE
-2. scaling N ladder
-3. Nmax
-4. validation / test split policy
-5. validation / test sample sizes
-6. number of training repetitions
-7. whether dataset realizations are repeated
-8. final `E` definition
-9. model-size grids `P`
-10. legacy 1891 role
-11. geometry reuse / multiple operating-condition strategy
+Closed by the FINAL_DOE decision (see `docs/DOE_DECISION.md` sections 12-14):
 
-None of these are closed by this document.
+```text
+FINAL_DOE         = scrambled Sobol            (CLOSED)
+legacy 1891 role  = historical reference / regression / Golden-Case source only
+                                                (CLOSED)
+```
+
+Still open:
+
+1. scaling N ladder
+2. Nmax
+3. validation / test split policy
+4. validation / test sample sizes
+5. number of training repetitions
+6. whether dataset realizations are repeated
+7. final `E` definition
+8. model-size grids `P`
+9. geometry reuse / multiple operating-condition strategy
+
+Nothing else in this document is closed by the FINAL_DOE decision.
 

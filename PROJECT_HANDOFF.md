@@ -30,7 +30,7 @@ Geometry generator contract     PASS
 Geometry QC contract            PASS
 Local geometry pipeline         PASS
 
-FINAL_DOE                       PENDING HUMAN DECISION
+FINAL_DOE                       SCRAMBLED_SOBOL (APPROVED)
 FINAL_N_LADDER                  PENDING
 FINAL_NMAX                      PENDING
 
@@ -57,6 +57,9 @@ historical N = 1891
 `1891` is the historical experiment size and is **NOT** the target size of the new
 project.
 
+Legacy `1891` role (frozen): historical reference / regression / Golden-Case source
+only — **NOT** part of the new production Sobol pool.
+
 ```text
 Geometry = f(Xthick, Tmax, Metal2, Solidity)
 OperatingCondition = f(Incidence, Mach)
@@ -68,17 +71,30 @@ forbidden.
 ## DOE STATUS
 
 ```text
+FINAL_DOE = SCRAMBLED_SOBOL — APPROVED
+  method   = scipy.stats.qmc.Sobol
+  d        = 6
+  scramble = True
+  seed     = 1     (verified: analysis/doe_compare_benchmark.py line 44)
+  ordering = native Sobol sequence order
+  nesting  = prefix nesting (D_N = first N of the frozen master sequence)
+
 A1 Master LHS + raw prefix
-STATUS = BASELINE
+STATUS = BASELINE_ONLY
 
 A2 Master LHS + greedy maximin ordering
 STATUS = DEPRIORITIZED
 
 B Scrambled Sobol
-STATUS = LEADING_CANDIDATE
-REQUIRES SUPERVISOR APPROVAL
+STATUS = FINAL_PRODUCTION_DOE
+```
 
-FINAL_DOE = PENDING
+Legacy:
+
+```text
+historical 1891 =
+  reference / regression / Golden-Case source only;
+  NOT part of the new production Sobol pool
 ```
 
 References:
@@ -90,22 +106,28 @@ References:
 
 ```text
 NEXT ENGINEERING TASK:
-Close FINAL_DOE using the existing DOE benchmark evidence
-and update the DOE decision documents.
+Freeze FINAL_N_LADDER and FINAL_NMAX, then define the
+01_generate_design.py production contract.
 
-Do not start 01_generate_design.py until FINAL_DOE is formally frozen.
+Do not implement 01_generate_design.py until the required
+production DOE parameters are fully frozen.
 ```
 
 ## OPEN HUMAN DECISIONS
 
-- FINAL_DOE
+Closed:
+
+- FINAL_DOE (scrambled Sobol — approved)
+- legacy 1891 future role (historical reference / regression / Golden-Case only)
+
+Still open:
+
 - scaling N ladder
 - Nmax
 - final validation / test policy
 - training repetition design
 - final `E` definition
 - model-size `P` grids
-- legacy 1891 future role
 - geometry reuse / multiple operating conditions
 - expanded parameter space
 

@@ -1,7 +1,8 @@
 # DOE Decision Memo
 
-> Status: living document. This memo records **scientific evidence and open questions**.
-> It does **NOT** declare a final production DOE.
+> Status: **FINAL PRODUCTION DOE DECISION FROZEN**.
+> `FINAL_DOE = SCRAMBLED_SOBOL` (owner / human approval received).
+> The historical benchmark evidence below is retained unchanged.
 
 ## 1. Background and objective
 
@@ -69,7 +70,7 @@ NumPy  = 2.2.6
 - Prefixes form nested subsets.
 - Most consistent with the legacy DOE family.
 - Smaller prefixes inherit weak LHS-prefix space-filling quality.
-- Status: `BASELINE`.
+- Status: `BASELINE_ONLY`.
 
 ### A2 — Master optimized LHS + greedy maximin ordering
 
@@ -91,7 +92,7 @@ NumPy  = 2.2.6
 - Prefixes are naturally nested.
 - Best centered discrepancy and marginal balance in the current experiment.
 - Constitutes a **DOE family change** relative to the legacy LHS.
-- Status: `LEADING_CANDIDATE — REQUIRES SUPERVISOR APPROVAL`.
+- Status: `FINAL_PRODUCTION_DOE` (APPROVED, FINAL — see section 12).
 
 ## 5. Metric results (recorded, not re-run)
 
@@ -170,31 +171,37 @@ Advantages:
 - naturally nested sequence;
 - well suited to a power-of-two ladder.
 
-Risks:
-- DOE family differs from the legacy LHS;
-- requires explicit scientific approval;
+Risks / obligations (all resolved — see section 12):
+- DOE family differs from the legacy LHS (accepted);
+- explicit scientific approval — **received**;
 - production implementation must freeze the seed, the SciPy environment and the
-  generation procedure.
+  generation procedure — seed recovered and frozen.
 
-## 9. Current conclusion
+## 9. Final conclusion (FROZEN)
 
 ```text
-A1 = conservative baseline
-A2 = deprioritized after benchmark
-B  = leading candidate
+A1 = BASELINE_ONLY
+A2 = DEPRIORITIZED
+B  = FINAL_PRODUCTION_DOE
+FINAL_DOE = SCRAMBLED_SOBOL
 ```
 
-This memo explicitly does **NOT** state `FINAL DOE = Sobol`. The final scientific
-choice has not yet received human confirmation.
+See section 12 for the approved decision, the rationale and the frozen production
+semantics.
 
 ## 10. Open decisions
 
-1. Whether to approve switching from the legacy LHS to scrambled Sobol.
-2. The `N` values of the official scaling ladder.
-3. The official `Nmax`.
-4. Whether the legacy `1891` dataset is used only for baseline/regression or may
-   enter the future training set.
-5. Whether multiple independent repetitions of the DOE randomness are needed.
+The former decision — whether to approve switching from the legacy LHS to scrambled
+Sobol — is **CLOSED** by section 12. The legacy `1891` role is **CLOSED** by
+section 14.
+
+Still open:
+
+1. The `N` values of the official scaling ladder (`FINAL_N_LADDER`).
+2. The official `Nmax` (`FINAL_NMAX`).
+3. Whether a future, separately defined mixed/transfer experiment may use `1891`
+   (it must not be silently mixed into the main scaling experiment).
+4. Whether multiple independent repetitions of the DOE randomness are needed.
    (Recorded as a future decision only; no repetition experiment is designed here.)
 
 ## 11. Non-goals of this checkpoint
@@ -202,4 +209,185 @@ choice has not yet received human confirmation.
 No `01_generate_design.py`, no `master_design.csv`, no official subsets, no new DOE
 benchmark run, no final `N`/`Nmax` decision, no change to `ranges_legacy.yaml` or any
 legacy file, no geometry or CFD work was produced by this checkpoint.
+
+## 12. FINAL DOE DECISION (FROZEN, owner / human approved)
+
+```text
+FINAL_DOE = SCRAMBLED_SOBOL
+status    = APPROVED / FINAL
+```
+
+### Decision authority
+
+```text
+Decision authority: owner / human approval received
+```
+
+### Decision rationale
+
+All three benchmarked schemes satisfy nested containment. **B** was selected because
+it has:
+
+```text
+lowest centered discrepancy at every tested N
+strongest marginal balance
+naturally nested sequence
+appropriate behaviour for scaling-law dataset growth
+```
+
+The benchmark `N` values `64, 128, 256, 512, 1024` remain **DOE-method comparison
+values only**; they are NOT promoted to `FINAL_N_LADDER`.
+
+### Project scale context (owner decision context)
+
+```text
+The new project is expected to expand to O(10^4)–O(10^5)
+CFD cases rather than remain near the historical 1891-case scale.
+```
+
+Therefore:
+
+```text
+legacy DOE-family continuity is not a priority criterion
+for selecting the new production DOE.
+```
+
+`FINAL_NMAX` and `FINAL_N_LADDER` remain **PENDING**.
+
+## 13. Production DOE semantics (frozen principles)
+
+```text
+one Sobol master sequence
+generated once
+fixed seed
+fixed SciPy version / procedure
+native Sobol sequence order retained
+```
+
+Forbidden:
+
+```text
+independent Sobol redraw for each N
+sorting / reordering Sobol points
+greedy maximin reorder
+mixing LHS and Sobol points inside one production master sequence
+```
+
+Nested dataset definition:
+
+```text
+D_N = first N cases of the frozen production master sequence
+```
+
+### Seed provenance (verified from a committed source, not inferred)
+
+```text
+SOBOL_SEED = 1
+source     : analysis/doe_compare_benchmark.py  (line 44)
+             sob = qmc.Sobol(d=D, scramble=True, seed=1)
+             (line 45: B = sob.random_base2(10))
+sha256     : e0329ad432efd6a3f73f77fd8c4afc7683013e1d9c45980a4ebbc9d80d667bba
+git        : analysis/doe_compare_benchmark.py  (committed in ebbf7bd)
+```
+
+The seed is the one actually used by the benchmark whose recorded results produced
+this decision; it was **not** inferred from the legacy LHS `seed = 1`.
+
+### random_base2 policy
+
+Sobol balance guarantees are strongest at power-of-two sample counts. Production
+should use:
+
+```python
+qmc.Sobol(d=6, scramble=True, seed=SOBOL_SEED)
+```
+
+and generate one canonical master sequence with:
+
+```python
+random_base2(m)      # 2^m >= required production master-pool size
+```
+
+keeping production case order in the native Sobol sequence order.
+
+If a future `FINAL_N_LADDER` contains non-`2^k` values, the first `N` cases of the
+same master sequence may still be used and remain nested, but the documentation must
+state:
+
+```text
+the strongest Sobol balance properties apply at power-of-two boundaries
+```
+
+Choosing the official `N` ladder therefore remains an independent decision.
+
+### Parameter order (frozen)
+
+```text
+0 Xthick
+1 Tmax
+2 Metal2
+3 Solidity
+4 Incidence
+5 Mach
+```
+
+A normalized Sobol point `u ∈ [0,1)^6` maps to the frozen core ranges in
+`config/ranges_legacy.yaml`. Those ranges are **not** modified by this decision.
+
+### Identity direction for the future 01_generate_design.py
+
+```text
+range_id    = legacy/core frozen range identifier   (existing naming, unchanged)
+sampling_id = sobol_scrambled_v1                    (suggested; no existing conflict)
+```
+
+## 14. Legacy 1891 final role (FROZEN)
+
+```text
+LEGACY_1891_ROLE = HISTORICAL_REFERENCE_AND_REGRESSION_ONLY
+```
+
+```text
+DO NOT merge legacy 1891 cases into the new Sobol master pool.
+DO NOT treat legacy 1891 cases as prefixes/subsets of the new DOE.
+DO NOT preserve LHS solely for compatibility with the old 1891 experiment.
+```
+
+Still permitted:
+
+```text
+historical reference
+legacy regression
+Golden Case source
+legacy performance comparison
+```
+
+But by default:
+
+```text
+NOT part of the new production training pool
+```
+
+A future transfer / mixed-dataset experiment must open its own experiment definition;
+it MUST NOT be silently mixed into the main scaling experiment.
+
+## 15. A1 / A2 final roles (FROZEN)
+
+```text
+A1 Master optimized LHS + raw prefix      STATUS = BASELINE_ONLY
+A2 Master LHS + greedy maximin ordering   STATUS = DEPRIORITIZED
+```
+
+A1 `BASELINE_ONLY` means:
+
+```text
+kept as the DOE benchmark / methodology baseline
+existing comparison results retained
+NOT the production main DOE
+no requirement to produce production CFD data at the Sobol scale
+may be used later for a separate DOE sensitivity study
+MUST NOT be mixed into one master pool with the production Sobol sequence
+```
+
+A2 does not enter the production main DOE.
 
