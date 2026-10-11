@@ -27,6 +27,8 @@ DOE decision memo               PASS
 Scaling statistical design      PASS
 Geometry regression fixtures    PASS
 Geometry generator contract     PASS
+Geometry QC contract            PASS
+Local geometry pipeline         PASS
 
 FINAL_DOE                       PENDING HUMAN DECISION
 FINAL_N_LADDER                  PENDING
@@ -34,7 +36,7 @@ FINAL_NMAX                      PENDING
 
 01_generate_design.py           NOT STARTED
 02_generate_geometry.py         PASS
-03_geometry_qc.py               NOT STARTED
+03_geometry_qc.py               PASS
 NUMECA / CFX / HPC              NOT STARTED
 ```
 
@@ -88,10 +90,11 @@ References:
 
 ```text
 NEXT ENGINEERING TASK:
-Design and implement code/03_geometry_qc.py.
-```
+Close FINAL_DOE using the existing DOE benchmark evidence
+and update the DOE decision documents.
 
-`01_generate_design.py` remains blocked by `FINAL_DOE`.
+Do not start 01_generate_design.py until FINAL_DOE is formally frozen.
+```
 
 ## OPEN HUMAN DECISIONS
 
