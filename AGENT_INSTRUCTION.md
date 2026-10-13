@@ -35,14 +35,18 @@ FINAL_N_LADDER              = [1000, 2000, 5000, 10000, 20000, 35000, 50000, 700
 GEOMETRY_REUSE              = DISABLED / NOT ACTIVE
 PRODUCTION_ROUTE            = ONE_6D_POINT_ONE_CASE
 
+SOBOL_MASTER_M              = m >= 17（下界，非最终长度；FINAL m 仍 PENDING）
+
 FINAL_VALIDATION_POLICY     = PENDING
 FINAL_N_VALIDATION          = PENDING
-FINAL_PRODUCTION_RANGES     = PENDING
+FINAL_PRODUCTION_RANGES     = PENDING    <- 当前最主要 blocker
 FINAL_RAW_CFD_ATTEMPTS      = PENDING
+FAILURE_RESERVE_POLICY      = PENDING（等真实 CFD failure rate）
 
 （旧的 FINAL_NMAX 一词已退役：不得再用来表示
   training N_max / usable total / raw CFD attempts 中的任何单一概念。）
 权威冻结记录: docs/DESIGN_FREEZE_2026-10-13.md
+今日 session 记录: docs/SESSION_DELIVERY_2026-10-13.md
 ```
 
 ```text
@@ -53,10 +57,36 @@ Geometry local pipeline = COMPLETE / PASS
   Geometry QC                     PASS（QC contract FROZEN V1；frozen baseline 13/13 PASS）
 ```
 
+已准备的 production 代码：
+
+```text
+code/01_generate_design.py        PREPARED / NOT EXECUTED
+code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
+
+ranges 为 runtime configurable（--ranges PATH）
+legacy ranges 不是正式 production ranges
+```
+
+一键命令（**当前 DO NOT RUN**）：
+
+```bash
+conda run -n ai4s python code/generate_geomturbo_batch.py \
+  --ranges config/ranges_legacy.yaml \
+  --n-train 100000 \
+  --n-test 20000 \
+  --qc-output geometry/geometry_qc_production.csv
+```
+
+师兄确认范围后 → 只替换：
+
+```text
+--ranges config/ranges_production_v1.yaml
+```
+
 下一步规则：
 
 ```text
-Do not implement 01_generate_design.py until
+Do not RUN any production design / geometry generation until
 FINAL_PRODUCTION_RANGES are frozen.
 
 Historical note: the retired term FINAL_NMAX is replaced by the explicit
@@ -64,11 +94,23 @@ FINAL_N_TRAIN_MAX / FINAL_N_TEST / MIN_USABLE_TRAIN_TEST_CASES /
 FINAL_RAW_CFD_ATTEMPTS terms.
 ```
 
+NUMECA bring-up provenance（保留，不得删除/覆盖）：
+
+```text
+C900001 = bring-up only，永不进入 production case sequence
+design/bringup/                        （tracked）
+docs/NUMECA_BRINGUP_CASE_C900001.md    （tracked，记录 SHA256）
+geometry/profiles/C900001.dat          （本地产物，保留）
+geometry/geomturbo/C900001.geomTurbo   （本地产物，保留）
+geometry/geometry_qc.csv               （bring-up 报告，保留）
+production QC 未来使用独立路径 geometry/geometry_qc_production.csv
+```
+
 新会话 Console 必须先：
 
 ```text
-ask/resolve production scale first
-before starting new DOE implementation work
+ask/resolve FINAL_PRODUCTION_RANGES first
+before starting any production design generation
 ```
 
 长期红线（不变）：

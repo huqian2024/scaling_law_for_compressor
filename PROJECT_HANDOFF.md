@@ -37,12 +37,14 @@ FINAL_N_TEST                    20000 usable test cases (fixed)
 TRAIN_TEST_RATIO                5:1
 MIN_USABLE_TRAIN_TEST_CASES     120000
 FINAL_N_LADDER                  1000 2000 5000 10000 20000 35000 50000 70000 100000
+SOBOL_MASTER_M                  m >= 17 (lower bound only; FINAL m PENDING)
 GEOMETRY_REUSE                  DISABLED / NOT ACTIVE
 PRODUCTION_ROUTE                ONE_6D_POINT_ONE_CASE
 FINAL_VALIDATION_POLICY         PENDING
 FINAL_N_VALIDATION              PENDING
-FINAL_PRODUCTION_RANGES         PENDING
+FINAL_PRODUCTION_RANGES         PENDING   <- main blocker
 FINAL_RAW_CFD_ATTEMPTS          PENDING
+FAILURE_RESERVE_POLICY          PENDING
 
 Geometry regression fixtures    PASS
 Geometry generator contract     PASS
@@ -51,7 +53,12 @@ Geometry QC contract            PASS
 03_geometry_qc.py               PASS
 Local geometry pipeline         PASS
 
-01_generate_design.py           NOT STARTED / BLOCKED
+01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
+generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
+DO-NOT-RUN                      no production design / geometry generation
+                                until FINAL_PRODUCTION_RANGES is frozen
+NUMECA bring-up C900001         KEPT (bring-up only; never in the
+                                production case sequence)
 NUMECA / CFX / HPC              NOT STARTED
 ```
 
@@ -157,11 +164,66 @@ FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 10000
 ```text
 FINAL_RAW_CFD_ATTEMPTS = PENDING
   (> 120000; exact value needs a real NUMECA/CFX failure rate first)
+FAILURE_RESERVE_POLICY = PENDING
 ```
 
 The retired umbrella term `FINAL_NMAX` must no longer be used for current status,
 because it conflates training `N_max`, usable total and raw CFD attempts.
 Full freeze record: `docs/DESIGN_FREEZE_2026-10-13.md`.
+
+## PREPARED PRODUCTION PIPELINE (2026-10-13 — PREPARED, NOT EXECUTED)
+
+```text
+code/01_generate_design.py        PREPARED / NOT EXECUTED
+code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
+```
+
+One command (single entry point; **DO NOT RUN** yet):
+
+```bash
+conda run -n ai4s python code/generate_geomturbo_batch.py \
+  --ranges config/ranges_legacy.yaml \
+  --n-train 100000 \
+  --n-test 20000 \
+  --qc-output geometry/geometry_qc_production.csv
+```
+
+Pipeline:
+
+```text
+Sobol design generation
+  -> fixed train/test assignment
+  -> master_design.csv
+  -> profile generation
+  -> .geomTurbo generation
+  -> Geometry QC
+```
+
+```text
+ranges are RUNTIME CONFIGURABLE (--ranges PATH)
+legacy ranges are NOT the final production ranges
+after the owner confirms the ranges, ONLY this argument changes:
+
+  --ranges config/ranges_production_v1.yaml
+
+(no generator code change required)
+
+production QC output path = geometry/geometry_qc_production.csv
+  kept separate from the bring-up report geometry/geometry_qc.csv
+```
+
+Bring-up provenance (IMMUTABLE — never part of the production case sequence):
+
+```text
+C900001 = bring-up only
+design/bringup/                        (tracked)
+docs/NUMECA_BRINGUP_CASE_C900001.md    (tracked; records SHA256)
+geometry/profiles/C900001.dat          (local artifact, kept)
+geometry/geomturbo/C900001.geomTurbo   (local artifact, kept)
+geometry/geometry_qc.csv               (local bring-up report, kept)
+```
+
+Do not delete or overwrite any of the above.
 
 ## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
