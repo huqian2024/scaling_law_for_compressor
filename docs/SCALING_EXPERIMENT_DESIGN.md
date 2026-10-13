@@ -3,19 +3,39 @@
 > Status: design specification (living document).
 > This file records the **statistical design principles**, **open decisions** and
 > **leakage risks** that a future `E(N, P)` scaling-law experiment must obey.
-> It is **NOT** a final experiment parameter table and does **NOT** fix any
-> `N`, `P`, `metric` or repetition count.
+> It is **NOT** a final experiment parameter table and does **NOT** fix `P`, `metric`
+> or repetition count.
+>
+> Exception (FROZEN 2026-10-13): `N` itself **is** now frozen — see
+> `docs/DESIGN_FREEZE_2026-10-13.md`. Section 1 defines `N`, section 2 fixes the
+> nested training ladder, section 3 fixes the test-set principle.
 
 ## 1. Experiment objects
 
 ```text
-N = training case count
+N = usable training case count          (FROZEN definition, 2026-10-13)
 
 P = trainable parameter count
     (primarily for scaling WITHIN one model family)
 
 E = generalization error under a frozen evaluation protocol
 ```
+
+`N` counts only CFD cases actually usable for model training:
+
+```text
+test cases                             NOT counted
+validation cases (if ever added)       NOT counted
+failed / rejected / non-usable cases   NOT counted
+```
+
+The published data scaling law uses:
+
+```text
+E = E(N)
+```
+
+where `N` is always the usable training sample count.
 
 The concrete mathematical definition of `E` is still **TBD** (see section 8).
 
@@ -54,6 +74,33 @@ Main-experiment principle:
 D_train(N1) ⊂ D_train(N2) ⊂ ... ⊂ D_train(Nmax)
 ```
 
+### Frozen ladder (2026-10-13)
+
+```text
+FINAL_N_LADDER = [
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    35000,
+    50000,
+    70000,
+    100000
+]
+```
+
+```text
+D_1000 ⊂ D_2000 ⊂ D_5000 ⊂ D_10000 ⊂ D_20000 ⊂ D_35000 ⊂ D_50000 ⊂ D_70000 ⊂ D_100000
+```
+
+```text
+FINAL_N_TRAIN_MAX = 100000 usable training cases
+```
+
+All three model families (PCA + MLP, U-Net, FNO) use the **same** `FINAL_N_LADDER`.
+See `docs/DESIGN_FREEZE_2026-10-13.md`.
+
 Purpose:
 
 - control dataset realization differences;
@@ -90,7 +137,35 @@ Scheme B is marked as:
 PREFERRED DESIGN
 ```
 
-and is **not** FINAL.
+and, for the **validation** part only, is **not** FINAL
+(`FINAL_VALIDATION_POLICY = PENDING`).
+
+### Fixed test set (FROZEN 2026-10-13)
+
+```text
+FINAL_N_TEST      = 20000 usable test cases
+TRAIN_TEST_RATIO  = 5:1        (relative to FINAL_N_TRAIN_MAX = 100000)
+```
+
+```text
+training pool and test set are completely disjoint
+the test set is fixed once and kept fixed
+all training tiers use the same test set
+PCA + MLP, U-Net and FNO use the same test set
+the test set never participates in training
+the test set is NOT counted in N
+```
+
+Minimum usable data requirement:
+
+```text
+100000 usable training cases + 20000 usable test cases = 120000 usable CFD cases
+MIN_USABLE_TRAIN_TEST_CASES = 120000
+```
+
+```text
+FINAL_RAW_CFD_ATTEMPTS > 120000   (exact value PENDING)
+```
 
 Principles:
 
@@ -365,17 +440,28 @@ legacy 1891 role  = historical reference / regression / Golden-Case source only
                                                 (CLOSED)
 ```
 
-Still open (priority order — the first two are the current production blockers):
+Closed by the design freeze (2026-10-13, `docs/DESIGN_FREEZE_2026-10-13.md`):
 
-1. FINAL_NMAX
-2. FINAL_N_LADDER
-3. validation / test split policy
-4. validation / test sample sizes
-5. number of training repetitions
-6. whether dataset realizations are repeated
-7. final `E` definition
-8. model-size grids `P`
-9. geometry reuse / multiple operating-condition strategy
+```text
+N definition         = usable training case count                 (CLOSED)
+FINAL_N_TRAIN_MAX    = 100000                                     (CLOSED)
+FINAL_N_TEST         = 20000   / TRAIN_TEST_RATIO = 5:1           (CLOSED)
+MIN_USABLE_TRAIN_TEST_CASES = 120000                              (CLOSED)
+FINAL_N_LADDER       = 1000 2000 5000 10000 20000 35000 50000 70000 100000  (CLOSED)
+geometry reuse / multiple operating-condition strategy
+                     = DISABLED / NOT ACTIVE (ONE_6D_POINT_ONE_CASE)  (CLOSED)
+```
 
-Nothing else in this document is closed by the FINAL_DOE decision.
+Still open (priority order — the first item is the current production blocker):
+
+1. FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
+2. FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
+3. FINAL_RAW_CFD_ATTEMPTS (raw CFD attempts / failure reserve)
+4. number of training repetitions
+5. whether dataset realizations are repeated
+6. final `E` definition
+7. model-size grids `P`
+
+Nothing else in this document is closed by the FINAL_DOE decision or by the 2026-10-13
+design freeze.
 

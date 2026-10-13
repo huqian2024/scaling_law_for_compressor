@@ -3,6 +3,13 @@ Date: 2026-10-11
 
 > This is the **delivery record for today's session**. It complements, and does not
 > replace, `PROJECT_HANDOFF.md`.
+>
+> HISTORICAL NOTE (2026-10-13): the production-scale items listed below as PENDING
+> (`FINAL_NMAX`, `FINAL_N_LADDER`) were frozen afterwards. Current authoritative
+> values — including the explicit terms `FINAL_N_TRAIN_MAX` / `FINAL_N_TEST` /
+> `MIN_USABLE_TRAIN_TEST_CASES` / `FINAL_RAW_CFD_ATTEMPTS` — live in
+> `docs/DESIGN_FREEZE_2026-10-13.md`. This file is kept as the 2026-10-11 record and
+> is not rewritten.
 
 ## 1. Executive Summary
 

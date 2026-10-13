@@ -29,8 +29,20 @@ Scaling statistical design      PASS
 
 FINAL_DOE                       SCRAMBLED_SOBOL — APPROVED / FINAL
 SOBOL_SEED                      1
-FINAL_N_LADDER                  PENDING GROUP-MEETING DECISION
-FINAL_NMAX                      PENDING GROUP-MEETING DECISION
+
+Design freeze (2026-10-13)      PASS / FROZEN
+N definition                    N = usable training case count
+FINAL_N_TRAIN_MAX               100000 usable training cases
+FINAL_N_TEST                    20000 usable test cases (fixed)
+TRAIN_TEST_RATIO                5:1
+MIN_USABLE_TRAIN_TEST_CASES     120000
+FINAL_N_LADDER                  1000 2000 5000 10000 20000 35000 50000 70000 100000
+GEOMETRY_REUSE                  DISABLED / NOT ACTIVE
+PRODUCTION_ROUTE                ONE_6D_POINT_ONE_CASE
+FINAL_VALIDATION_POLICY         PENDING
+FINAL_N_VALIDATION              PENDING
+FINAL_PRODUCTION_RANGES         PENDING
+FINAL_RAW_CFD_ATTEMPTS          PENDING
 
 Geometry regression fixtures    PASS
 Geometry generator contract     PASS
@@ -127,28 +139,44 @@ References:
 - `docs/DOE_DECISION.md`
 - `docs/SCALING_EXPERIMENT_DESIGN.md`
 
+## PRODUCTION SCALE (FROZEN 2026-10-13)
+
+```text
+N = usable training case count
+    (test / validation / failed / rejected cases are NOT counted)
+```
+
+```text
+FINAL_N_TRAIN_MAX           = 100000 usable training cases
+FINAL_N_TEST                = 20000 usable test cases (fixed)
+TRAIN_TEST_RATIO            = 5:1
+MIN_USABLE_TRAIN_TEST_CASES = 120000
+FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 100000
+```
+
+```text
+FINAL_RAW_CFD_ATTEMPTS = PENDING
+  (> 120000; exact value needs a real NUMECA/CFX failure rate first)
+```
+
+The retired umbrella term `FINAL_NMAX` must no longer be used for current status,
+because it conflates training `N_max`, usable total and raw CFD attempts.
+Full freeze record: `docs/DESIGN_FREEZE_2026-10-13.md`.
+
 ## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
 ```text
 Before implementing code/01_generate_design.py,
-the project must first freeze production scale:
+the project must first freeze the six-dimensional production ranges:
 
-1. FINAL_NMAX
-2. FINAL_N_LADDER
+1. FINAL_PRODUCTION_RANGES   (owner / advisor confirmation)
 ```
 
-Production scale means:
+and, independently:
 
 ```text
-- how many new CFD cases the project intends to produce at maximum;
-- which nested training sizes N will be used for scaling-law experiments.
-```
-
-Owner context:
-
-```text
-Owner expects the new project to reach O(10^4)–O(10^5) CFD cases.
-The exact Nmax and ladder must be discussed at the research-group meeting.
+2. FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
+3. FINAL_RAW_CFD_ATTEMPTS   (after a real NUMECA/CFX failure-rate stress test)
 ```
 
 The exact values MUST NOT be decided by an AI agent.
@@ -156,10 +184,10 @@ The exact values MUST NOT be decided by an AI agent.
 ## NEXT ENGINEERING TASK
 
 ```text
-FREEZE FINAL_NMAX + FINAL_N_LADDER first, then define the
+FREEZE FINAL_PRODUCTION_RANGES first, then define the
 01_generate_design.py production contract.
 
-Do not implement 01_generate_design.py before those decisions are frozen.
+Do not implement 01_generate_design.py before those ranges are frozen.
 ```
 
 ## OPEN HUMAN DECISIONS
@@ -168,17 +196,18 @@ Closed:
 
 - FINAL_DOE (scrambled Sobol — approved)
 - legacy 1891 future role (historical reference / regression / Golden-Case only)
+- production scale (2026-10-13): FINAL_N_TRAIN_MAX / FINAL_N_TEST / TRAIN_TEST_RATIO
+  / MIN_USABLE_TRAIN_TEST_CASES / FINAL_N_LADDER
+- geometry reuse (DISABLED / NOT ACTIVE; PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE)
 
 Still open:
 
-- scaling N ladder
-- Nmax
-- final validation / test policy
+- FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
+- FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
+- FINAL_RAW_CFD_ATTEMPTS (raw CFD attempts / failure reserve)
 - training repetition design
 - final `E` definition
 - model-size `P` grids
-- geometry reuse / multiple operating conditions
-- expanded parameter space
 
 ## BLOCKED EXTERNAL INFORMATION
 
@@ -189,9 +218,12 @@ school environment.
 
 ```text
 FIRST TASK:
-Discuss and freeze FINAL_NMAX and FINAL_N_LADDER.
+Confirm FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
 
-DO NOT start 01_generate_design.py before those decisions are frozen.
+DO NOT start 01_generate_design.py before those ranges are frozen.
+
+Production scale itself is already FROZEN (2026-10-13):
+see docs/DESIGN_FREEZE_2026-10-13.md.
 ```
 
 For a new AI conversation, upload first:
@@ -201,7 +233,8 @@ For a new AI conversation, upload first:
 2. AGENT_INSTRUCTION.md
 3. docs/DOE_DECISION.md
 4. docs/SCALING_EXPERIMENT_DESIGN.md
-5. docs/SESSION_DELIVERY_2026-10-11.md
+5. docs/SESSION_DELIVERY_2026-10-11.md   (historical record)
+6. docs/DESIGN_FREEZE_2026-10-13.md      (current production-scale freeze)
 ```
 
 When continuing geometry work, also provide:

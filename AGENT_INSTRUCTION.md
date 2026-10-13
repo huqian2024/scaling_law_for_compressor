@@ -8,7 +8,7 @@
 
 ---
 
-# 0. 当前权威项目状态（截至 2026-10-11）
+# 0. 当前权威项目状态（截至 2026-10-13）
 
 > 本节记录**当前已冻结的事实**。若与下文历史描述冲突，**以本节为准**。
 
@@ -22,8 +22,27 @@ nested     = D_N = 前 N 个点（prefix nesting）
 ```
 
 ```text
-FINAL_NMAX     = PENDING（待 research-group meeting 决定）
-FINAL_N_LADDER = PENDING（待 research-group meeting 决定）
+N 定义（FROZEN 2026-10-13）:
+N = usable training case count
+    （test / validation / failed / rejected 均不计入 N）
+
+FINAL_N_TRAIN_MAX           = 100000 usable training cases
+FINAL_N_TEST                = 20000 usable test cases（fixed）
+TRAIN_TEST_RATIO            = 5:1
+MIN_USABLE_TRAIN_TEST_CASES = 120000
+FINAL_N_LADDER              = [1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]
+
+GEOMETRY_REUSE              = DISABLED / NOT ACTIVE
+PRODUCTION_ROUTE            = ONE_6D_POINT_ONE_CASE
+
+FINAL_VALIDATION_POLICY     = PENDING
+FINAL_N_VALIDATION          = PENDING
+FINAL_PRODUCTION_RANGES     = PENDING
+FINAL_RAW_CFD_ATTEMPTS      = PENDING
+
+（旧的 FINAL_NMAX 一词已退役：不得再用来表示
+  training N_max / usable total / raw CFD attempts 中的任何单一概念。）
+权威冻结记录: docs/DESIGN_FREEZE_2026-10-13.md
 ```
 
 ```text
@@ -38,7 +57,11 @@ Geometry local pipeline = COMPLETE / PASS
 
 ```text
 Do not implement 01_generate_design.py until
-FINAL_NMAX and FINAL_N_LADDER are frozen.
+FINAL_PRODUCTION_RANGES are frozen.
+
+Historical note: the retired term FINAL_NMAX is replaced by the explicit
+FINAL_N_TRAIN_MAX / FINAL_N_TEST / MIN_USABLE_TRAIN_TEST_CASES /
+FINAL_RAW_CFD_ATTEMPTS terms.
 ```
 
 新会话 Console 必须先：
@@ -808,6 +831,11 @@ D_{4096}
 \subset
 D_{8192}
 $$
+
+> 上例只是 2^k 示意。正式 `FINAL_N_LADDER` 已于 2026-10-13 冻结为
+> `[1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]`
+> （含非 2^k 档位；仍使用同一 master sequence 的前 N 个点并保持 nested）。
+> 见 `docs/DESIGN_FREEZE_2026-10-13.md`。
 
 如果导师要求继续使用 LHS：
 
@@ -2352,6 +2380,15 @@ Mach
 > 这种采样设计会改变现有“六维 LHS 一个 case 一个 geometry”的统计结构。
 
 因此只能作为后续实验设计选项，不能由 Agent 自动启用。
+
+当前权威状态（2026-10-13 冻结）：
+
+```text
+GEOMETRY_REUSE   = DISABLED / NOT ACTIVE
+PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE
+```
+
+即当前 production 采样结构保持“一个六维参数点对应一个 CFD case”。
 
 ---
 

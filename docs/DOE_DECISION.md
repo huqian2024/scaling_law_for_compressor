@@ -198,7 +198,12 @@ section 14.
 Still open:
 
 1. The `N` values of the official scaling ladder (`FINAL_N_LADDER`).
-2. The official `Nmax` (`FINAL_NMAX`).
+   -> **CLOSED 2026-10-13**: `[1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]`.
+2. The official training-scale maximum (`FINAL_N_TRAIN_MAX`, formerly the umbrella
+   term `FINAL_NMAX`).
+   -> **CLOSED 2026-10-13**: `100000` usable training cases, plus a fixed
+      `FINAL_N_TEST = 20000` usable test set -> `MIN_USABLE_TRAIN_TEST_CASES = 120000`.
+      `FINAL_RAW_CFD_ATTEMPTS` remains **PENDING**.
 3. Whether a future, separately defined mixed/transfer experiment may use `1891`
    (it must not be silently mixed into the main scaling experiment).
 4. Whether multiple independent repetitions of the DOE randomness are needed.
@@ -252,7 +257,10 @@ legacy DOE-family continuity is not a priority criterion
 for selecting the new production DOE.
 ```
 
-`FINAL_NMAX` and `FINAL_N_LADDER` remain **PENDING**.
+`FINAL_NMAX` and `FINAL_N_LADDER` were still **PENDING** at the time of this DOE
+decision. Current status (2026-10-13): `FINAL_N_TRAIN_MAX`, `FINAL_N_TEST` and
+`FINAL_N_LADDER` are **FROZEN** (see `docs/DESIGN_FREEZE_2026-10-13.md`);
+`FINAL_RAW_CFD_ATTEMPTS` remains **PENDING**.
 
 ## 13. Production DOE semantics (frozen principles)
 
@@ -391,13 +399,18 @@ MUST NOT be mixed into one master pool with the production Sobol sequence
 
 A2 does not enter the production main DOE.
 
-## 16. NEXT DECISION (not frozen yet)
+## 16. NEXT DECISION
+
+### Status at the time of this DOE decision (historical)
+
+At the time of the FINAL_DOE decision the production scale was intentionally not
+frozen:
 
 ```text
-FINAL_NMAX and FINAL_N_LADDER are intentionally not frozen yet.
+FINAL_NMAX and FINAL_N_LADDER were intentionally not frozen yet.
 ```
 
-They require owner / research-group discussion because the intended production scale
+They required owner / research-group discussion because the intended production scale
 is:
 
 ```text
@@ -412,6 +425,31 @@ The historical benchmark sizes
 
 remain **DOE-method comparison values** and are still NOT the production ladder.
 
-No candidate `N` values are proposed in this document; they must not be invented by
-an AI agent.
+### Current authoritative status (2026-10-13) — FROZEN
+
+See `docs/DESIGN_FREEZE_2026-10-13.md`:
+
+```text
+N definition                = usable training case count
+FINAL_N_TRAIN_MAX           = 100000 usable training cases
+FINAL_N_TEST                = 20000 usable test cases (fixed)
+TRAIN_TEST_RATIO            = 5:1
+MIN_USABLE_TRAIN_TEST_CASES = 120000
+FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 100000
+```
+
+The umbrella term `FINAL_NMAX` is retired for current status; it must not be used to
+mean training `N_max`, usable total, or raw CFD attempts.
+
+Still **PENDING** (not decided by an AI agent):
+
+```text
+FINAL_VALIDATION_POLICY
+FINAL_N_VALIDATION
+FINAL_PRODUCTION_RANGES
+FINAL_RAW_CFD_ATTEMPTS
+```
+
+This document (DOE_DECISION) still fixes no six-dimensional parameter range; the
+production ranges remain owned by the owner / advisor.
 
