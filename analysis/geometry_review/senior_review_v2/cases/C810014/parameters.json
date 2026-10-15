@@ -1,0 +1,228 @@
+{
+  "case_id": "C810014",
+  "folder": "cases/C810014",
+  "group": "A_single_param",
+  "note": "Solidity scan: new_lo (0.7)  [also proposed by: C_coupled]",
+  "parameters": {
+    "Xthick": 0.3,
+    "Tmax": 0.055,
+    "Metal2": 15.0,
+    "Solidity": 0.7,
+    "Incidence": 0.0,
+    "Mach": 0.5
+  },
+  "parameters_csv_raw": {
+    "Xthick": "0.3",
+    "Tmax": "0.055",
+    "Metal2": "15.0",
+    "Solidity": "0.7",
+    "Incidence": "0.0",
+    "Mach": "0.5"
+  },
+  "parameter_kind": {
+    "Xthick": "non-dimensional: chordwise fraction of maximum thickness",
+    "Tmax": "non-dimensional: maximum thickness ratio (legacy profile parameterisation)",
+    "Metal2": "deg: exit metal angle (Metal1 = 53 deg frozen in the geometry core)",
+    "Solidity": "non-dimensional: chord / pitch (changes ONLY the .geomTurbo periodicity, never the blade shape)",
+    "Incidence": "deg: operating condition, does not change the geometry",
+    "Mach": "non-dimensional: operating condition, does not change the geometry"
+  },
+  "range_id": "exploratory_v2_review",
+  "sampling_id": "exploratory_v2_deterministic",
+  "exploratory_ranges": {
+    "Xthick": [
+      0.1,
+      0.6
+    ],
+    "Tmax": [
+      0.025,
+      0.095
+    ],
+    "Metal2": [
+      0.0,
+      32.0
+    ],
+    "Solidity": [
+      0.7,
+      2.5
+    ]
+  },
+  "legacy_ranges": {
+    "Xthick": [
+      0.15,
+      0.45
+    ],
+    "Tmax": [
+      0.04,
+      0.07
+    ],
+    "Metal2": [
+      6.0,
+      24.0
+    ],
+    "Solidity": [
+      1.0,
+      2.0
+    ]
+  },
+  "ranges_source": "analysis/geometry_review/ranges_exploratory_v2.yaml",
+  "ranges_status": "EXPLORATORY_NOT_APPROVED",
+  "beyond_legacy": true,
+  "beyond_legacy_params": [
+    "Solidity"
+  ],
+  "builder_flags": {
+    "beyond_legacy": "1",
+    "new_boundary_params": "Solidity",
+    "multi_param_extreme": "0",
+    "at_new_lower": "Solidity",
+    "at_new_upper": ""
+  },
+  "duplicate_blade_group": {
+    "id": "BL03",
+    "size": 5,
+    "members": [
+      "C810003",
+      "C810014",
+      "C810015",
+      "C810016",
+      "C810017"
+    ],
+    "note": "cases sharing (Xthick, Tmax, Metal2) have the same single blade outline; they differ only in Solidity, i.e. in the periodicity of the .geomTurbo"
+  },
+  "geometry_generation": {
+    "geometry_generated": true,
+    "profile_file": "cases/C810014/C810014.dat",
+    "geomturbo_file": "cases/C810014/C810014.geomTurbo",
+    "profile_source": "analysis/geometry_review/geometry/profiles/C810014.dat",
+    "geomturbo_source": "analysis/geometry_review/geometry/geomturbo/C810014.geomTurbo",
+    "profile_sha256": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+    "geomturbo_sha256": "7ddc249bc8ddf7cf4176130e9feb73de905d60f428a5210ceb5008b19f3f9936",
+    "profile_bytes": 3488,
+    "geomturbo_bytes": 14224,
+    "produced_by": "code/02_generate_geometry.py (V2 run; not re-run for this package)"
+  },
+  "geometry_qc": {
+    "geometry_qc_status": "PASS",
+    "geometry_ok": true,
+    "reason": "OK",
+    "qc_policy_id": "geometry_qc_v1_hard",
+    "calibration_status": "UNCALIBRATED",
+    "report": "analysis/geometry_review/geometry_qc.csv (real output)",
+    "produced_by": "code/03_geometry_qc.py (V2 run; not re-run for this package)"
+  },
+  "qc_metrics": {
+    "min_gap": 0.0698000921739,
+    "envelope_clearance": 0.0576206,
+    "periodicity": 0.08571,
+    "blade_tangential_extent": 0.0280894,
+    "chord": 0.0599999477083,
+    "chord_target": 0.06,
+    "min_interior_thickness": 0.0047539457296,
+    "max_paired_thickness": 0.0550371692586,
+    "le_closure_error": 0.0,
+    "te_closure_error": 0.0,
+    "self_intersection": 0.0,
+    "adjacent_blade_intersection": 0.0,
+    "finite_ok": 1.0,
+    "span_min": 0.0,
+    "span_max": 0.003,
+    "span_section_coordinate_consistent": 1.0,
+    "profile_point_count": 109.0,
+    "pressure_max_turn_angle_deg": 24.2773458138,
+    "suction_max_turn_angle_deg": 24.3491609013,
+    "pressure_max_discrete_curvature": 3197.10363769,
+    "suction_max_discrete_curvature": 3287.50814413
+  },
+  "min_gap": 0.0698000921739,
+  "envelope_clearance": 0.0576206,
+  "periodicity": 0.08571,
+  "qc_policy_id": "geometry_qc_v1_hard",
+  "units": {
+    "min_gap": {
+      "unit": "m",
+      "frame": "geomTurbo blade section",
+      "meaning": "min distance between the blade and its periodic neighbours (+/- PERIODICITY along Y)",
+      "gate": "HARD GATE of geometry_qc_v1_hard: must be > 0"
+    },
+    "envelope_clearance": {
+      "unit": "m",
+      "frame": "geomTurbo blade section",
+      "meaning": "PERIODICITY - blade tangential extent",
+      "gate": "DIAGNOSTIC ONLY. A NEGATIVE value is NOT a blade collision and not a QC failure."
+    },
+    "blade_tangential_extent": {
+      "unit": "m",
+      "frame": "geomTurbo blade section",
+      "meaning": "max(Y) - min(Y) of the blade section"
+    },
+    "periodicity": {
+      "unit": "m",
+      "frame": "geomTurbo PERIODICITY field",
+      "meaning": "pitch = CHORD_TARGET / Solidity = 0.06 / Solidity"
+    },
+    "chord": {
+      "unit": "m",
+      "frame": "geomTurbo blade section",
+      "meaning": "distance LE->TE of the pressure-side polyline"
+    },
+    "chord_target": {
+      "unit": "m",
+      "frame": "frozen legacy constant (0.06 m)"
+    },
+    "min_interior_thickness": {
+      "unit": "RAW profile units (normalised, NOT m)",
+      "frame": "raw .dat profile",
+      "meaning": "do not read as metres"
+    },
+    "max_paired_thickness": {
+      "unit": "RAW profile units (normalised, NOT m)",
+      "frame": "raw .dat profile",
+      "meaning": "do not read as metres"
+    },
+    "le_closure_error": {
+      "unit": "RAW profile units",
+      "frame": "raw .dat profile"
+    },
+    "te_closure_error": {
+      "unit": "RAW profile units",
+      "frame": "raw .dat profile"
+    },
+    "pressure_max_turn_angle_deg": {
+      "unit": "deg"
+    },
+    "suction_max_turn_angle_deg": {
+      "unit": "deg"
+    },
+    "pressure_max_discrete_curvature": {
+      "unit": "1/m",
+      "frame": "geomTurbo blade section"
+    },
+    "suction_max_discrete_curvature": {
+      "unit": "1/m",
+      "frame": "geomTurbo blade section"
+    }
+  },
+  "coordinate_frame": {
+    "profile_file": ".dat columns are 'xp yp xs ys' (pressure x, pressure y, suction x, suction y) in raw normalised profile units",
+    "plot_frame": "x = Z = chordwise, y = Y = tangential (same frame as the .geomTurbo blade section)",
+    "plot_scale": "raw profile uniformly scaled so chord = 0.06 m; all plotted distances are therefore in metres",
+    "geomturbo": "UNITS Meters, UNITS-FACTOR 1, cascade yes",
+    "operation": "Incidence and Mach do NOT change the legacy blade geometry (verified in V1); recorded for traceability only"
+  },
+  "figures": {
+    "blade_profile": "cases/C810014/blade_profile.png",
+    "cascade_3blade": "cases/C810014/cascade_3blade.png",
+    "edge_details": "cases/C810014/edge_details.png",
+    "overview": "00_all_cases_overview.png"
+  },
+  "disclaimer": [
+    "2-D geometry views only: drawn from the real .dat / .geomTurbo coordinate data. These are NOT NUMECA/CFX meshes and NOT CFD results.",
+    "Geometry QC PASS means the frozen geometry checks (geometry_qc_v1_hard) passed. It does NOT mean the blade is aerodynamically reasonable, and it does NOT mean a mesh can be generated.",
+    "A negative envelope_clearance is a diagnostic number only, not a collision.",
+    "The exploratory ranges of this review are NOT approved production ranges.",
+    "Xthick / Tmax / Metal2 are non-dimensional parameters; they are never shown as metres."
+  ],
+  "human_acceptance": null,
+  "human_comment": null
+}

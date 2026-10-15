@@ -1,0 +1,12 @@
+plot_geometry_review (V2): 40 profiles, dpi=200
+  unique blade profiles : 25
+  unique cascades       : 40
+  notable cases         : ['C810017', 'C810032', 'C810033', 'C810035', 'C810038', 'C810010', 'C810006', 'C810005', 'C810021', 'C810020']
+  QC FAIL cases         : []
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig01_single_param_extension.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig02_extreme_corners.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig03_solidity_metal2_cascade.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig04_notable_zoom.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig05_blade_overview.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig06_qc_overview.png
+

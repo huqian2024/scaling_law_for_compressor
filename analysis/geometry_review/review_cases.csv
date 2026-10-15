@@ -1,0 +1,41 @@
+case_id,Xthick,Tmax,Metal2,Solidity,Incidence,Mach,range_id,sampling_id,group,note,beyond_legacy,new_boundary_params,multi_param_extreme,at_new_lower,at_new_upper
+C810001,0.1,0.055,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Xthick scan: new_lo (0.1),1,Xthick,0,Xthick,
+C810002,0.15,0.055,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Xthick scan: legacy_lo (0.15),0,,0,,
+C810003,0.3,0.055,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,"Xthick scan: legacy_mid (0.3)  [also proposed by: A_single_param, A_single_param, A_single_param]",0,,0,,
+C810004,0.45,0.055,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Xthick scan: legacy_hi (0.45),0,,0,,
+C810005,0.6,0.055,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Xthick scan: new_hi (0.6),1,Xthick,0,,Xthick
+C810006,0.3,0.025,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Tmax scan: new_lo (0.025),1,Tmax,0,Tmax,
+C810007,0.3,0.04,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Tmax scan: legacy_lo (0.04),0,,0,,
+C810008,0.3,0.07,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Tmax scan: legacy_hi (0.07),0,,0,,
+C810009,0.3,0.095,15.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Tmax scan: new_hi (0.095),1,Tmax,0,,Tmax
+C810010,0.3,0.055,0.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Metal2 scan: new_lo (0),1,Metal2,0,Metal2,
+C810011,0.3,0.055,6.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Metal2 scan: legacy_lo (6),0,,0,,
+C810012,0.3,0.055,24.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Metal2 scan: legacy_hi (24),0,,0,,
+C810013,0.3,0.055,32.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Metal2 scan: new_hi (32),1,Metal2,0,,Metal2
+C810014,0.3,0.055,15.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Solidity scan: new_lo (0.7)  [also proposed by: C_coupled],1,Solidity,0,Solidity,
+C810015,0.3,0.055,15.0,1.0,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Solidity scan: legacy_lo (1),0,,0,,
+C810016,0.3,0.055,15.0,2.0,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Solidity scan: legacy_hi (2),0,,0,,
+C810017,0.3,0.055,15.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,A_single_param,Solidity scan: new_hi (2.5)  [also proposed by: C_coupled],1,Solidity,0,,Solidity
+C810018,0.1,0.025,0.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.1 Tmax=0.025 Metal2=0,1,"Xthick,Tmax,Metal2",1,"Xthick,Tmax,Metal2",
+C810019,0.1,0.025,32.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.1 Tmax=0.025 Metal2=32,1,"Xthick,Tmax,Metal2",1,"Xthick,Tmax",Metal2
+C810020,0.1,0.095,0.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.1 Tmax=0.095 Metal2=0,1,"Xthick,Metal2,Tmax",1,"Xthick,Metal2",Tmax
+C810021,0.1,0.095,32.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.1 Tmax=0.095 Metal2=32,1,"Xthick,Tmax,Metal2",1,Xthick,"Tmax,Metal2"
+C810022,0.6,0.025,0.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.6 Tmax=0.025 Metal2=0,1,"Tmax,Metal2,Xthick",1,"Tmax,Metal2",Xthick
+C810023,0.6,0.025,32.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.6 Tmax=0.025 Metal2=32,1,"Tmax,Xthick,Metal2",1,Tmax,"Xthick,Metal2"
+C810024,0.6,0.095,0.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.6 Tmax=0.095 Metal2=0,1,"Metal2,Xthick,Tmax",1,Metal2,"Xthick,Tmax"
+C810025,0.6,0.095,32.0,1.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,B_corner,new-bound corner Xthick=0.6 Tmax=0.095 Metal2=32,1,"Xthick,Tmax,Metal2",1,,"Xthick,Tmax,Metal2"
+C810026,0.3,0.055,0.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=0.7 x Metal2=0 at reference blade,1,"Metal2,Solidity",0,"Metal2,Solidity",
+C810027,0.3,0.055,6.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=0.7 x Metal2=6 at reference blade,1,Solidity,0,Solidity,
+C810028,0.3,0.055,24.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=0.7 x Metal2=24 at reference blade,1,Solidity,0,Solidity,
+C810029,0.3,0.055,32.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=0.7 x Metal2=32 at reference blade,1,"Solidity,Metal2",0,Solidity,Metal2
+C810030,0.3,0.055,0.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=2.5 x Metal2=0 at reference blade,1,"Metal2,Solidity",0,Metal2,Solidity
+C810031,0.3,0.055,6.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=2.5 x Metal2=6 at reference blade,1,Solidity,0,,Solidity
+C810032,0.3,0.055,24.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=2.5 x Metal2=24 at reference blade,1,Solidity,0,,Solidity
+C810033,0.3,0.055,32.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_coupled,Solidity=2.5 x Metal2=32 at reference blade,1,"Metal2,Solidity",0,,"Metal2,Solidity"
+C810034,0.6,0.095,0.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_combined,"combined extreme: max Xthick/Tmax, min Metal2, max Solidity",1,"Metal2,Xthick,Tmax,Solidity",1,Metal2,"Xthick,Tmax,Solidity"
+C810035,0.1,0.025,32.0,2.5,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_combined,"combined extreme: min Xthick/Tmax, max Metal2, max Solidity",1,"Xthick,Tmax,Metal2,Solidity",1,"Xthick,Tmax","Metal2,Solidity"
+C810036,0.6,0.025,32.0,0.7,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,C_combined,"combined extreme: max Xthick, min Tmax, max Metal2, min Solidity",1,"Tmax,Solidity,Xthick,Metal2",1,"Tmax,Solidity","Xthick,Metal2"
+C810037,0.240445,0.066126,15.196765,1.443003,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,D_maximin,"maximin-dispersed, seed 20261015",0,,0,,
+C810038,0.596803,0.030156,31.684084,2.213525,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,D_maximin,"maximin-dispersed, seed 20261015",1,,0,,
+C810039,0.567973,0.092717,0.43193,2.499393,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,D_maximin,"maximin-dispersed, seed 20261015",1,,0,,
+C810040,0.598815,0.032748,6.8568,0.74808,0.0,0.5,exploratory_v2_review,exploratory_v2_deterministic,D_maximin,"maximin-dispersed, seed 20261015",1,,0,,

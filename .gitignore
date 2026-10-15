@@ -27,3 +27,24 @@ cfx/res/
 *.tmp
 *.log
 
+# ---------------------------------------------------------------------------
+# Geometry Range Review (analysis/geometry_review/) — intentional rules
+# ---------------------------------------------------------------------------
+# The V1/V2 review run logs are the provenance record of what was actually
+# executed, so they are tracked on purpose (the global *.log rule above would
+# otherwise drop them).
+!analysis/geometry_review/logs/*.log
+!analysis/geometry_review/archive/v1_legacy_review/*.log
+
+# The 40-case senior review package is tracked as the EXTRACTED directory
+# (analysis/geometry_review/senior_review_v2/).  The ZIP is the same content as a
+# single local delivery file; it is deliberately NOT tracked.
+analysis/geometry_review/senior_review_v2.zip
+
+# NUMECA bring-up artifacts stay local by project convention (they are never
+# part of the production case sequence).  See PROJECT_HANDOFF.md and
+# docs/NUMECA_BRINGUP_CASE_C900001.md, which records their SHA256.
+geometry/geometry_qc.csv
+geometry/profiles/C900001.dat
+geometry/geomturbo/C900001.geomTurbo
+

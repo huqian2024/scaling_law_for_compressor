@@ -1,0 +1,31 @@
+case_id,Xthick,Tmax,Metal2,Solidity,Incidence,Mach,range_id,sampling_id,group,note
+C800001,0.3,0.055,15.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G1_reference,reference midpoint of the legacy ranges
+C800002,0.15,0.055,15.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Xthick=lo
+C800003,0.45,0.055,15.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Xthick=hi
+C800004,0.3,0.04,15.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Tmax=lo
+C800005,0.3,0.07,15.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Tmax=hi
+C800006,0.3,0.055,6.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Metal2=lo
+C800007,0.3,0.055,24.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Metal2=hi
+C800008,0.3,0.055,15.0,1.0,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Solidity=lo
+C800009,0.3,0.055,15.0,2.0,0.0,0.5,legacy_review,legacy_review_deterministic,G2_single_factor,Solidity=hi
+C800010,0.15,0.04,6.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.15 Tmax=0.04 Metal2=6.0
+C800011,0.15,0.04,24.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.15 Tmax=0.04 Metal2=24.0
+C800012,0.15,0.07,6.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.15 Tmax=0.07 Metal2=6.0
+C800013,0.15,0.07,24.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.15 Tmax=0.07 Metal2=24.0
+C800014,0.45,0.04,6.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.45 Tmax=0.04 Metal2=6.0
+C800015,0.45,0.04,24.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.45 Tmax=0.04 Metal2=24.0
+C800016,0.45,0.07,6.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.45 Tmax=0.07 Metal2=6.0
+C800017,0.45,0.07,24.0,1.5,0.0,0.5,legacy_review,legacy_review_deterministic,G3_corner,corner Xthick=0.45 Tmax=0.07 Metal2=24.0
+C800018,0.15,0.04,6.0,1.0,0.0,0.5,legacy_review,legacy_review_deterministic,G4_solidity,"min-turning corner, Solidity=lo"
+C800019,0.45,0.07,24.0,2.0,0.0,0.5,legacy_review,legacy_review_deterministic,G4_solidity,"max-turning corner, Solidity=hi"
+C800020,0.3,0.055,15.0,1.0,0.0,0.5,legacy_review,legacy_review_deterministic,G4_solidity,"reference geometry, Solidity=lo"
+C800021,0.3,0.055,15.0,2.0,0.0,0.5,legacy_review,legacy_review_deterministic,G4_solidity,"reference geometry, Solidity=hi"
+C800022,0.257755666815,0.047055422418,18.275668796032,1.109580814578,2.177815893298,0.453507730251,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800023,0.231583037999,0.042440947869,7.63167646154,1.467586029103,-2.546668000784,0.371595137015,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800024,0.395666531932,0.042934752009,17.358591167535,1.872796392849,-1.389284001073,0.46160692546,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800025,0.360471591241,0.069523263469,8.456912484844,1.804789680478,-1.540569108228,0.496067258593,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800026,0.235970280905,0.056406784613,15.013153245833,1.359542739138,-0.308995397193,0.501199073206,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800027,0.437112048688,0.059253603024,6.961085200312,1.455515680983,0.33433481819,0.323828466782,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800028,0.357019041354,0.067917588475,16.473445083391,1.597857564119,-0.31425815376,0.413099263115,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800029,0.172794873889,0.04235317674,15.103110762764,1.518851172907,-2.250972811586,0.587434159588,legacy_review,legacy_review_random_seed20261013,G5_random,fixed seed 20261013
+C800030,0.3,0.055,15.0,1.5,4.0,0.7,legacy_review,legacy_review_deterministic,G6_invariance_demo,"reference geometry, Incidence=hi Mach=hi (geometry must be identical)"

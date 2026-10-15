@@ -1,0 +1,43 @@
+# Exploratory extended design space — Geometry Range Review V2
+#
+# STATUS: EXPLORATORY ONLY.
+#   * NOT approved by the advisor / senior.
+#   * NOT a production range.
+#   * NOT written into config/ranges_legacy.yaml (that file is read-only history).
+#   * The geometry core is NOT changed: Metal1 = 53 deg and all other frozen
+#     constants of code/geometry_legacy_v1.py stay exactly as they are.
+#
+# This file is consumed by analysis/geometry_review/make_review_cases.py only.
+# code/02_generate_geometry.py never reads it (it works from the case CSV).
+
+dataset_version: exploratory_v2
+status: EXPLORATORY_NOT_APPROVED
+range_id: exploratory_v2_review
+sampling_id: exploratory_v2_deterministic
+random_seed: 20261015
+
+# Frozen geometry-core constant, recorded for traceability ONLY (never modified).
+metal1_fixed_deg: 53
+
+# Extended (exploratory) bounds used to build the V2 review cases.
+ranges:
+  Xthick:    [0.10, 0.60]      # legacy 0.15 .. 0.45
+  Tmax:      [0.025, 0.095]    # legacy 0.04 .. 0.07
+  Metal2:    [0.0, 32.0]       # legacy 6.0 .. 24.0
+  Solidity:  [0.7, 2.5]        # legacy 1.0 .. 2.0
+
+# Operating conditions are FROZEN for this review: they do not affect the
+# legacy geometry at all (verified), so varying them would only create
+# byte-identical redundant cases.
+fixed:
+  Incidence: 0.0
+  Mach: 0.5
+
+# Historical reference range (read-only, for the "beyond legacy" annotation).
+legacy_ranges:
+  Xthick:    [0.15, 0.45]
+  Tmax:      [0.04, 0.07]
+  Metal2:    [6.0, 24.0]
+  Solidity:  [1.0, 2.0]
+  Incidence: [-4.0, 4.0]
+  Mach:      [0.3, 0.7]

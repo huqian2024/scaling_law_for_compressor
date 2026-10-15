@@ -1,0 +1,32 @@
+{"case_id": "C800001", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800002", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800003", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800004", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800005", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800006", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800007", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800008", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800009", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800010", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800011", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800012", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800013", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800014", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800015", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800016", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800017", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800018", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800019", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800020", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800021", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800022", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800023", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800024", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800025", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800026", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800027", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800028", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800029", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"case_id": "C800030", "geometry_ok": true, "reason": "OK", "type": "case"}
+{"adjacent_intersection_count": 0, "calibration_status": "UNCALIBRATED", "dry_run": true, "fail_count": 0, "missing_artifact_count": 0, "output_path": "analysis/geometry_review/geometry_qc.csv", "parse_failure_count": 0, "pass_count": 30, "qc_policy_id": "geometry_qc_v1_hard", "selected_count": 30, "self_intersection_count": 0, "type": "summary"}
+

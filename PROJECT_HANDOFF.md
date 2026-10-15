@@ -53,6 +53,14 @@ Geometry QC contract            PASS
 03_geometry_qc.py               PASS
 Local geometry pipeline         PASS
 
+Geometry Range Review V1        DONE / ARCHIVED  (30 cases, C800001..C800030,
+                                legacy ranges; FROZEN RECORD)
+Geometry Range Review V2        DONE             (40 cases, C810001..C810040,
+                                exploratory ranges, NOT production)
+V2 Geometry QC                  40/40 PASS       (geometry_qc_v1_hard)
+V2 senior review package        DELIVERED        (awaiting advisor judgement;
+                                entrance = the 40-panel overview)
+
 01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
 generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
 DO-NOT-RUN                      no production design / geometry generation
@@ -225,6 +233,48 @@ geometry/geometry_qc.csv               (local bring-up report, kept)
 
 Do not delete or overwrite any of the above.
 
+The three `local artifact` paths above are deliberately **NOT tracked by git**
+(the rules are written with comments at the end of `.gitignore`): they stay on
+this laptop, and `docs/NUMECA_BRINGUP_CASE_C900001.md` records their SHA256.
+
+## GEOMETRY RANGE REVIEW — V1 (archived) / V2 (current)
+
+```text
+V1  legacy range review     30 cases  C800001..C800030   generation 30/30, QC 30/30 PASS
+    archive (FROZEN RECORD, do not edit):
+        analysis/geometry_review/archive/v1_legacy_review/
+    known gap recorded there: the V1 plotting script was overwritten by the V2
+    rewrite while untracked, so it is not recoverable from git; all V1 figures,
+    tables, QC report and logs ARE archived.
+
+V2  exploratory range review 40 cases C810001..C810040  generation 40/40, QC 40/40 PASS
+    ranges    : analysis/geometry_review/ranges_exploratory_v2.yaml
+                (status EXPLORATORY_NOT_APPROVED — never written into config/)
+                Xthick 0.10-0.60, Tmax 0.025-0.095, Metal2 0-32 deg,
+                Solidity 0.7-2.5, Incidence 0 (fixed), Mach 0.5 (fixed)
+    results   : analysis/geometry_review/geometry/            (40 .dat + .geomTurbo)
+                analysis/geometry_review/geometry_qc.csv      (40 rows, all PASS)
+                analysis/geometry_review/figures/             (6 PNG @200 dpi)
+    deliverable: analysis/geometry_review/senior_review_v2/   (40-case review package)
+                 analysis/geometry_review/senior_review_v2.zip (local delivery copy only)
+    independent facts: min_gap 0.014494..0.072696 m (hard gate > 0, all pass);
+                 envelope_clearance negative for 5 cases (diagnostic only, NOT a
+                 collision and NOT a QC failure); 25 unique blade outlines
+                 (40 cases = 25 blades + 15 pitch-only variants)
+
+Frozen core NOT touched by any of this:
+    code/geometry_legacy_v1.py (Metal1 = 53 deg), legacy/, config/ranges_legacy.yaml,
+    tests/ + tests/fixtures/, docs/GEOMETRY_GENERATOR_CONTRACT.md, GEOMETRY_QC_CONTRACT.md
+
+WARNING — do not overclaim:
+    Geometry QC PASS  !=  aerodynamically reasonable
+    Geometry QC PASS  !=  mesh / CFD feasible
+    the V2 exploratory ranges are NOT the approved production ranges
+    no formal DOE and no CFD production has been executed
+```
+
+Full session record: `docs/SESSION_DELIVERY_2026-10-15.md`.
+
 ## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
 ```text
@@ -233,6 +283,10 @@ the project must first freeze the six-dimensional production ranges:
 
 1. FINAL_PRODUCTION_RANGES   (owner / advisor confirmation)
 ```
+
+The advisor input for that decision is the V2 senior review package
+(`analysis/geometry_review/senior_review_v2/`, 40 real blades).
+Until the advisor has judged those shapes, no range may be frozen.
 
 and, independently:
 
@@ -280,12 +334,16 @@ school environment.
 
 ```text
 FIRST TASK:
-Confirm FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
+Get the advisor's engineering judgement on the 40 real V2 blade shapes
+(analysis/geometry_review/senior_review_v2/) and use that feedback to freeze
+FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
 
 DO NOT start 01_generate_design.py before those ranges are frozen.
+Do not treat the V2 exploratory ranges as approved production ranges.
 
 Production scale itself is already FROZEN (2026-10-13):
 see docs/DESIGN_FREEZE_2026-10-13.md.
+The geometry range review status is recorded in docs/SESSION_DELIVERY_2026-10-15.md.
 ```
 
 For a new AI conversation, upload first:
@@ -297,13 +355,16 @@ For a new AI conversation, upload first:
 4. docs/SCALING_EXPERIMENT_DESIGN.md
 5. docs/SESSION_DELIVERY_2026-10-11.md   (historical record)
 6. docs/DESIGN_FREEZE_2026-10-13.md      (current production-scale freeze)
+7. docs/SESSION_DELIVERY_2026-10-15.md   (geometry range review V1/V2 + review package)
 ```
 
 When continuing geometry work, also provide:
 
 ```text
-6. docs/GEOMETRY_GENERATOR_CONTRACT.md
-7. docs/GEOMETRY_QC_CONTRACT.md
+8. docs/GEOMETRY_GENERATOR_CONTRACT.md
+9. docs/GEOMETRY_QC_CONTRACT.md
+10. analysis/geometry_review/README.md                 (review dir entry point)
+11. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
 ```
 
 Only when a legacy audit is actually needed, also provide:

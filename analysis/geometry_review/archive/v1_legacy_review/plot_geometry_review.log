@@ -1,0 +1,12 @@
+plot_geometry_review: 30 profiles loaded, dpi=200
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig01_reference_blade.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig02a_xthick.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig02b_tmax.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig02c_metal2.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig02d_solidity.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig03_corner_grid.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig04_solidity_arrangement.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig05_le_te_zoom.png
+  wrote /home/qian/compressor_ai4s/analysis/geometry_review/figures/fig06_qc_diagnostics.png
+flagged cases: ['C800019', 'C800015', 'C800007', 'C800017', 'C800009', 'C800021', 'C800029']
+
