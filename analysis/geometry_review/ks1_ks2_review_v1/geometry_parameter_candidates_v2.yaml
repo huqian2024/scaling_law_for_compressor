@@ -1,0 +1,84 @@
+# =============================================================================
+# geometry_parameter_candidates_v2.yaml
+# Exploratory candidate parameter space — NOT APPROVED FOR PRODUCTION
+# =============================================================================
+# This file does NOT modify any formal/frozen DOE file.
+# It records the human review decision of 2026-10-17 and the open Ks1/Ks2 review.
+# =============================================================================
+
+candidate_id: geometry_parameter_candidates_v2
+status: EXPLORATORY_NOT_APPROVED
+decision_date: "2026-10-17"
+scope: "future exploratory DOE candidate space; not a production range"
+
+human_decisions:
+  SS1:
+    value: 3.2
+    legacy_default: 3.2
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+    rationale: >-
+      Fixed by the human reviewer after Geometry Parameter Sensitivity V1.
+      The 100-case screen found a very small effect (S_comp about 7.2e-4), and
+      the legacy construction recomputes St1 at the LE circle WITHOUT SS1, so
+      part of the low sensitivity is an implementation fact rather than proof
+      that the thickness distribution is irrelevant.  The generator keeps
+      accepting SS1 for historical/geometry compatibility.
+  SS2:
+    value: 0.8
+    legacy_default: 0.8
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+    rationale: >-
+      Fixed by the human reviewer after Geometry Parameter Sensitivity V1.
+      The 100-case screen found a very small effect (S_comp about 7.3e-4), and
+      the legacy construction recomputes St2 at the TE circle WITHOUT SS2.
+      SS2 remains accepted by the generator for historical compatibility.
+
+proven_geometric_effect_pending_boundary_approval:
+  Xthick: {exploratory_range: [0.10, 0.60], status: KEEP_CANDIDATE_FROM_V1}
+  Tmax: {exploratory_range: [0.025, 0.095], status: KEEP_CANDIDATE_FROM_V1}
+  Metal1: {exploratory_range: [48.0, 58.0], status: KEEP_CANDIDATE_FROM_V1}
+  Metal2: {exploratory_range: [0.0, 32.0], status: KEEP_CANDIDATE_FROM_V1}
+  Solidity: {exploratory_range: [0.7, 2.5], status: KEEP_CANDIDATE_FROM_V1}
+  T1: {exploratory_range: [0.010, 0.018], status: KEEP_CANDIDATE_FROM_V1}
+  T2: {exploratory_range: [0.008, 0.016], status: KEEP_CANDIDATE_FROM_V1}
+  Xmean: {exploratory_range: [0.06, 0.18], status: KEEP_CANDIDATE_FROM_V1}
+  K_m: {exploratory_range: [0.10, 0.35], status: KEEP_CANDIDATE_FROM_V1}
+
+under_review_now:
+  Ks1: {exploratory_range: [3.0, 7.0], status: UNDER_KS1_KS2_REVIEW_V1}
+  Ks2: {exploratory_range: [0.05, 0.20], status: UNDER_KS1_KS2_REVIEW_V1}
+
+fixed_geometry:
+  SS1: 3.2
+  SS2: 0.8
+
+independent_operating_conditions:
+  Incidence: {status: INDEPENDENT_CONDITION, note: "fixed 0 deg in current geometry review; CFX implementation still TBD"}
+  Mach: {status: INDEPENDENT_CONDITION, note: "fixed 0.5 in current geometry review; CFX implementation still TBD"}
+
+excluded_from_geometry_candidate_space:
+  CHORD_TARGET: 0.06
+  SPAN: 0.003
+  Npoint: 101
+  Ncirc: 4
+  Nscale1: 1.7
+  Nscale2: 1.7
+  Rsign: 1.0
+  Gridswitch: -1.0
+
+candidate_dimensionality:
+  if_ks1_and_ks2_keep: {geometry: 11, operating: 2, total: 13}
+  if_ks1_fixed_only: {geometry: 10, operating: 2, total: 12}
+  if_ks2_fixed_only: {geometry: 10, operating: 2, total: 12}
+  if_both_fixed: {geometry: 9, operating: 2, total: 11}
+  note: "the count is provisional until the Ks1/Ks2 review and boundary approval are complete"
+
+not_modified:
+  formal_six_dimensional_doe: true
+  frozen_v1_generator: true
+  legacy_files: true
+  prior_100_case_experiment: true
+  v1_v2_geometry_reviews: true
+  production_ranges: true

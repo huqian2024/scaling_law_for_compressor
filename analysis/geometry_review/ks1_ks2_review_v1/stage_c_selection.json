@@ -1,0 +1,40 @@
+{
+  "rule": "rank B1-B4 by meanline_angle_range_deg; choose lowest and highest; choose the higher-camber one of B5/B6",
+  "selected_backgrounds": [
+    "B4",
+    "B2",
+    "B5"
+  ],
+  "evidence": {
+    "B4": {
+      "reference_case_id": "C830031",
+      "reason": "lowest camber response in the Xmean/K_m group",
+      "group": "Xmean/K_m",
+      "scores": {
+        "meanline_angle_range_deg": 38.0,
+        "contour_rms_dev_norm": 0.018579989118419887,
+        "meanline_rms_dev_norm": 0.023721910296612258
+      }
+    },
+    "B2": {
+      "reference_case_id": "C830021",
+      "reason": "highest camber response in the Xmean/K_m group",
+      "group": "Xmean/K_m",
+      "scores": {
+        "meanline_angle_range_deg": 84.42862145801489,
+        "contour_rms_dev_norm": 0.34484037686501534,
+        "meanline_rms_dev_norm": 0.3724062404149803
+      }
+    },
+    "B5": {
+      "reference_case_id": "C830036",
+      "reason": "highest camber response in the Metal1/Metal2 group",
+      "group": "Metal1/Metal2",
+      "scores": {
+        "meanline_angle_range_deg": 48.00000000000001,
+        "contour_rms_dev_norm": 0.11681342385303842,
+        "meanline_rms_dev_norm": 0.12586617110179468
+      }
+    }
+  }
+}

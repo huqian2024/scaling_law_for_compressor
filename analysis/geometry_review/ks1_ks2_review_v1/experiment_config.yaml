@@ -1,0 +1,206 @@
+experiment_id: ks1_ks2_review_v1
+status: EXPLORATORY_NOT_APPROVED
+purpose: Ks1/Ks2 focused geometry review; 57 deterministic cases
+git_head: 02e57d1d26197d97e65f4b64ef0a23f6d06393b7
+case_id_range: C830001..C830057
+n_cases: 57
+stage_counts:
+  A: 15
+  B: 30
+  C: 12
+baseline:
+  Xthick: 0.3
+  Tmax: 0.055
+  Metal2: 15.0
+  Solidity: 1.5
+  Metal1: 53.0
+  T1: 0.015
+  T2: 0.0125
+  Xmean: 0.08
+  K_m: 0.18
+  Ks1: 5.0
+  Ks2: 0.1
+  SS1: 3.2
+  SS2: 0.8
+ranges:
+  Xthick:
+  - 0.1
+  - 0.6
+  Tmax:
+  - 0.025
+  - 0.095
+  Metal2:
+  - 0.0
+  - 32.0
+  Solidity:
+  - 0.7
+  - 2.5
+  Metal1:
+  - 48.0
+  - 58.0
+  T1:
+  - 0.01
+  - 0.018
+  T2:
+  - 0.008
+  - 0.016
+  Xmean:
+  - 0.06
+  - 0.18
+  K_m:
+  - 0.1
+  - 0.35
+  Ks1:
+  - 3.0
+  - 7.0
+  Ks2:
+  - 0.05
+  - 0.2
+  SS1:
+  - 2.4
+  - 4.0
+  SS2:
+  - 0.5
+  - 1.1
+fixed_by_review:
+  SS1:
+    value: 3.2
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+  SS2:
+    value: 0.8
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+fixed_operating_conditions:
+  Incidence: 0.0
+  Mach: 0.5
+backgrounds:
+  B0:
+    description: global baseline
+  B1:
+    Xmean: 0.06
+    K_m: 0.1
+  B2:
+    Xmean: 0.06
+    K_m: 0.35
+  B3:
+    Xmean: 0.18
+    K_m: 0.1
+  B4:
+    Xmean: 0.18
+    K_m: 0.35
+  B5:
+    Metal1: 48.0
+    Metal2: 0.0
+  B6:
+    Metal1: 58.0
+    Metal2: 32.0
+levels:
+  Ks1:
+    levels:
+    - 3.0
+    - 3.6666666666666665
+    - 4.333333333333333
+    - 5.285714285714286
+    - 5.666666666666666
+    - 6.333333333333333
+    - 7.0
+    u:
+    - 0.0
+    - 0.16666666666666666
+    - 0.3333333333333333
+    - 0.5714285714285714
+    - 0.6666666666666666
+    - 0.8333333333333333
+    - 1.0
+    rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+      endpoints kept; baseline excluded
+  Ks2:
+    levels:
+    - 0.05
+    - 0.07500000000000001
+    - 0.11071428571428572
+    - 0.125
+    - 0.15000000000000002
+    - 0.175
+    - 0.2
+    u:
+    - 0.0
+    - 0.16666666666666666
+    - 0.40476190476190477
+    - 0.5
+    - 0.6666666666666666
+    - 0.8333333333333333
+    - 1.0
+    rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+      endpoints kept; baseline excluded
+stage_c_selection_rule: rank B1-B4 by meanline_angle_range_deg of the background reference;
+  choose the lowest and highest; choose the higher-camber one of B5/B6; the exact
+  scores and case IDs are in stage_c_selection.json
+search_grids:
+  Xmean:
+  - 0.06
+  - 0.18
+  - 201
+  Ks1:
+  - 3.0
+  - 7.0
+  - 161
+  Ks2:
+  - 0.05
+  - 0.2
+  - 121
+  K_m:
+  - 0.1
+  - 0.35
+  - 101
+  Metal2:
+  - 0.0
+  - 32.0
+  - 129
+parameter_formula_map:
+  Ks1: SSm1 = Ks1*(Sm2-Sm1); enters a1,a2,a3(=SSm1),a5,a6 and the front meanline slope
+  Ks2: SSm2 = Ks2*(Sm2-Sm1); enters a1,a2,a5,a6,a7(=-SSm2) and the rear meanline slope
+  Xmean: meanline piecewise break point and denominators of a1,a2,a5,a6
+  K_m: Sm0=tan(Metal1+(Metal2-Metal1)*K_m); enters a1,a2,a5,a6
+  SS1: thickness coefficients b1..b4; FIXED at 3.2
+  SS2: thickness coefficients b6,b7,b9; FIXED at 0.8
+frozen_asset_sha256:
+  legacy/blade_batch_generation.py: 48ed9ead4b1260790dcc2d3ad9fe05c79e745a82ad19fe2ce918268adfc36e03
+  legacy/blade_batch_generation_template.geomTurbo: 92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
+  code/geometry_legacy_v1.py: 19b2acdc5c689b0330a3cd0e277c64f069432428276a8f54206ac8866f45076e
+  code/geometry_parametric_exploratory_v1.py: 2da44933d4a6ff640ffd3c99c5c9e2dfb3b9c5fcfcd142d5aa08588d14d9fd20
+  tools/geometry_sensitivity_metrics_v1.py: 218335f23cd4291871cf65cd7d20184ba17aeefacdede5725e147cc15bd732bd
+  analysis/geometry_review/parameter_sensitivity_v1_100cases/case_metrics.csv: 52bfcbf60739a4cd55d30955b95496a88ca8567879d73dd258b15c6447a3d775
+criteria:
+  file: review_criteria.yaml
+  sha256: 9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1
+candidate_config:
+  file: geometry_parameter_candidates_v2.yaml
+  sha256: fdcbe0201cec765f72360cdf0cc746b224a0fc0cafffd990df49226069e5becb
+code:
+  driver: tools/geometry_ks1_ks2_review_v1.py
+  sha256: a7b3402076fec66532d12af37b6a534922d9dcd8ebd926f095960c74b4f83ac3
+output_files:
+- README.md
+- experiment_config.yaml
+- review_criteria.yaml
+- geometry_parameter_candidates_v2.yaml
+- case_design.csv
+- case_metrics.csv
+- ks1_xmean_redundancy.csv
+- ks2_background_sensitivity.csv
+- joint_interaction.csv
+- parameter_decisions.csv
+- profiles.npz
+- overview.png
+- ks1_xmean_comparison.png
+- ks2_background_comparison.png
+- REPORT.md
+- provenance.json
+forbidden:
+  numeca: true
+  cfx: true
+  ai_training: true
+  production_doe: true
+  range_freeze: true

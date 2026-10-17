@@ -1,0 +1,92 @@
+{
+  "experiment_id": "parameter_sensitivity_v1_100cases",
+  "git_head": "02e57d1d26197d97e65f4b64ef0a23f6d06393b7",
+  "git_status_before": [
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "git_status_after": [
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "criteria_id": "parameter_screening_v1_tentative",
+  "criteria_version": "1.0.0",
+  "criteria_sha256": "28f65866be4a4092f20344e45527dc3f5c052e9b4074c544ce86ce4646ca501d",
+  "config_sha256": "93dee2d16d74fba5c179dc8fbfa41de8a3de66843fd0376813894e9898262957",
+  "seed": 20261017,
+  "env": {
+    "python": "3.10.20",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "matplotlib": "3.10.9",
+    "pyyaml": "6.0.3"
+  },
+  "runtime_s": 30.39,
+  "n_cases": 100,
+  "n_stage12": 80,
+  "n_stage3": 20,
+  "generation_ok": 100,
+  "hard_qc_pass": 100,
+  "frozen_qc_pass": 100,
+  "frozen_qc_mismatches": [],
+  "failed_cases": [],
+  "profiles_npz": {
+    "profiles_saved": 100,
+    "missing_case_ids": [],
+    "extra_case_ids": [],
+    "array_mismatches": [],
+    "baseline_case_id_ok": true,
+    "reload_ok": true
+  },
+  "profiles_saved": 100,
+  "serialization_noise_floor": {
+    "contour_rms_norm": 2.5923175440746717e-05,
+    "contour_max_norm": 5.5194717716747755e-05
+  },
+  "frozen_assets": {
+    "status": "PASS",
+    "checked": 16,
+    "mismatches": []
+  },
+  "stage3": {
+    "pool_size_requested": 512,
+    "pool_size_after_dedup": 512,
+    "pool_valid_count": 512,
+    "low_sensitivity_params": [
+      "SS1",
+      "SS2"
+    ],
+    "param_sensitivity_rank": [
+      "Xmean",
+      "K_m",
+      "Metal2",
+      "Solidity",
+      "T2",
+      "T1",
+      "Ks1",
+      "Metal1",
+      "Tmax",
+      "Xthick",
+      "Ks2",
+      "SS2",
+      "SS1"
+    ],
+    "anchors": [
+      505,
+      341,
+      124,
+      80,
+      145
+    ],
+    "stage3_count": 20
+  },
+  "stage3_selection_file": "stage3_selection.json",
+  "output_size_mb": 1.195
+}

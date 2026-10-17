@@ -1,0 +1,454 @@
+experiment_id: parameter_sensitivity_v1_100cases
+status: EXPLORATORY_NOT_APPROVED
+purpose: 13-parameter geometry sensitivity + automatic screening (100 deterministic
+  cases)
+directory: analysis/geometry_review/parameter_sensitivity_v1_100cases
+git_head: 02e57d1d26197d97e65f4b64ef0a23f6d06393b7
+case_id_range: C820001..C820100
+n_cases: 100
+stage_counts:
+  S1: 60
+  S2: 20
+  S3: 20
+random_seed: 20261017
+sobol_seed: 20261017
+range_id: parameter_sensitivity_v1
+sampling_id: deterministic_single_factor_coupling_adaptive_v1
+baseline:
+  Xthick: 0.3
+  Tmax: 0.055
+  Metal2: 15.0
+  Solidity: 1.5
+  Metal1: 53.0
+  T1: 0.015
+  T2: 0.0125
+  Xmean: 0.08
+  K_m: 0.18
+  Ks1: 5.0
+  Ks2: 0.1
+  SS1: 3.2
+  SS2: 0.8
+ranges:
+  Xthick:
+  - 0.1
+  - 0.6
+  Tmax:
+  - 0.025
+  - 0.095
+  Metal2:
+  - 0.0
+  - 32.0
+  Solidity:
+  - 0.7
+  - 2.5
+  Metal1:
+  - 48.0
+  - 58.0
+  T1:
+  - 0.01
+  - 0.018
+  T2:
+  - 0.008
+  - 0.016
+  Xmean:
+  - 0.06
+  - 0.18
+  K_m:
+  - 0.1
+  - 0.35
+  Ks1:
+  - 3.0
+  - 7.0
+  Ks2:
+  - 0.05
+  - 0.2
+  SS1:
+  - 2.4
+  - 4.0
+  SS2:
+  - 0.5
+  - 1.1
+parameter_classes:
+  original_open:
+  - Xthick
+  - Tmax
+  - Metal2
+  - Solidity
+  key_new:
+  - Metal1
+  - T1
+  - T2
+  - Xmean
+  - K_m
+  additional_new:
+  - Ks1
+  - Ks2
+  - SS1
+  - SS2
+  excluded_from_geometry:
+    Incidence: fixed 0 deg, metadata only
+    Mach: fixed 0.5, metadata only
+    CHORD_TARGET: 0.06
+    SPAN: 0.003
+    Npoint: 101
+    Ncirc: 4
+    Nscale1: 1.7
+    Nscale2: 1.7
+    Rsign: 1.0
+    Gridswitch: -1.0
+fixed_operating_conditions:
+  Incidence: 0.0
+  Mach: 0.5
+fixed_geometry_constants:
+  Gridswitch: -1.0
+  Rsign: 1.0
+  Npoint: 101
+  Ncirc: 4
+  DeltaBeta: 5.0
+  Nscale1: 1.7
+  Nscale2: 1.7
+  CHORD_TARGET: 0.06
+  SPAN: 0.003
+parameter_formula_map:
+  Xthick: thickness polynomial break point (xc <= Xthick); St1/St2 denominators; b1..b3,
+    b6, b7; LE/TE circle St1/St2 (Tmax/2 - T1/2)/Xthick and (Tmax/2 - T2/2)/(1-Xthick);
+    hence LE/TE arc centres and radii.
+  Tmax: thickness amplitudes Tmax/2 in St1, St2, b1..b3, b6, b7 and in the LE/TE circle
+    St1/St2; changes thickness distribution and both edge radii.
+  Metal2: exit metal angle -> Sm2 = tan(Metal2); enters Sm0, SSm1 = Ks1*(Sm2-Sm1),
+    SSm2 = Ks2*(Sm2-Sm1) and meanline coefficients a1..a8 (camber/turning).
+  Solidity: does NOT enter the blade coordinates. Only .geomTurbo periodicity = CHORD_TARGET
+    / Solidity (cascade pitch). Single-blade metrics must be identical for a fixed
+    (Xthick,Tmax,Metal2,Metal1,T1,T2,Xmean,K_m,Ks1,Ks2,SS1,SS2).
+  Metal1: inlet METAL angle -> Sm1 = tan(Metal1); enters Sm0, SSm1, SSm2 and a1..a8.
+    Not an incidence and not converted to a flow angle.
+  T1: b5 = T1/2 (LE half-thickness of the thickness polynomial), St1 amplitude, and
+    LE circle rr1/r1 through the surface endpoints.
+  T2: b10 = T2/2 (TE half-thickness), St2 amplitude, and TE circle rr2/r2 through
+    the surface endpoints.
+  Xmean: meanline piecewise break point (xc <= Xmean) and denominator of a1, a2, a5,
+    a6; changes camber distribution and the C1 splice location.
+  K_m: fraction of turning at Xmean -> Sm0 = tan(Metal1 + (Metal2-Metal1)*K_m); enters
+    a1, a2, a5, a6.
+  Ks1: front meanline slope multiplier -> SSm1 = Ks1*(Sm2-Sm1); affects a1, a2, a3
+    (=SSm1) and the front camber slope/curvature.
+  Ks2: rear meanline slope multiplier -> SSm2 = Ks2*(Sm2-Sm1); affects a1, a2, a5,
+    a6, a7 (=-SSm2) and the rear camber slope/curvature.
+  SS1: front thickness-change coefficient -> St1 = SS1*(Tmax/2-T1/2)/Xthick; affects
+    thickness coefficients b1..b4. NOTE legacy recomputes the LE circle St1 WITHOUT
+    SS1, so SS1 changes the surface slope but not the LE arc radius.
+  SS2: rear thickness-change coefficient -> St2 = SS2*(Tmax/2-T2/2)/(1-Xthick); affects
+    thickness coefficients b6, b7, b9. NOTE legacy recomputes the TE circle St2 WITHOUT
+    SS2, so SS2 changes the surface slope but not the TE arc radius.
+design_rules:
+  single_factor_levels:
+    key_params:
+      Metal1:
+        n_levels: 7
+        levels:
+        - 48.0
+        - 49.666666666666664
+        - 51.333333333333336
+        - 53.714285714285715
+        - 54.666666666666664
+        - 56.33333333333333
+        - 58.0
+        u:
+        - 0.0
+        - 0.16666666666666666
+        - 0.3333333333333333
+        - 0.5714285714285714
+        - 0.6666666666666666
+        - 0.8333333333333333
+        - 1.0
+        rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+          endpoints kept; baseline excluded
+      T1:
+        n_levels: 7
+        levels:
+        - 0.01
+        - 0.011333333333333334
+        - 0.012666666666666666
+        - 0.013999999999999999
+        - 0.015904761904761904
+        - 0.016666666666666663
+        - 0.018
+        u:
+        - 0.0
+        - 0.16666666666666666
+        - 0.3333333333333333
+        - 0.5
+        - 0.738095238095238
+        - 0.8333333333333333
+        - 1.0
+        rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+          endpoints kept; baseline excluded
+      T2:
+        n_levels: 7
+        levels:
+        - 0.008
+        - 0.009333333333333334
+        - 0.010666666666666666
+        - 0.012
+        - 0.013333333333333332
+        - 0.014666666666666666
+        - 0.016
+        u:
+        - 0.0
+        - 0.16666666666666666
+        - 0.3333333333333333
+        - 0.5
+        - 0.6666666666666666
+        - 0.8333333333333333
+        - 1.0
+        rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+          endpoints kept; baseline excluded
+      Xmean:
+        n_levels: 7
+        levels:
+        - 0.06
+        - 0.08857142857142856
+        - 0.09999999999999999
+        - 0.12
+        - 0.13999999999999999
+        - 0.15999999999999998
+        - 0.18
+        u:
+        - 0.0
+        - 0.23809523809523808
+        - 0.3333333333333333
+        - 0.5
+        - 0.6666666666666666
+        - 0.8333333333333333
+        - 1.0
+        rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+          endpoints kept; baseline excluded
+      K_m:
+        n_levels: 7
+        levels:
+        - 0.1
+        - 0.14166666666666666
+        - 0.2011904761904762
+        - 0.22499999999999998
+        - 0.2666666666666666
+        - 0.3083333333333333
+        - 0.35
+        u:
+        - 0.0
+        - 0.16666666666666666
+        - 0.40476190476190477
+        - 0.5
+        - 0.6666666666666666
+        - 0.8333333333333333
+        - 1.0
+        rule: targets=linspace(0,1,7); min_separation_u=0.05; conflict_shift=+1/(2*7);
+          endpoints kept; baseline excluded
+    other_params:
+      Xthick:
+        n_levels: 3
+        levels:
+        - 0.1
+        - 0.35
+        - 0.6
+        u:
+        - 0.0
+        - 0.5
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      Tmax:
+        n_levels: 3
+        levels:
+        - 0.025
+        - 0.060000000000000005
+        - 0.095
+        u:
+        - 0.0
+        - 0.5
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      Metal2:
+        n_levels: 3
+        levels:
+        - 0.0
+        - 21.333333333333332
+        - 32.0
+        u:
+        - 0.0
+        - 0.6666666666666666
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      Solidity:
+        n_levels: 3
+        levels:
+        - 0.7
+        - 1.6
+        - 2.5
+        u:
+        - 0.0
+        - 0.5
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      Ks1:
+        n_levels: 3
+        levels:
+        - 3.0
+        - 5.666666666666666
+        - 7.0
+        u:
+        - 0.0
+        - 0.6666666666666666
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      Ks2:
+        n_levels: 3
+        levels:
+        - 0.05
+        - 0.125
+        - 0.2
+        u:
+        - 0.0
+        - 0.5
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      SS1:
+        n_levels: 3
+        levels:
+        - 2.4
+        - 3.466666666666667
+        - 4.0
+        u:
+        - 0.0
+        - 0.6666666666666666
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+      SS2:
+        n_levels: 3
+        levels:
+        - 0.5
+        - 0.9
+        - 1.1
+        u:
+        - 0.0
+        - 0.6666666666666666
+        - 1.0
+        rule: targets=linspace(0,1,3); min_separation_u=0.05; conflict_shift=+1/(2*3);
+          endpoints kept; baseline excluded
+  coupling_pairs:
+  - pair:
+    - Xmean
+    - K_m
+    levels_u:
+    - 0.25
+    - 0.75
+    cases: 4
+  - pair:
+    - T1
+    - SS1
+    levels_u:
+    - 0.25
+    - 0.75
+    cases: 4
+  - pair:
+    - T2
+    - SS2
+    levels_u:
+    - 0.25
+    - 0.75
+    cases: 4
+  - pair:
+    - Metal1
+    - Metal2
+    levels_u:
+    - 0.25
+    - 0.75
+    cases: 4
+  - pair:
+    - Metal2
+    - Solidity
+    levels_u:
+    - 0.25
+    - 0.75
+    cases: 4
+  adaptive_stage3:
+    pool: scipy.stats.qmc.Sobol(d=13, scramble=True)
+    pool_size: 512
+    seed: 20261017
+    anchor_score: 0.40*normalized_distance_to_existing + 0.25*boundary_proximity +
+      0.20*risk_closeness + 0.15*low_sensitivity_coverage
+    anchor_min_distance: 0.35
+    near_duplicate_distance: 0.15
+    anchors: 5
+    variants_per_anchor: 3
+    variant_categories:
+    - high_sensitivity_probe
+    - interaction_probe
+    - low_sensitivity_background_recheck
+    variant_rule: one parameter changed to u=0.15 or 0.85 (the side farther from the
+      anchor); all other parameters frozen at the anchor
+    selection_output: stage3_selection.json
+frozen_asset_sha256:
+  legacy/blade_batch_generation.py: 48ed9ead4b1260790dcc2d3ad9fe05c79e745a82ad19fe2ce918268adfc36e03
+  legacy/blade_batch_generation_template.geomTurbo: 92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
+  code/geometry_legacy_v1.py: 19b2acdc5c689b0330a3cd0e277c64f069432428276a8f54206ac8866f45076e
+  code/03_geometry_qc.py: 3018bc20a93880a5a2c0b1dec73e241678b3d2e8fd30e7df5932459ab927f127
+  code/02_generate_geometry.py: b99dc57942870f7b31157029a99759b65059567d3d7995b3eec6e5bd3ffd6fc4
+  docs/GEOMETRY_GENERATOR_CONTRACT.md: 7a28276cfbac33b449bb2bd2b485aa866c460d5189ff878e1ba2d079a44ad144
+  docs/GEOMETRY_QC_CONTRACT.md: 7564acb7194ab55449a25ccbb260144a587f278cb4b43afa681943ff2776b7b3
+  config/ranges_legacy.yaml: 237ce3f4c1da022a57c7a82e8057248871ce673c96dcba6d0add5763dcc558ef
+  analysis/geometry_review/ranges_exploratory_v2.yaml: 4e67cb382801821c84eb2c344a90f7c524ab9ba626ffc634c24cd5c2447c49b1
+  analysis/geometry_review/review_cases.csv: 1b3201aae5dd8c0f70d35f9bff2ba50d7cb8b981ae2e3991ff0868ab56a690df
+  geometry/profiles/C900001.dat: 2977f5798ab43aab527d06e9976be9177fd7a9a00325eb946273b8e2cb6874b9
+  geometry/geomturbo/C900001.geomTurbo: d8ae994dda268dbaaf5d68b4f8db982500132fd9d2441141c1306b8b4077bfb8
+code:
+  generator: code/geometry_parametric_exploratory_v1.py
+  generator_sha256: 2da44933d4a6ff640ffd3c99c5c9e2dfb3b9c5fcfcd142d5aa08588d14d9fd20
+  metrics: tools/geometry_sensitivity_metrics_v1.py
+  metrics_sha256: 218335f23cd4291871cf65cd7d20184ba17aeefacdede5725e147cc15bd732bd
+  driver: tools/geometry_parameter_sensitivity_v1.py
+  driver_sha256: ddd5597975414a451406ea237df06495616ba32132e8fcb7984203c65ca7c24d
+  criteria: screening_criteria.yaml
+  criteria_sha256: 28f65866be4a4092f20344e45527dc3f5c052e9b4074c544ce86ce4646ca501d
+reference_v2_40cases:
+  ranges:
+    Xthick:
+    - 0.1
+    - 0.6
+    Tmax:
+    - 0.025
+    - 0.095
+    Metal2:
+    - 0.0
+    - 32.0
+    Solidity:
+    - 0.7
+    - 2.5
+  qc_policy_id: geometry_qc_v1_hard
+  status: EXPLORATORY_NOT_APPROVED
+output_files:
+- README.md
+- experiment_config.yaml
+- screening_criteria.yaml
+- case_design.csv
+- case_metrics.csv
+- parameter_sensitivity.csv
+- parameter_decisions.csv
+- profiles.npz
+- provenance.json
+- overview_001_050.png
+- overview_051_100.png
+- sensitivity_heatmap.png
+- REPORT.md
+- stage3_selection.json
+forbidden:
+  numeca_mesh: true
+  cfx_solve: true
+  ai_training: true
+  production_doe: true
+  production_range_freeze: true

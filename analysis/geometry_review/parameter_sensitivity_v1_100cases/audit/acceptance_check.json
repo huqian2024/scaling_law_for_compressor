@@ -1,0 +1,299 @@
+{
+  "overall_pass": true,
+  "criteria_id": "parameter_screening_v1_tentative",
+  "criteria_version": "1.0.0",
+  "checks": [
+    {
+      "check": "n_cases_100",
+      "pass": true,
+      "detail": "design=100, metrics=100",
+      "level": "FAIL"
+    },
+    {
+      "check": "unique_case_ids",
+      "pass": true,
+      "detail": "unique=100",
+      "level": "FAIL"
+    },
+    {
+      "check": "case_id_format",
+      "pass": true,
+      "detail": "expected C820001..C820100",
+      "level": "FAIL"
+    },
+    {
+      "check": "design_metrics_linkage",
+      "pass": true,
+      "detail": "both files must list the same 100 IDs in the same order",
+      "level": "FAIL"
+    },
+    {
+      "check": "stage_counts",
+      "pass": true,
+      "detail": {
+        "S1": 60,
+        "S2": 20,
+        "S3": 20
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "all_13_parameters_exercised",
+      "pass": true,
+      "detail": {
+        "covered": [
+          "K_m",
+          "Ks1",
+          "Ks2",
+          "Metal1",
+          "Metal2",
+          "SS1",
+          "SS2",
+          "Solidity",
+          "T1",
+          "T2",
+          "Tmax",
+          "Xmean",
+          "Xthick"
+        ],
+        "missing": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "key_params_dense_scan",
+      "pass": true,
+      "detail": {
+        "Metal1": 7,
+        "T1": 7,
+        "T2": 7,
+        "Xmean": 7,
+        "K_m": 7
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "no_duplicate_parameter_vectors",
+      "pass": true,
+      "detail": {
+        "duplicate_groups": 0
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "operating_conditions_fixed",
+      "pass": true,
+      "detail": "Incidence=0, Mach=0.5",
+      "level": "FAIL"
+    },
+    {
+      "check": "failed_cases_have_reason",
+      "pass": true,
+      "detail": {
+        "bad_rows": 0
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "failed_cases_preserved",
+      "pass": true,
+      "detail": {
+        "metrics_failed": 0,
+        "run_meta_failed": 0
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "metric_definitions_complete",
+      "pass": true,
+      "detail": {
+        "missing": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "thresholds_complete",
+      "pass": true,
+      "detail": [
+        "circle_fit_min_span_deg",
+        "circle_fit_residual_max_rel",
+        "circle_fit_window_chord",
+        "curvature_stability_max",
+        "edge_region_chord",
+        "junction_jump_diagnostic_deg",
+        "keep_cascade",
+        "keep_comp",
+        "keep_local",
+        "min_background_effect_low_comp",
+        "min_background_effect_low_local",
+        "min_backgrounds_for_fix",
+        "min_levels_for_fix",
+        "negligible_change_floor",
+        "nonpositive_tolerance",
+        "qc_pass_rate_min",
+        "redundancy_cosine",
+        "redundancy_ratio",
+        "review_cascade",
+        "review_comp",
+        "review_local"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "criteria_saved_before_classification",
+      "pass": true,
+      "detail": "criteria_mtime=1792234869 < decisions_mtime=1792235053",
+      "level": "FAIL"
+    },
+    {
+      "check": "criteria_thresholds_unchanged_since_run",
+      "pass": true,
+      "detail": {
+        "thresholds": true,
+        "weights": true,
+        "classification_rules": true
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "sensitivity_rows_13",
+      "pass": true,
+      "detail": 13,
+      "level": "FAIL"
+    },
+    {
+      "check": "decision_rows_13",
+      "pass": true,
+      "detail": 13,
+      "level": "FAIL"
+    },
+    {
+      "check": "decision_values_valid",
+      "pass": true,
+      "detail": [
+        "FIX_CANDIDATE",
+        "KEEP_CANDIDATE",
+        "REVIEW"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_overview_001_050.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 478499
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_overview_051_100.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 517522
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_sensitivity_heatmap.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 147537
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "profiles_npz_reloadable_and_mapped",
+      "pass": true,
+      "detail": {
+        "saved": 100,
+        "unique": 100
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "profiles_npz_matches_expected",
+      "pass": true,
+      "detail": {
+        "profiles_saved": 100,
+        "missing_case_ids": [],
+        "extra_case_ids": [],
+        "array_mismatches": [],
+        "baseline_case_id_ok": true,
+        "reload_ok": true
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "case_metrics_contains_all_params",
+      "pass": true,
+      "detail": {
+        "missing": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "sensitivity_contains_decision",
+      "pass": true,
+      "detail": {
+        "has_decision": true,
+        "has_rule_id": true
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "case_reproduction_from_csv_exact",
+      "pass": true,
+      "detail": {
+        "sample_case_ids": [
+          "C820001",
+          "C820082",
+          "C820100"
+        ],
+        "errors": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "frozen_assets_unchanged",
+      "pass": true,
+      "detail": {
+        "checked": 16,
+        "mismatches": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "v1_and_new_regression_tests",
+      "pass": true,
+      "detail": "50 passed, 2 subtests passed in 5.71s",
+      "level": "FAIL"
+    },
+    {
+      "check": "output_size_target",
+      "pass": true,
+      "detail": "2.359 MB (target ~5 MB)",
+      "level": "WARN"
+    },
+    {
+      "check": "output_size_acceptable",
+      "pass": true,
+      "detail": "2.359 MB (hard cap 8 MB)",
+      "level": "FAIL"
+    },
+    {
+      "check": "stage3_selection_recorded",
+      "pass": true,
+      "detail": {
+        "records": 20,
+        "anchors": 5
+      },
+      "level": "FAIL"
+    }
+  ],
+  "output_size_mb": 2.359,
+  "warnings": [],
+  "generated_at": "2026-10-17T19:04:29"
+}

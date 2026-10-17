@@ -1,0 +1,272 @@
+# =============================================================================
+# screening_criteria.yaml
+# Geometry Parameter Sensitivity & Screening V1 (100 Cases)
+# =============================================================================
+# STATUS : TENTATIVE RESEARCH THRESHOLDS — NOT CALIBRATED ON A HISTORICAL
+#          POPULATION, NOT A PRODUCTION ACCEPTANCE CRITERION.
+# FROZEN  : this file is written BEFORE any case is generated or classified.
+#          The analysis script only READS these values; it never derives
+#          thresholds from the observed results.
+# =============================================================================
+
+criteria_id: parameter_screening_v1_tentative
+criteria_version: "1.0.0"
+criteria_status: TENTATIVE_RESEARCH_THRESHOLDS_NOT_CALIBRATED
+saved_before_classification: true
+classification_authority: ADVISORY_ONLY   # never a final freeze decision
+
+algorithm:
+  design_version: "psv1-design-1.0.0"
+  metrics_version: "psv1-metrics-1.0.0"
+  analysis_version: "psv1-analysis-1.0.0"
+  random_seed: 20261017
+  sobol_seed: 20261017
+  pool_size_stage3: 512
+  deterministic: true
+
+# -----------------------------------------------------------------------------
+# 1. COORDINATE / NORMALIZATION / UNIT CONVENTIONS
+# -----------------------------------------------------------------------------
+coordinates:
+  generator_units: "legacy normalized units; chord_norm is approximately 1.14"
+  chord_normalization: "every length-type metric is divided by the baseline chord_norm"
+  physical_scale: "metres = normalized * 0.06 / chord_norm (frozen CHORD_TARGET = 0.06 m)"
+  cascade_units: "metres (chord = 0.06 m, pitch = 0.06 / Solidity)"
+
+units:
+  contour_rms_dev_norm: "1 (fraction of baseline chord)"
+  contour_max_dev_norm: "1 (fraction of baseline chord)"
+  meanline_rms_dev_norm: "1 (fraction of baseline chord)"
+  thickness_rms_dev_norm: "1 (fraction of baseline chord; thickness is HALF-thickness)"
+  le_radius_change_rel: "1 (relative)"
+  te_radius_change_rel: "1 (relative)"
+  le_region_rms_dev_norm: "1 (fraction of baseline chord)"
+  te_region_rms_dev_norm: "1 (fraction of baseline chord)"
+  max_thickness_change_norm: "1 (fraction of baseline chord)"
+  chord_change_rel: "1 (relative)"
+  chord_angle_change_rad: "rad"
+  meanline_curvature_change_abs: "1 (kappa * baseline chord; kappa in 1/normalized unit)"
+  min_gap_change_rel: "1 (relative)"
+  periodicity_change_rel: "1 (relative)"
+  sensitivity_S: "metric units per unit normalized parameter change (Delta u = 1 is the full declared range)"
+  min_gap_m: "m"
+  envelope_clearance_m: "m"
+
+# -----------------------------------------------------------------------------
+# 2. STRICT METRIC DEFINITIONS
+# -----------------------------------------------------------------------------
+metric_definitions:
+  canonical_polygon:
+    definition: "P0,P1,...,Pn, S(n-1),...,S1 with implicit closing edge S1->P0 (frozen QC contract section 7)"
+    note: "no rounding, no snapping, no repair"
+  contour_rms_dev_norm:
+    formula: "sqrt(mean([d(case_i, base_poly)^2 for case points] + [d(base_j, case_poly)^2 for base points])) / base_chord_norm"
+    note: "symmetric point-to-polyline distance; index-free; resolves the index-mapping concern"
+  contour_max_dev_norm:
+    formula: "max(max_i d(case_i, base_poly), max_j d(base_j, case_poly)) / base_chord_norm"
+    note: "discrete symmetric Hausdorff distance"
+  contour_rms_dev_aligned_norm:
+    formula: "same as contour_rms_dev_norm after translating case LE->base LE, rotating case chord onto base chord, scaling case chord to base chord; result divided by base_chord_norm"
+    note: "shape-only metric. Unregistered metrics are ALWAYS kept as well; alignment never replaces them"
+  meanline_rms_dev_norm:
+    formula: "sqrt(mean((yc_case[i] - yc_base[i])^2)) / base_chord_norm at the identical xc grid (Nscale1=Nscale2 frozen)"
+    note: "index i corresponds to the same meanline fraction xc[i] in every case"
+  thickness_rms_dev_norm:
+    formula: "sqrt(mean((thick_case[i] - thick_base[i])^2)) / base_chord_norm at the identical xc grid"
+    note: "thick is the legacy HALF-thickness; full thickness is approximately 2*thick"
+  thickness_front_mid_rear_rms:
+    formula: "same as thickness_rms_dev over xc<=0.3, 0.3<xc<=0.7, xc>0.7 respectively"
+  pressure_suction_rms:
+    formula: "sqrt(mean(||P_case[i]-P_base[i]||^2))/base_chord_norm at identical index i"
+    note: "parameter-matched (index) metric; reported next to the index-free contour metrics"
+  le_radius_fitted_norm:
+    formula: "Kasa algebraic least-squares circle fit of the 7 unique actual contour points of the inserted LE arc (suction S3..S1 -> P0..P3); the straight junction chord and the blade surface are excluded"
+    validity: "finite, radius>0, residual_rms/radius <= 0.05, angular span >= 45 deg; otherwise le_fit_ok=0 and the value is NOT used"
+  te_radius_fitted_norm:
+    formula: "identical procedure on the 7 unique actual contour points of the inserted TE arc (pressure P(n-4)..P(n-1) -> S(n-2)..S(n-4))"
+  le_radius_change_rel:
+    formula: "(le_radius_fitted_norm_case - le_radius_fitted_norm_base) / le_radius_fitted_norm_base"
+    fallback: "if either fit is invalid the value is empty and le_metric_status=UNAVAILABLE"
+  le_region_rms_dev_norm:
+    formula: "sqrt(mean(d(case LE-region points, base_poly)^2)) / base_chord_norm; LE region = arc distance <=0.05*chord from the LE vertex (this DOES include the junction chord and adjacent surface; it is a separate shape metric)"
+  le_curvature_max:
+    formula: "max |kappa| of a cubic B-spline through the same ordered LE arc points (suction->LE->pressure), smoothing s=1e-6 in normalized units, 400 samples; curvature = |x'y''-y'x''|/(x'^2+y'^2)^1.5"
+    diagnostic: "curvature is not used in classification when curvature_stability_rel > 0.25"
+  meanline_curvature_max:
+    formula: "max |kappa| = |d2yc/dxc2| / (1+(dyc/dxc)^2)^1.5 using the exact legacy polynomial derivatives sc=dyc/dxc and dsc/dxc (piecewise at Xmean); kappa is in 1/normalized unit, reported as kappa*chord"
+  meanline_curvature_rms_change_abs:
+    formula: "|sqrt(mean(kappa^2))_case - sqrt(mean(kappa^2))_base| * base_chord"
+    note: "kappa_max can be controlled by an endpoint that does not move; the RMS change is the robust companion metric"
+  meanline_tangent_rms_dev_deg:
+    formula: "sqrt(mean((atan(sc_case)-atan(sc_base))^2)) in degrees at identical xc indices"
+  max_thickness_norm:
+    formula: "2*max(thick) (full thickness in normalized units); max_thickness_xc = xc at the maximum"
+  chord_angle_deg:
+    formula: "atan2(yp1[-1]-yp1[0], xp1[-1]-xp1[0]) in degrees"
+  min_gap_m:
+    formula: "minimum segment-to-segment distance between the physical blade polygon and its +/-periodicity copies (frozen QC section 15/16); metres"
+  envelope_clearance_m:
+    formula: "periodicity - (max(tangential coordinate)-min(tangential coordinate)); diagnostic only"
+  junction_angle_jump_deg:
+    formula: "turning angle between the last inserted arc segment and the first surface segment at the LE/TE junction (legacy inserts Ncirc of Ncirc+1 arc samples)"
+  curvature_stability_rel:
+    formula: "(max(kappa_max over smoothing s in {0,1e-8,1e-6} and sample counts {200,400}) - min(...)) / mean(...)"
+  serialization_noise_contour_rms_norm:
+    formula: "contour_rms_dev_norm between the high-precision contour and its own 4-decimal .dat serialization"
+    role: "measurement noise floor of the legacy text format; NOT a parameter effect"
+
+# -----------------------------------------------------------------------------
+# 3. SENSITIVITY DEFINITIONS (dimensionless, per full declared parameter range)
+# -----------------------------------------------------------------------------
+sensitivity:
+  normalized_level: "u = (value - range_min) / (range_max - range_min)"
+  normalized_offset: "Delta u = u_level - u_baseline"
+  definition: "S_feature(param) = max over VALID levels of |feature_level - feature_baseline| / |Delta u_level|"
+  valid_level: "generation_status=OK AND hard_qc_status=PASS AND the metric value is finite and valid"
+  invalid_levels: "recorded in the failure list; never replaced by another level"
+  features:
+    S_contour: "contour_rms_dev_norm"
+    S_le: "max(|le_radius_change_rel|, le_region_rms_dev_norm)"
+    S_te: "max(|te_radius_change_rel|, te_region_rms_dev_norm)"
+    S_camber: "max(meanline_rms_dev_norm, meanline_tangent_rms_dev_deg*pi/180)"
+    S_thickness: "max(thickness_rms_dev_norm, thickness_front_rms_dev_norm, thickness_mid_rms_dev_norm, thickness_rear_rms_dev_norm)"
+    S_cascade: "max(|min_gap_change_rel|, |periodicity_change_rel|)"
+  composite:
+    formula: "S_comp = 0.30*S_contour + 0.20*S_camber + 0.15*S_le + 0.15*S_te + 0.15*S_thickness + 0.05*S_cascade"
+    weights:
+      S_contour: 0.30
+      S_camber: 0.20
+      S_le: 0.15
+      S_te: 0.15
+      S_thickness: 0.15
+      S_cascade: 0.05
+    rationale: "contour and camber carry the largest engineering shape change; LE/TE are local; thickness is distributed; cascade is separated because Solidity affects only pitch (explicit rule R0)"
+  decomposed_diagnostics:
+    S_le_radius: "max |le_radius_change_rel| / |Delta u| (pure fitted arc radius; not the region shift)"
+    S_le_region: "max le_region_rms_dev_norm / |Delta u| (includes the junction chord and adjacent surface)"
+    S_te_radius: "max |te_radius_change_rel| / |Delta u|"
+    S_te_region: "max te_region_rms_dev_norm / |Delta u|"
+    S_camber_meanline: "max meanline_rms_dev_norm / |Delta u|"
+    S_camber_angle: "max meanline_tangent_rms_dev_deg*pi/180 / |Delta u|"
+    S_thickness_total: "max thickness_rms_dev_norm / |Delta u|"
+    S_thickness_front: "max thickness_front_rms_dev_norm / |Delta u| (xc<=0.3)"
+    S_thickness_mid: "max thickness_mid_rms_dev_norm / |Delta u| (0.3<xc<=0.7)"
+    S_thickness_rear: "max thickness_rear_rms_dev_norm / |Delta u| (xc>0.7)"
+    S_cascade_pitch: "max |periodicity_change_rel| / |Delta u|"
+    S_cascade_gap: "max |min_gap_change_rel| / |Delta u|"
+    note: "these columns are diagnostics only; they are NOT separately weighted in S_comp"
+  monotonicity: "signed response vector = 14-component signature change; project it onto its mean direction over the stage-1 levels; compute Spearman rho between Delta u and that projection and count sign changes. |rho|>=0.9 with <=1 sign change -> MONOTONE; >=1 sign change with weak rho -> NON_MONOTONE; otherwise UNCERTAIN"
+  background_sensitivity: "same formula evaluated on a MATCHED pair that differs in exactly one parameter (stage-2 pair edges or stage-3 anchor/variant pairs)"
+
+# -----------------------------------------------------------------------------
+# 4. THRESHOLDS
+# -----------------------------------------------------------------------------
+thresholds:
+  keep_comp: 0.010            # 1.0 % chord-equivalent change per full range
+  review_comp: 0.002          # 0.2 % chord-equivalent change per full range
+  keep_local: 0.020           # 2.0 % local LE/TE radius or region change per full range
+  review_local: 0.010
+  keep_cascade: 0.050         # 5.0 % pitch / min-gap change per full range
+  review_cascade: 0.010
+  nonpositive_tolerance: 1.0e-12
+  qc_pass_rate_min: 0.80
+  redundancy_cosine: 0.98
+  redundancy_ratio: 0.50      # weaker/stronger composite sensitivity ratio
+  curvature_stability_max: 0.25
+  circle_fit_residual_max_rel: 0.05
+  circle_fit_min_span_deg: 45.0
+  circle_fit_window_chord: 0.02
+  edge_region_chord: 0.05
+  junction_jump_diagnostic_deg: 15.0
+  min_levels_for_fix: 3
+  min_backgrounds_for_fix: 2
+  min_background_effect_low_comp: 0.002
+  min_background_effect_low_local: 0.010
+  negligible_change_floor: 0.0002   # 0.02 % chord; above the measured 4-decimal noise floor
+
+threshold_sources:
+  keep_comp: "tentative: 1% of chord is the smallest shape change that is unambiguously visible on a 0.06 m chord cascade; NOT calibrated on 1891 samples"
+  review_comp: "tentative: 5x above the measured 4-decimal serialization noise floor and 5x below keep_comp"
+  keep_local: "tentative: 2% local edge-radius / edge-region change is measurable against discrete-arc junction effects"
+  keep_cascade: "tentative: 5% pitch or min-gap change is far above the 0.00001 m serializer rounding"
+  redundancy_cosine: "tentative: identical response direction within 2%; requires a stronger partner (ratio<=0.5)"
+  curvature_stability_max: "numerical-resolution criterion: spline curvature must vary <25% across tested resolutions, otherwise it is not used as evidence"
+  circle_fit_residual_max_rel: "a circle is only reported when the fit residual is <5% of its radius"
+  negligible_change_floor: "measured 4-decimal rounding noise (reported in provenance.json) rounded up to 2e-4 chord"
+
+# -----------------------------------------------------------------------------
+# 5. CLASSIFICATION RULES (evaluated in this exact order)
+# -----------------------------------------------------------------------------
+classification_rules:
+  - id: R0_SOLIDITY
+    when: "parameter == 'Solidity'"
+    decision: "KEEP_CANDIDATE if S_cascade >= keep_cascade and qc_pass_rate >= qc_pass_rate_min; REVIEW if S_cascade >= review_cascade; FIX_CANDIDATE only if S_cascade < review_cascade in >=2 backgrounds"
+    rationale: "Solidity never changes single-blade coordinates; it must be judged by cascade metrics only"
+  - id: R1_KEEP_HIGH
+    when: "S_comp >= keep_comp or S_le >= keep_local or S_te >= keep_local"
+    decision: "KEEP_CANDIDATE if qc_pass_rate >= qc_pass_rate_min, else REVIEW with boundary warning"
+  - id: R3_FIX_LOW
+    when: "S_comp < review_comp AND S_le < review_local AND S_te < review_local AND S_cascade < review_cascade AND n_levels >= min_levels_for_fix AND no_failure_attributable AND low_in_backgrounds >= min_backgrounds_for_fix"
+    decision: "FIX_CANDIDATE"
+  - id: R4_FIX_REDUNDANT
+    when: "redundancy_cos >= redundancy_cosine AND redundancy_ratio <= redundancy_ratio AND S_comp < keep_comp AND n_levels >= min_levels_for_fix AND no_failure_attributable AND low_in_backgrounds >= min_backgrounds_for_fix"
+    decision: "FIX_CANDIDATE"
+  - id: R2_REVIEW_MEDIUM
+    when: "S_comp >= review_comp or S_le >= review_local or S_te >= review_local or S_cascade >= review_cascade"
+    decision: "REVIEW"
+  - id: R5_REVIEW_INSUFFICIENT
+    when: "none of the above"
+    decision: "REVIEW (insufficient evidence for KEEP or FIX)"
+
+screening_notes:
+  failure_rule: "any generation/QC failure inside the declared range -> at least REVIEW and failure_range is recorded; the failed value is never replaced or hidden"
+  no_ai_override: "AI/visual remarks cannot upgrade or downgrade the numerical decision; they are stored separately as auxiliary notes"
+
+# -----------------------------------------------------------------------------
+# 6. REDUNDANCY RULE
+# -----------------------------------------------------------------------------
+redundancy:
+  signature_features:
+    - "signed meanline offset at xc=0.25,0.50,0.75 (normalized by baseline chord)"
+    - "signed half-thickness change at xc=0.10,0.50,0.90 (normalized by baseline chord)"
+    - "signed LE radius relative change"
+    - "signed TE radius relative change"
+    - "signed chord angle change (rad)"
+    - "signed chord length relative change"
+    - "signed min-gap relative change"
+    - "signed meanline curvature change at xc=0.10,0.50,0.90 (kappa*chord)"
+  signature_definition: "mean over stage-1 levels of (signed feature delta / Delta u_level); features are then L2-normalized"
+  similarity: "cosine similarity of the normalized signatures"
+  solidity_exclusion: "Solidity is excluded from the single-blade redundancy comparison because its signature is one-dimensional (pitch / min-gap only); Solidity is judged by S_cascade under rule R0"
+  redundant_when: "cosine >= redundancy_cosine AND weaker/stronger composite sensitivity ratio <= redundancy_ratio"
+  interpretation_limit: "cosine similarity of responses is evidence of redundancy in the TESTED range only; it never proves global equivalence"
+
+# -----------------------------------------------------------------------------
+# 7. NUMERICAL RESOLUTION / NOISE HANDLING
+# -----------------------------------------------------------------------------
+numerics:
+  profile_source: "in-memory float64 arrays from the new module; the 4-decimal .dat text is used ONLY for legacy regression and for the noise-floor measurement"
+  curvature: "cubic B-spline (scipy splprep/splev), s=1e-6, 400 samples; resolution-stability test over s in {0,1e-8,1e-6} and n in {200,400}"
+  curvature_invalid_rule: "if any curvature value is non-finite or stability > 0.25 -> curvature_reliable=0; curvature columns remain diagnostic and are excluded from decisions"
+  circle_fit: "Kasa algebraic fit; residual and angular span recorded; invalid fits are emptied, never filled with a model value"
+  distances: "exact segment geometry, no tolerance, no snapping"
+  index_mapping: "index-wise metrics are parameter-matched (same xc grid and same arc sampling counts); index-free contour metrics are the primary global evidence"
+  failed_cases: "generation_status=FAIL or hard_qc_status=FAIL; metrics may be empty; never deleted, never replaced"
+
+# -----------------------------------------------------------------------------
+# 8. EVIDENCE / TRACEABILITY
+# -----------------------------------------------------------------------------
+evidence:
+  per_parameter_required:
+    - "scan range and every tested level with normalized u"
+    - "generation/QC pass counts and failure values"
+    - "S_contour, S_le, S_te, S_camber, S_thickness, S_cascade, S_comp"
+    - "monotonicity classification"
+    - "redundancy partner and cosine"
+    - "background sensitivity evidence (case IDs and matched pairs)"
+    - "decision, rule id, criteria version, evidence case IDs"
+  case_level_required:
+    - "all 13 parameters + incidence/mach metadata"
+    - "stage, group, selection reason"
+    - "generation_status, hard_qc_status, failure_reason"
+    - "all metric values with units defined above"

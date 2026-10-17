@@ -1,0 +1,358 @@
+{
+  "experiment_id": "parameter_final_decision_v1",
+  "status": "EXPLORATORY_NOT_APPROVED",
+  "decision_authority": "final for the exploratory geometry DOE; not a CFD certification and not a production approval",
+  "git_head": "02e57d1d26197d97e65f4b64ef0a23f6d06393b7",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "matplotlib": "3.10.9",
+  "criteria": {
+    "file": "final_decision_criteria.yaml",
+    "sha256": "4d9aaa1afbc260f3f464092d13e90bc060d76f69959c7e871e77f240b232b57f",
+    "criteria_id": "final_decision_criteria_v1",
+    "criteria_version": "1.0.0"
+  },
+  "code": {
+    "driver": "tools/geometry_final_decision_v1.py",
+    "sha256": "c7265588fb7345009ee17b56bcb7c1f7136a840ca3584f6c41c8ee7c2b34cfbf",
+    "generator": "code/geometry_parametric_exploratory_v1.py",
+    "generator_sha256": "2da44933d4a6ff640ffd3c99c5c9e2dfb3b9c5fcfcd142d5aa08588d14d9fd20",
+    "metrics_module": "tools/geometry_sensitivity_metrics_v1.py",
+    "metrics_sha256": "218335f23cd4291871cf65cd7d20184ba17aeefacdede5725e147cc15bd732bd"
+  },
+  "counts": {
+    "n_rows": 49,
+    "n_new": 40,
+    "n_reused": 9,
+    "n_generated": 49,
+    "n_hard_qc_pass": 49,
+    "n_frozen_qc_pass": 49
+  },
+  "decisions": {
+    "Ks1": {
+      "parameter": "Ks1",
+      "decision": "KEEP",
+      "rule_id": "K1_KEEP",
+      "n_backgrounds": 7,
+      "n_directions": 14,
+      "n_resolved": 7,
+      "n_accepted": 0,
+      "n_rejected_resolved": 7
+    },
+    "Ks2": {
+      "parameter": "Ks2",
+      "decision": "KEEP",
+      "rule_id": "K2_KEEP",
+      "n_backgrounds": 4,
+      "n_directions": 8,
+      "n_resolved": 4,
+      "n_accepted": 0,
+      "n_rejected_resolved": 4
+    },
+    "Xmean": {
+      "adopted_bound": 0.18,
+      "primary_adopted_bound": 0.2,
+      "robust": false,
+      "conservative_due_to_sensitivity": true,
+      "sensitivity_bounds": {
+        "0.85": 0.18,
+        "1.00": 0.18
+      },
+      "candidates": {
+        "0.18": {
+          "worst_rcr": 0.2526740157114918,
+          "worst_case": {
+            "Xmean": 0.06,
+            "Ks1": 3.0,
+            "K_m": 0.35,
+            "background_id": "M0"
+          },
+          "worst_tangent_reversal_deg": 51.80917949966435,
+          "worst_splice_jump_norm": 1.811141169154548e-09,
+          "cond_rcr_vs_current_bound": true,
+          "cond_rcr_vs_anchor": true,
+          "cond_tangent_reversal": true,
+          "cond_splice_jump": true,
+          "admissible": true
+        },
+        "0.20": {
+          "worst_rcr": 0.25301432904042953,
+          "worst_case": {
+            "Xmean": 0.20000000000000012,
+            "Ks1": 7.0,
+            "K_m": 0.1,
+            "background_id": "ML"
+          },
+          "worst_tangent_reversal_deg": 51.80917949966435,
+          "worst_splice_jump_norm": 1.811141169154548e-09,
+          "cond_rcr_vs_current_bound": true,
+          "cond_rcr_vs_anchor": true,
+          "cond_tangent_reversal": true,
+          "cond_splice_jump": true,
+          "admissible": true
+        },
+        "0.22": {
+          "worst_rcr": 0.2600455049711404,
+          "worst_case": {
+            "Xmean": 0.22000000000000014,
+            "Ks1": 7.0,
+            "K_m": 0.1,
+            "background_id": "ML"
+          },
+          "worst_tangent_reversal_deg": 51.80917949966435,
+          "worst_splice_jump_norm": 1.811141169154548e-09,
+          "cond_rcr_vs_current_bound": false,
+          "cond_rcr_vs_anchor": false,
+          "cond_tangent_reversal": true,
+          "cond_splice_jump": true,
+          "admissible": false
+        }
+      },
+      "joint_constraint": {
+        "flagged_points": 22,
+        "region_points": 240,
+        "flag_threshold": 0.21493016292034536,
+        "region_upper_bound": 0.2,
+        "active": false,
+        "best_rule": {
+          "rule": "K_m >= 0.15",
+          "retained_fraction": 0.75,
+          "violations": 0
+        },
+        "alternatives": [
+          {
+            "rule": "K_m >= 0.15",
+            "retained_fraction": 0.75,
+            "violations": 0
+          },
+          {
+            "rule": "Ks1 <= 5.0",
+            "retained_fraction": 0.6,
+            "violations": 0
+          },
+          {
+            "rule": "Ks1 <= 5.5",
+            "retained_fraction": 0.6,
+            "violations": 0
+          },
+          {
+            "rule": "Ks1 <= 5.0 AND K_m >= 0.10",
+            "retained_fraction": 0.6,
+            "violations": 0
+          },
+          {
+            "rule": "Ks1 <= 5.5 AND K_m >= 0.10",
+            "retained_fraction": 0.6,
+            "violations": 0
+          }
+        ],
+        "no_constraint_needed": false
+      }
+    }
+  },
+  "historical_envelope": {
+    "n_cases_total": 157,
+    "n_unique_vectors": 150,
+    "anchor_rcr": 0.2528590152004063,
+    "anchor_case": "C830050",
+    "rcr_p50": 0.0,
+    "rcr_p90": 0.11664940851271491,
+    "max_tangent_reversal_deg": 51.96374097925442
+  },
+  "threshold_sensitivity": {
+    "ks1_substitution": [
+      {
+        "vector_residual_fraction_max": 0.2,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 7,
+        "n_directions": 14
+      },
+      {
+        "vector_residual_fraction_max": 0.25,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 7,
+        "n_directions": 14
+      },
+      {
+        "vector_residual_fraction_max": 0.3,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 7,
+        "n_directions": 14
+      }
+    ],
+    "ks2_substitution": [
+      {
+        "vector_residual_fraction_max": 0.2,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 4,
+        "n_directions": 8
+      },
+      {
+        "vector_residual_fraction_max": 0.25,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 4,
+        "n_directions": 8
+      },
+      {
+        "vector_residual_fraction_max": 0.3,
+        "n_accepted": 0,
+        "n_backgrounds_accepted": 0,
+        "n_backgrounds": 4,
+        "n_directions": 8
+      }
+    ],
+    "xmean_bound": [
+      {
+        "bound_rule_margin": 0.85,
+        "xmean_bound": 0.18,
+        "worst_rcr": 0.2526740157114918,
+        "admissible": false
+      },
+      {
+        "bound_rule_margin": 0.85,
+        "xmean_bound": 0.2,
+        "worst_rcr": 0.25301432904042953,
+        "admissible": false
+      },
+      {
+        "bound_rule_margin": 0.85,
+        "xmean_bound": 0.22,
+        "worst_rcr": 0.2600455049711404,
+        "admissible": false
+      },
+      {
+        "bound_rule_margin": 1.0,
+        "xmean_bound": 0.18,
+        "worst_rcr": 0.2526740157114918,
+        "admissible": true
+      },
+      {
+        "bound_rule_margin": 1.0,
+        "xmean_bound": 0.2,
+        "worst_rcr": 0.25301432904042953,
+        "admissible": false
+      },
+      {
+        "bound_rule_margin": 1.0,
+        "xmean_bound": 0.22,
+        "worst_rcr": 0.2600455049711404,
+        "admissible": false
+      }
+    ],
+    "joint_constraint": [
+      {
+        "joint_constraint_margin": 0.85,
+        "threshold": 0.21493016292034536,
+        "flagged_points": 0
+      },
+      {
+        "joint_constraint_margin": 0.9,
+        "threshold": 0.2275731136803657,
+        "flagged_points": 0
+      },
+      {
+        "joint_constraint_margin": 1.0,
+        "threshold": 0.2528590152004063,
+        "flagged_points": 0
+      }
+    ]
+  },
+  "protected_assets": {
+    "status": "PASS",
+    "checked_files": 98,
+    "changed": [],
+    "missing": []
+  },
+  "pytest": {
+    "status": "PASS",
+    "returncode": 0,
+    "tail": [
+      "...................................................................... [ 96%]",
+      "....                                                                     [100%]",
+      "131 passed, 17 subtests passed in 9.39s"
+    ]
+  },
+  "runtime_s": 34.13060402870178,
+  "output_dir_bytes_excluding_provenance": 1107616,
+  "outputs": {
+    "FINAL_DECISION.md": {
+      "bytes": 33974,
+      "sha256": "8da367d0283b08631800c4a2d3968487265d3070c4e2e7191211839b124100d8"
+    },
+    "README.md": {
+      "bytes": 1613,
+      "sha256": "7bf00b58af546f81d7ea6e209571a2cb802ac0d366446a5456429624c6a3026b"
+    },
+    "case_design.csv": {
+      "bytes": 13680,
+      "sha256": "daf018519b6b5394992a7e5282c89d85d80041d4df4299469193a5f85e24d32c"
+    },
+    "case_metrics.csv": {
+      "bytes": 84240,
+      "sha256": "d329cc583ef95f90c15903ee4fd34f27c6ec0ae3fa0cc22f4fa16e19e9b6c8c8"
+    },
+    "decision_profiles.npz": {
+      "bytes": 336303,
+      "sha256": "398b18722f6fa7de5e072734a37435282ee5d8a32efe161f64af8d52d59db1c2"
+    },
+    "decision_summary.png": {
+      "bytes": 87413,
+      "sha256": "5f8f7b2800ebaf73b1d5f8fe9a98b1279554e6da531e15a9b5b14655ca2bb09e"
+    },
+    "final_decision_criteria.yaml": {
+      "bytes": 18952,
+      "sha256": "4d9aaa1afbc260f3f464092d13e90bc060d76f69959c7e871e77f240b232b57f"
+    },
+    "final_decision_evidence.csv": {
+      "bytes": 17542,
+      "sha256": "0f75d464d7ed932320a0d73a5c8211a5ec04c57d33cea8927197edbb9c3a0b24"
+    },
+    "final_geometry_parameters.yaml": {
+      "bytes": 3232,
+      "sha256": "1efcd45519c49353b3fd365e2a80f1eddf904c8b02ecc3d4ad8e4b7983bbf3e2"
+    },
+    "overview.png": {
+      "bytes": 225848,
+      "sha256": "004f21268f3192f6811af87821824a87ef325c0b0f4a86bc1192dcf4fbd75602"
+    },
+    "protected_assets_before.sha256.json": {
+      "bytes": 15089,
+      "sha256": "5a81a1183145594da7b090e7e0a4541000a3b37c8658a49e923344584567a01f"
+    },
+    "substitution_results.csv": {
+      "bytes": 50799,
+      "sha256": "898a24d455e974573987a7c37b20baa898be50d2fcba337fe16887ff0be37536"
+    },
+    "xmean_boundary_scan.csv": {
+      "bytes": 199985,
+      "sha256": "a30d1b124b860c3691aa48e5f4cf779a862101c08eb1224a33737e3ad00ad875"
+    },
+    "xmean_hard_qc_scan.csv": {
+      "bytes": 8633,
+      "sha256": "02f221780915204eca43ea45c0b293c6e92695209536a86f0ae146bbc0b4169b"
+    }
+  },
+  "extra": {
+    "npz": {
+      "profiles_saved": 40,
+      "expected": 40,
+      "missing": [],
+      "array_mismatches": [],
+      "reload_ok": true
+    }
+  },
+  "forbidden_actions_not_taken": {
+    "numeca": true,
+    "cfx": true,
+    "ai_training": true,
+    "production_doe_change": true,
+    "git_commit": true
+  }
+}

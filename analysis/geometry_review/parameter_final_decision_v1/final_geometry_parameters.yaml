@@ -1,0 +1,153 @@
+config_id: final_geometry_parameters_v1
+status: EXPLORATORY_NOT_APPROVED_FOR_PRODUCTION
+decision_date: '2026-10-17'
+authority: final for the exploratory geometry DOE only; NOT a CFD certification and
+  NOT a production-range approval
+criteria:
+  file: final_decision_criteria.yaml
+  criteria_id: final_decision_criteria_v1
+  criteria_version: 1.0.0
+keep_parameters:
+- name: Xthick
+  range:
+  - 0.1
+  - 0.6
+  status: KEEP
+- name: Tmax
+  range:
+  - 0.025
+  - 0.095
+  status: KEEP
+- name: Metal2
+  range:
+  - 0.0
+  - 32.0
+  status: KEEP
+- name: Solidity
+  range:
+  - 0.7
+  - 2.5
+  status: KEEP
+- name: Metal1
+  range:
+  - 48.0
+  - 58.0
+  status: KEEP
+- name: T1
+  range:
+  - 0.01
+  - 0.018
+  status: KEEP
+- name: T2
+  range:
+  - 0.008
+  - 0.016
+  status: KEEP
+- name: Xmean
+  range:
+  - 0.06
+  - 0.18
+  status: KEEP
+- name: K_m
+  range:
+  - 0.1
+  - 0.35
+  status: KEEP
+- name: Ks1
+  range:
+  - 3.0
+  - 7.0
+  status: KEEP
+- name: Ks2
+  range:
+  - 0.05
+  - 0.2
+  status: KEEP
+fixed_parameters:
+- name: SS1
+  value: 3.2
+  status: FIXED_BY_REVIEW
+  decision_source: HUMAN_REVIEW_DECISION
+- name: SS2
+  value: 0.8
+  status: FIXED_BY_REVIEW
+  decision_source: HUMAN_REVIEW_DECISION
+xmean:
+  lower_bound: 0.06
+  upper_bound: 0.18
+  previous_upper_bound: 0.18
+  movement: 'unchanged (conservative: the extension is not robust to the registered
+    threshold sensitivity)'
+  decision_rule: XMEAN_BOUND_V1
+  primary_rule_result: 0.2
+  robust_to_threshold_sensitivity: false
+  sensitivity_bounds:
+    '0.85': 0.18
+    '1.00': 0.18
+  worst_rcr_at_bound: 0.2526740157114918
+  worst_rcr_at_previous_bound: 0.2526740157114918
+  note_on_worst_rcr: identical to the previous bound because the final bound is unchanged
+  historical_anchor_rcr: 0.2528590152004063
+  joint_constraints:
+  - id: JC_XMEAN_KS1_KM
+    rule: K_m >= 0.15
+    applies_to: 0.18 < Xmean <= 0.20
+    active_at_final_bound: false
+    rationale: the reverse-curvature lobe grows with Ks1 and shrinks with K_m; the
+      flagged corner is excluded without shrinking the rest of the box
+    retained_fraction_of_new_region: 0.75
+dimensionality:
+  geometry_dimension: 11
+  operating_dimension: 2
+  total_candidate_dimension: 13
+  geometry_parameters:
+  - Xthick
+  - Tmax
+  - Metal2
+  - Solidity
+  - Metal1
+  - T1
+  - T2
+  - Xmean
+  - K_m
+  - Ks1
+  - Ks2
+  operating_parameters:
+  - Incidence
+  - Mach
+excluded_from_geometry_space:
+  CHORD_TARGET: 0.06
+  SPAN: 0.003
+  Npoint: 101
+  Ncirc: 4
+  Nscale1: 1.7
+  Nscale2: 1.7
+  Rsign: 1.0
+  Gridswitch: -1.0
+decision_evidence:
+  Ks1:
+    decision: KEEP
+    rule_id: K1_KEEP
+    n_resolved: 7
+    n_accepted: 0
+    n_rejected_resolved: 7
+    n_backgrounds: 7
+  Ks2:
+    decision: KEEP
+    rule_id: K2_KEEP
+    n_resolved: 4
+    n_accepted: 0
+    n_rejected_resolved: 4
+    n_backgrounds: 4
+requires_before_production:
+- CFD verification of the high-Xmean / high-Ks1 corner
+- CFD verification of the Ks2 rear-camber control range
+- mesh independence and convergence check for the reverse-curvature lobe
+- calibration of the research thresholds on the 1891-sample population
+not_modified:
+  formal_doe: true
+  production_range: true
+  frozen_v1_generator: true
+  legacy_files: true
+  prior_100_case_experiment: true
+  prior_57_case_review: true

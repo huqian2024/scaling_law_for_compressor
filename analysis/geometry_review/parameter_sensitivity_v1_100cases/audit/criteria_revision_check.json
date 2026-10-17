@@ -1,0 +1,29 @@
+{
+  "criteria_id": "parameter_screening_v1_tentative",
+  "criteria_version": "1.0.0",
+  "criteria_sha256_at_run": "b4ca9585a123b58d2427fa458b4de22f212836fb976f385e3949c95d37689138",
+  "criteria_sha256_previous_analysis": "1d883faa2911b0bb2e965c9f59ab2d0816f42b1dd2435b6456f252d0ff625e12",
+  "criteria_sha256_now": "d01beb815db3e0a69766e4e2445e30ffe10d08c3afc85caf005c32bee3b53799",
+  "unchanged_sections": {
+    "thresholds": true,
+    "weights": true,
+    "classification_rules": true
+  },
+  "revisions": [
+    {
+      "stage": "after first analysis run",
+      "change": "metric-definition wording, monotonicity projection, decomposed diagnostic columns",
+      "thresholds_changed": false
+    },
+    {
+      "stage": "before final analysis run",
+      "change": "documented that Solidity is excluded from single-blade redundancy comparison",
+      "thresholds_changed": false
+    }
+  ],
+  "note": "No threshold, weight or classification rule value was changed after the run.",
+  "criteria_sha256_final": "28f65866be4a4092f20344e45527dc3f5c052e9b4074c544ce86ce4646ca501d",
+  "final_note": "final criteria file after all documentation clarifications; thresholds/weights/rules verified unchanged",
+  "criteria_sha256_at_final_run": "28f65866be4a4092f20344e45527dc3f5c052e9b4074c544ce86ce4646ca501d",
+  "criteria_sha256_at_first_analysis_run": "b4ca9585a123b58d2427fa458b4de22f212836fb976f385e3949c95d37689138"
+}

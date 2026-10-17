@@ -1,0 +1,86 @@
+{
+  "experiment_id": "ks1_ks2_review_v1",
+  "git_head": "02e57d1d26197d97e65f4b64ef0a23f6d06393b7",
+  "git_status_before": [
+    "?? analysis/geometry_review/ks1_ks2_review_v1/",
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_ks1_ks2_review_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "git_status_after": [
+    "?? analysis/geometry_review/ks1_ks2_review_v1/",
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_ks1_ks2_review_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "seed": 20261017,
+  "n_cases": 57,
+  "stage_counts": {
+    "A": 15,
+    "B": 30,
+    "C": 12
+  },
+  "generation_ok": 57,
+  "hard_qc_pass": 57,
+  "frozen_qc_pass": 57,
+  "frozen_qc_mismatches": 0,
+  "failed_cases": [],
+  "profiles_saved": 57,
+  "npz_check": {
+    "profiles_saved": 57,
+    "missing": [],
+    "extra": [],
+    "array_mismatches": [],
+    "reload_ok": true
+  },
+  "stage_c_selection": {
+    "rule": "rank B1-B4 by meanline_angle_range_deg; choose lowest and highest; choose the higher-camber one of B5/B6",
+    "selected_backgrounds": [
+      "B4",
+      "B2",
+      "B5"
+    ],
+    "evidence": {
+      "B4": {
+        "reference_case_id": "C830031",
+        "reason": "lowest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 38.0,
+          "contour_rms_dev_norm": 0.018579989118419887,
+          "meanline_rms_dev_norm": 0.023721910296612258
+        }
+      },
+      "B2": {
+        "reference_case_id": "C830021",
+        "reason": "highest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 84.42862145801489,
+          "contour_rms_dev_norm": 0.34484037686501534,
+          "meanline_rms_dev_norm": 0.3724062404149803
+        }
+      },
+      "B5": {
+        "reference_case_id": "C830036",
+        "reason": "highest camber response in the Metal1/Metal2 group",
+        "group": "Metal1/Metal2",
+        "scores": {
+          "meanline_angle_range_deg": 48.00000000000001,
+          "contour_rms_dev_norm": 0.11681342385303842,
+          "meanline_rms_dev_norm": 0.12586617110179468
+        }
+      }
+    }
+  },
+  "criteria_sha256": "9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1",
+  "config_sha256": "3c42b00b20abc0b55b45a55a0e1f7f1943d60e4cb5de4ce2dcc967e535e3ad32",
+  "runtime_s": 5.8,
+  "output_size_mb": 0.675
+}

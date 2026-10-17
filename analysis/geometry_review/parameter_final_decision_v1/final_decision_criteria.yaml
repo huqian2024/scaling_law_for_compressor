@@ -1,0 +1,366 @@
+# =============================================================================
+# final_decision_criteria.yaml
+# Geometry Parameter Final Decision V1 (Ks1 / Ks2 / Xmean)
+# =============================================================================
+# STATUS      : PRE-REGISTERED EXPLORATORY RESEARCH CRITERIA
+# SAVED       : written BEFORE any formal case of this round is generated
+#               or classified.  It is NOT edited after results are known.
+# AUTHORITY   : exploratory geometric DOE decision.  NOT a CFD certification
+#               and NOT an approval of the formal 100k production range.
+# SCOPE       : geometry generation + geometry QC + geometric substitution
+#               search only.  No NUMECA, no CFX, no AI training, no change of
+#               the formal DOE, no range freeze.
+# =============================================================================
+
+criteria_id: final_decision_criteria_v1
+criteria_version: "1.0.0"
+criteria_status: TENTATIVE_RESEARCH_THRESHOLDS_NOT_CALIBRATED
+decision_status_after_this_round: FINAL_FOR_GEOMETRY_DOE_ONLY
+no_further_review_state: true      # FURTHER_REVIEW is not an admissible final state
+
+experiment_id: parameter_final_decision_v1
+case_id_prefix: C84
+case_id_range: "on-demand (<= 48 new deterministic cases)"
+reuse_policy: >
+  The 157 previously generated cases (100-case sensitivity V1 and 57-case
+  Ks1/Ks2 review V1) are reused as evidence whenever an identical parameter
+  vector already exists.  A new case is generated only when no historical case
+  has the same 13-parameter vector.
+
+# -----------------------------------------------------------------------------
+# 1. FIXED / PROTECTED STATE
+# -----------------------------------------------------------------------------
+protected_state:
+  SS1:
+    value: 3.2
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+    rationale: "human decision recorded in geometry_parameter_candidates_v2.yaml; not re-opened"
+  SS2:
+    value: 0.8
+    status: FIXED_BY_REVIEW
+    decision_source: HUMAN_REVIEW_DECISION
+    rationale: "human decision recorded in geometry_parameter_candidates_v2.yaml; not re-opened"
+  incidence: {value: 0.0, status: FIXED_OPERATING_CONDITION}
+  mach: {value: 0.5, status: FIXED_OPERATING_CONDITION}
+
+frozen_algorithm:
+  design_version: "final-decision-design-1.0.0"
+  metrics_version: "final-decision-metrics-1.0.0"
+  generator: code/geometry_parametric_exploratory_v1.py
+  metrics_module: tools/geometry_sensitivity_metrics_v1.py
+  frozen_qc: "code/03_geometry_qc.py (policy geometry_qc_v1_hard)"
+  random_seed: 20261017
+  deterministic: true
+
+# -----------------------------------------------------------------------------
+# 2. METRIC DEFINITIONS (must match the implementation exactly)
+# -----------------------------------------------------------------------------
+metrics:
+  response_vector:
+    dimension: 95
+    components: "yc/chord (19), beta (19), kappa*chord (19), yp/chord (19), ys/chord (19)"
+    sampling: "nearest index to xc = 0.05,0.10,...,0.95 on the 101-point clustered grid"
+    normalization: "length features divided by the REFERENCE chord"
+  reverse_curvature_ratio:
+    symbol: RCR
+    definition: "max(0, max_xc dsc) / max_xc |dsc|, dsc = d(tan(beta))/d(xc) from the analytic piecewise polynomial"
+    range: [0.0, 1.0]
+    meaning: "size of the local slope-reversal lobe relative to the main camber slope"
+    note: >
+      A non-zero RCR is a NORMAL feature of the legacy piecewise meanline and
+      already exists at the low-Xmean end of the accepted 157-case population.
+      It must never be treated as a hard failure by itself.
+  tangent_reversal_deg:
+    definition: "sum of positive increments of beta(xc) over the 101-point grid (deg)"
+  splice_curvature_jump:
+    definition: "|kappa(Xmean-eps) - kappa(Xmean+eps)| * chord, eps=1e-6"
+  contour_rms:
+    definition: "symmetric point-to-polyline RMS between the canonical closed polygons / reference chord (frozen QC kernel)"
+  rear_region: "xc > 0.70 (rear 30% chord)"
+  front_region: "xc < 0.30"
+  signal_to_noise:
+    definition: "feature change / same-case 4-decimal serialization noise RMS"
+  hard_failure:
+    definition: "hard_qc_status != PASS under the frozen geometry_qc_v1_hard policy"
+  soft_risk:
+    definition: >
+      ANY of: RCR exceeds the registered anchor, tangent reversal exceeds
+      1.25 x the historical maximum, splice curvature jump exceeds
+      1.25 x the historical maximum, or the combination reaches a new extreme
+      relative to the 157 accepted cases.  Soft risk is an engineering-review
+      flag, NOT a QC failure.
+
+# -----------------------------------------------------------------------------
+# 3. THRESHOLDS (tentative, research-only, NOT calibrated on the 1891 population)
+# -----------------------------------------------------------------------------
+thresholds:
+  substitution:                     # a substitute is ACCEPTED only if ALL hold
+    vector_residual_fraction_max: 0.25   # explains >= 75% of the target response
+    contour_rms_fraction_max: 0.25       # contour residual / target contour change
+    contour_rms_abs_max: 0.002           # 0.20 % chord, absolute
+    angle_rms_max_deg: 0.50
+    angle_max_deg: 1.00
+    curvature_rms_fraction_max: 0.25
+    curvature_rms_abs_max: 0.10          # kappa*chord RMS
+    rear_meanline_rms_max: 0.002         # rear 30% offset / chord
+    rear_angle_rms_max_deg: 0.50
+    rear_curvature_rms_fraction_max: 0.25
+    rear_curvature_rms_abs_max: 0.10
+    substitute_offset_u_max: 0.10        # |delta u| of each substitute parameter
+    boundary_tol: 1.0e-6                 # a value this close to its bound is a BOUNDARY HIT
+    new_anomaly_rcr_margin: 0.85         # substitute must not push RCR above 0.85 x anchor
+  resolution:
+    keep_shape: 0.010                    # 1.0 % chord per full parameter range
+    keep_local: 0.020
+    keep_rear: 0.010
+    noise_multiplier: 10.0
+  soft_risk:
+    anchor_metric: reverse_curvature_ratio
+    anchor_source: "maximum over the 157 previously accepted cases (100 + 57)"
+    anchor_value_registered: 0.2529      # measured on the historical population before this round
+    bound_reference: "worst RCR over the soft-risk map at the CURRENT bound 0.18"
+    bound_rule_margin: 1.01              # 1% numerical tolerance; see revision_log
+    joint_constraint_margin: 0.85        # corners above 0.85 x anchor are flagged
+    joint_constraint_scope: "Xmean in (0.18, adopted bound] only; the low-Xmean end is not re-opened"
+    tangent_reversal_margin: 1.25
+    splice_jump_margin: 1.25
+  statistics:
+    ks1_min_backgrounds: 4               # of 7 for a KEEP claim
+    ks1_fix_backgrounds: 5               # of 7 required to FIX
+    ks2_min_backgrounds: 3               # of 4 for a KEEP claim
+    ks2_fix_backgrounds: 4               # of 4 required to FIX
+
+threshold_sources:
+  vector_residual_fraction_max: "same 25% 'explains 75%' rule as the 57-case review; keeps comparability"
+  contour_rms_abs_max: "0.2% chord is the review_shape level of the 100-case screen (5x above the 4-decimal noise floor)"
+  angle_rms_max_deg: "0.5 deg is about 1/80 of the full turning; below CFD relevance but above serialization noise"
+  curvature_rms_abs_max: "0.10 equals about 7.6% of the baseline peak kappa*chord (1.31)"
+  substitute_offset_u_max: "10% of a parameter range; larger offsets are not a 'replacement', they are a new design point"
+  anchor_value_registered: "computed from the 157 historical cases BEFORE this round's cases were generated"
+  joint_constraint_margin: "15% safety margin below the accepted envelope"
+
+# -----------------------------------------------------------------------------
+# 4. ALLOWED / FIXED VARIABLES FOR THE SUBSTITUTION SEARCH
+# -----------------------------------------------------------------------------
+substitution_search:
+  ks1_target:
+    target_effect: "Ks1 -> 7.0 (up) and Ks1 -> 3.0 (down), reference Ks1 = 5.0"
+    free_variables: [Xmean, K_m]
+    fixed_variables:
+      Ks1: 5.0
+      Metal1: "background value (unchanged)"
+      Metal2: "background value (unchanged)"
+      Xthick: 0.30
+      Tmax: 0.055
+      T1: 0.015
+      T2: 0.0125
+      Ks2: 0.10
+      SS1: 3.2
+      SS2: 0.8
+    bounds:
+      Xmean: [0.06, "candidate Xmean upper bound"]
+      K_m: [0.10, 0.35]
+    searches_per_background: "one per candidate upper bound (0.18 / 0.20 / 0.22)"
+  ks2_target:
+    target_effect: "Ks2 -> 0.20 (up) and Ks2 -> 0.05 (down), reference Ks2 = 0.10"
+    free_variables: [Xmean, K_m, Ks1]
+    fixed_variables:
+      Metal1: "background value (unchanged) -- HARD CONSTRAINT"
+      Metal2: "background value (unchanged) -- HARD CONSTRAINT"
+      Xthick: 0.30
+      Tmax: 0.055
+      T1: 0.015
+      T2: 0.0125
+      SS1: 3.2
+      SS2: 0.8
+    hard_constraint_reason: >
+      Changing Metal1/Metal2 would change the design inlet/exit metal angles and
+      therefore would not demonstrate that Ks2 is redundant.  Such a substitution
+      is explicitly NOT accepted as evidence for FIX.
+    bounds:
+      Xmean: [0.06, "candidate Xmean upper bound"]
+      K_m: [0.10, 0.35]
+      Ks1: [3.0, 7.0]
+    supplementary_variant: "2-variable search (Xmean, K_m) with Ks1 fixed at its adopted value, reported but not used for the decision"
+  optimizer:
+    method: "deterministic coarse grid + bounded local refinement (SLSQP, multi-start)"
+    objective: "vector_residual_fraction (95-D normalised response vector)"
+    record: "best parameters, boundary hits, all residual components, new-anomaly flags"
+
+# -----------------------------------------------------------------------------
+# 5. DECISION RULES (evaluated in this order; no post-hoc edits)
+# -----------------------------------------------------------------------------
+decision_rules:
+  ks1:
+    - id: K1_FIX
+      decision: FIX
+      fixed_value: 5.0
+      when: >
+        the Ks1 effect is resolved (S_shape >= keep_shape OR S_local >= keep_local,
+        signal_to_noise >= noise_multiplier) AND the Xmean+K_m substitution is
+        ACCEPTED (all substitution thresholds) with NO boundary hit and NO new
+        anomaly in >= ks1_fix_backgrounds (5 of 7) at the FINAL adopted Xmean bound.
+      rationale: "Xmean+K_m reproduces the Ks1 shape; Ks1 adds no usable freedom"
+    - id: K1_KEEP
+      decision: KEEP
+      range: [3.0, 7.0]
+      when: >
+        the Ks1 effect is resolved AND substitution is REJECTED in >= 3 of 7
+        backgrounds at the final adopted Xmean bound, where rejection means at
+        least one of: vector residual fraction > threshold, contour residual
+        fraction > threshold, a substitute parameter sits on its bound, or a new
+        geometric anomaly appears.
+      rationale: "clear, resolvable, non-substitutable geometric effect"
+    - id: K1_KEEP_CONSERVATIVE
+      decision: KEEP
+      when: "neither rule above fires (mixed evidence)"
+      rationale: >
+        pre-registered conservative default: an independent geometric effect that
+        has not been reliably excluded is kept, to avoid deleting a degree of
+        freedom on insufficient evidence.  Still a FINAL state, not a review state.
+
+  ks2:
+    - id: K2_FIX
+      decision: FIX
+      fixed_value: 0.10
+      when: >
+        the after-30%-chord effect is resolved (S_rear >= keep_rear, SNR >= noise
+        multiplier) AND the Xmean+K_m+Ks1 substitution is ACCEPTED in 4 of 4
+        backgrounds with Metal1/Metal2 FIXED, no boundary hit and no new anomaly.
+    - id: K2_KEEP
+      decision: KEEP
+      range: [0.05, 0.20]
+      when: >
+        the rear-local effect is resolved in >= ks2_min_backgrounds (3 of 4) AND
+        the substitution is REJECTED in >= 3 of 4 backgrounds with Metal1/Metal2
+        fixed.
+      rationale: "independent rear-camber control that cannot be replaced without changing the exit metal angle"
+    - id: K2_KEEP_CONSERVATIVE
+      decision: KEEP
+      when: "neither rule above fires (mixed evidence)"
+      rationale: "pre-registered conservative default; KEEP is the FINAL state"
+
+  xmean:
+    candidates: [0.18, 0.20, 0.22]
+    lower_bound: 0.06
+    steps:
+      - "generate the in-memory soft-risk map: Xmean 0.06..0.24 step 0.005, Ks1 in {3,4,5,6,7}, K_m in {0.10,0.18,0.28,0.35}, Metal backgrounds M0/ML/MS"
+      - "for each candidate bound B, worst_rcr(B) = max RCR over all map points with Xmean <= B"
+      - "adopt the LARGEST B whose worst_rcr(B) <= bound_rule_margin * worst_rcr(0.18) AND worst_rcr(B) <= bound_rule_margin * anchor AND whose worst tangent reversal and splice jump stay <= their margins"
+      - "if the adopted bound is > 0.18, derive the joint constraint: every map point with Xmean in (0.18, B] and RCR > joint_constraint_margin * anchor must be excluded by a simple (Ks1 <= c) and/or (K_m >= m) rule; report the retained box fraction of the newly added region"
+    fallback: "if no candidate satisfies the rule, keep 0.18"
+    note: >
+      100% hard-QC PASS alone is explicitly INSUFFICIENT to expand the bound.
+      Hard QC is necessary, never sufficient.
+
+# -----------------------------------------------------------------------------
+# 6. THRESHOLD SENSITIVITY (declared in advance)
+# -----------------------------------------------------------------------------
+threshold_sensitivity:
+  parameters:
+    vector_residual_fraction_max: [0.20, 0.25, 0.30]
+    joint_constraint_margin: [0.85, 0.90, 1.00]
+    bound_rule_margin: [0.85, 1.00]
+  rule: >
+    Re-evaluate every decision at each alternative threshold using the SAME
+    geometry results (no new cases).  A decision that changes is reported as
+    threshold-sensitive, and the CONSERVATIVE branch is adopted
+    (KEEP instead of FIX; smaller Xmean bound).
+  reporting: "final_decision_evidence.csv rows with evidence_type=THRESHOLD_SENSITIVITY"
+
+# -----------------------------------------------------------------------------
+# 7. NUMERICAL / DISCRETIZATION RULES
+# -----------------------------------------------------------------------------
+numerics:
+  high_precision: "in-memory float64; the 4-decimal text is used ONLY to measure serialization noise"
+  curvature: "exact analytic derivative of the legacy piecewise polynomial, no finite differences"
+  contour_distance: "frozen QC segment geometry, no snapping, no tolerance"
+  arc_curvature_spikes: >
+    Curvature spikes caused by the discrete LE/TE arc construction are a KNOWN
+    legacy artifact.  They are never used to declare a parameter ineffective or
+    a geometry invalid.  Only analytic meanline curvature and the frozen QC
+    flags are used for decisions.
+  partial_rounding: "a signal below 10x the same-case serialization noise is reported as unresolved, never as zero"
+  failed_cases: "generation/QC failures are retained with parameters and reason; never replaced"
+  reproducibility: "fixed seed, deterministic grids, exact parameter vectors recorded in case_design.csv"
+
+# -----------------------------------------------------------------------------
+# 8. EVIDENCE REQUIREMENTS
+# -----------------------------------------------------------------------------
+evidence:
+  ks1:
+    - "Ks1 = 3 / 5 / 7 at Xmean = 0.14, 0.16, 0.18, 0.20, 0.22 (baseline turning)"
+    - "Ks1 = 3 / 5 / 7 at Xmean = 0.16, 0.20 in a LARGE-turn and a SMALL-turn Metal1/Metal2 background"
+    - "Ks1 = 3 / 7 at K_m = 0.10 and 0.35, Xmean = 0.18 (reused) and 0.22"
+    - "joint Xmean+K_m substitution, 7 backgrounds, both directions, three Xmean bounds"
+    - "meanline offset, tangent angle, curvature, pressure/suction, front and rear local metrics"
+  ks2:
+    - "Ks2 = 0.05 / 0.10 / 0.20 in baseline, large-turn, small-turn and high-Xmean backgrounds"
+    - "rear 30% meanline / angle / curvature / pressure / suction metrics"
+    - "Metal1/Metal2-fixed substitution by Xmean+K_m+Ks1"
+    - "serialization noise and signal-to-noise"
+  xmean:
+    - "soft-risk map over Xmean 0.06..0.24"
+    - "hard QC at 0.18, 0.20, 0.22, 0.24, 0.26, 0.30 across Ks1 and K_m corners"
+    - "historical 157-case envelope recomputed from the same formulas"
+
+# -----------------------------------------------------------------------------
+# 9. UNCERTAINTY / LIMITATIONS (pre-registered)
+# -----------------------------------------------------------------------------
+uncertainty:
+  - "Thresholds are research thresholds, not calibrated on the 1891-sample population."
+  - "No CFD, no mesh, no aerodynamic validation.  Geometric feasibility is NOT engineering feasibility."
+  - "The 157-case population is a SCREENING population that passed hard QC; its extremes are tolerated artifacts, not a validated quality envelope."
+  - "The substitution search is a mathematical equivalence test in a 95-D geometric metric; a passing substitute is not proven to be aerodynamically equivalent."
+  - "Only 3 Metal backgrounds; conclusions are not extrapolated to the full Metal1/Metal2 domain."
+  - "All final states are exploratory and reversible; none approves the formal production range."
+
+decision_policy_for_insufficient_evidence: >
+  If the geometric evidence cannot prove engineering acceptability, this is
+  stated explicitly and the CONSERVATIVE branch is chosen:
+  KEEP for a parameter, and the SMALLER bound for Xmean.  The result is still
+  reported as a final exploratory decision, never as CFD certification.
+
+# -----------------------------------------------------------------------------
+# 10. OUTPUT CONTRACT (low-storage policy)
+# -----------------------------------------------------------------------------
+outputs:
+  required:
+    - FINAL_DECISION.md
+    - final_geometry_parameters.yaml
+    - final_decision_evidence.csv
+    - final_decision_criteria.yaml
+    - case_design.csv
+    - case_metrics.csv
+    - substitution_results.csv
+    - xmean_boundary_scan.csv
+    - decision_profiles.npz
+    - README.md
+    - provenance.json
+  figures_max: 2
+  forbidden_per_case_artifacts: ["PNG", "PDF", "geomTurbo", "per-case .dat"]
+  target_total_bytes: 3145728
+
+# -----------------------------------------------------------------------------
+# 11. REVISION LOG (this file is frozen once the formal run starts)
+# -----------------------------------------------------------------------------
+revision_log:
+  - version: "1.0.0"
+    when: "before any formal case of this round was generated"
+    change: >
+      bound_rule_margin changed from an exact 1.00 comparison to 1.01 and a
+      bound_reference term was added.
+    reason: >
+      A design-time brittleness check (in-memory pilot only, no formal case, no
+      decision taken) showed that an exact 1.00 comparison would let a 0.04%
+      difference (0.2530 vs 0.2529) decide a range boundary.  A range boundary
+      must not hinge on a difference of that size, so an explicit 1% numerical
+      tolerance was registered instead.  The tolerance is applied identically to
+      every candidate bound and does not favour any candidate.
+    not_changed: "all other thresholds, the metric definitions and the decision rules"
+
+
+
+
+

@@ -1,0 +1,405 @@
+{
+  "algorithm_version": "psv1-design-1.0.0",
+  "criteria_id": "parameter_screening_v1_tentative",
+  "criteria_version": "1.0.0",
+  "seed": 20261017,
+  "summary": {
+    "pool_size_requested": 512,
+    "pool_size_after_dedup": 512,
+    "pool_valid_count": 512,
+    "low_sensitivity_params": [
+      "SS1",
+      "SS2"
+    ],
+    "param_sensitivity_rank": [
+      "Xmean",
+      "K_m",
+      "Metal2",
+      "Solidity",
+      "T2",
+      "T1",
+      "Ks1",
+      "Metal1",
+      "Tmax",
+      "Xthick",
+      "Ks2",
+      "SS2",
+      "SS1"
+    ],
+    "anchors": [
+      505,
+      341,
+      124,
+      80,
+      145
+    ],
+    "stage3_count": 20
+  },
+  "records": [
+    {
+      "case_id": "C820081",
+      "kind": "anchor",
+      "score": 0.6882872288522324,
+      "pool_index": 505,
+      "dist_existing": 1.413484072084286,
+      "boundary": 0.9752884246408939,
+      "risk": 0.90234375,
+      "low_s_coverage": 0.7145626284182073,
+      "min_gap_m": 0.01638625467554701,
+      "hard_qc_status": "PASS"
+    },
+    {
+      "case_id": "C820082",
+      "kind": "variant",
+      "anchor_case_id": "C820081",
+      "changed_param": "Xmean",
+      "category": "high_sensitivity_probe",
+      "evidence": {
+        "kind": "high_sensitivity_probe",
+        "anchor_pool_index": 505,
+        "changed_param": "Xmean",
+        "from_u": 0.35662335250526667,
+        "to_u": 0.85,
+        "from_value": 0.102794802300632,
+        "to_value": 0.16199999999999998,
+        "sensitivity_rank": 1,
+        "S_comp": 0.40081855128113575,
+        "rotation_index": 0,
+        "anchor_case_id": "C820081"
+      }
+    },
+    {
+      "case_id": "C820083",
+      "kind": "variant",
+      "anchor_case_id": "C820081",
+      "changed_param": "K_m",
+      "category": "interaction_probe",
+      "evidence": {
+        "kind": "interaction_probe",
+        "anchor_pool_index": 505,
+        "changed_param": "K_m",
+        "from_u": 0.7746722111478448,
+        "to_u": 0.15,
+        "from_value": 0.2936680527869612,
+        "to_value": 0.1375,
+        "sensitivity_rank": 2,
+        "S_comp": 0.2860766240113685,
+        "interaction_partner": "K_m",
+        "interaction_index": 4.642961587814026,
+        "anchor_case_id": "C820081"
+      }
+    },
+    {
+      "case_id": "C820084",
+      "kind": "variant",
+      "anchor_case_id": "C820081",
+      "changed_param": "SS1",
+      "category": "low_sensitivity_background_recheck",
+      "evidence": {
+        "kind": "low_sensitivity_background_recheck",
+        "anchor_pool_index": 505,
+        "changed_param": "SS1",
+        "from_u": 0.2335694022476673,
+        "to_u": 0.85,
+        "from_value": 2.7737110435962675,
+        "to_value": 3.76,
+        "sensitivity_rank": 13,
+        "S_comp": 0.0007173865855994296,
+        "rotation_index": 0,
+        "anchor_case_id": "C820081"
+      }
+    },
+    {
+      "case_id": "C820085",
+      "kind": "anchor",
+      "score": 0.6863602954275129,
+      "pool_index": 341,
+      "dist_existing": 1.2205192307824522,
+      "boundary": 0.9954808875918388,
+      "risk": 0.966796875,
+      "low_s_coverage": 0.7248416477814318,
+      "min_gap_m": 0.0149037053901637,
+      "hard_qc_status": "PASS"
+    },
+    {
+      "case_id": "C820086",
+      "kind": "variant",
+      "anchor_case_id": "C820085",
+      "changed_param": "K_m",
+      "category": "high_sensitivity_probe",
+      "evidence": {
+        "kind": "high_sensitivity_probe",
+        "anchor_pool_index": 341,
+        "changed_param": "K_m",
+        "from_u": 0.029148423112928867,
+        "to_u": 0.85,
+        "from_value": 0.10728710577823222,
+        "to_value": 0.3125,
+        "sensitivity_rank": 2,
+        "S_comp": 0.2860766240113685,
+        "rotation_index": 1,
+        "anchor_case_id": "C820085"
+      }
+    },
+    {
+      "case_id": "C820087",
+      "kind": "variant",
+      "anchor_case_id": "C820085",
+      "changed_param": "Xmean",
+      "category": "interaction_probe",
+      "evidence": {
+        "kind": "interaction_probe",
+        "anchor_pool_index": 341,
+        "changed_param": "Xmean",
+        "from_u": 0.8652431257069111,
+        "to_u": 0.15,
+        "from_value": 0.1638291750848293,
+        "to_value": 0.078,
+        "sensitivity_rank": 1,
+        "S_comp": 0.40081855128113575,
+        "interaction_partner": "Xmean",
+        "interaction_index": 4.642961587814026,
+        "anchor_case_id": "C820085"
+      }
+    },
+    {
+      "case_id": "C820088",
+      "kind": "variant",
+      "anchor_case_id": "C820085",
+      "changed_param": "SS2",
+      "category": "low_sensitivity_background_recheck",
+      "evidence": {
+        "kind": "low_sensitivity_background_recheck",
+        "anchor_pool_index": 341,
+        "changed_param": "SS2",
+        "from_u": 0.17552015092223883,
+        "to_u": 0.85,
+        "from_value": 0.6053120905533433,
+        "to_value": 1.01,
+        "sensitivity_rank": 12,
+        "S_comp": 0.0007347952409336426,
+        "rotation_index": 1,
+        "anchor_case_id": "C820085"
+      }
+    },
+    {
+      "case_id": "C820089",
+      "kind": "anchor",
+      "score": 0.6808210286591454,
+      "pool_index": 124,
+      "dist_existing": 1.038366080434784,
+      "boundary": 0.9977076295763254,
+      "risk": 0.841796875,
+      "low_s_coverage": 0.9855891503393649,
+      "min_gap_m": 0.017382266417721066,
+      "hard_qc_status": "PASS"
+    },
+    {
+      "case_id": "C820090",
+      "kind": "variant",
+      "anchor_case_id": "C820089",
+      "changed_param": "Metal2",
+      "category": "high_sensitivity_probe",
+      "evidence": {
+        "kind": "high_sensitivity_probe",
+        "anchor_pool_index": 124,
+        "changed_param": "Metal2",
+        "from_u": 0.22119461838155985,
+        "to_u": 0.85,
+        "from_value": 7.078227788209915,
+        "to_value": 27.2,
+        "sensitivity_rank": 3,
+        "S_comp": 0.24458913663283266,
+        "rotation_index": 2,
+        "anchor_case_id": "C820089"
+      }
+    },
+    {
+      "case_id": "C820091",
+      "kind": "variant",
+      "anchor_case_id": "C820089",
+      "changed_param": "Metal1",
+      "category": "interaction_probe",
+      "evidence": {
+        "kind": "interaction_probe",
+        "anchor_pool_index": 124,
+        "changed_param": "Metal1",
+        "from_u": 0.4989412082359195,
+        "to_u": 0.85,
+        "from_value": 52.989412082359195,
+        "to_value": 56.5,
+        "sensitivity_rank": 8,
+        "S_comp": 0.03663558054482363,
+        "interaction_partner": "Metal1",
+        "interaction_index": 1.1012489153928926,
+        "anchor_case_id": "C820089"
+      }
+    },
+    {
+      "case_id": "C820092",
+      "kind": "variant",
+      "anchor_case_id": "C820089",
+      "changed_param": "Ks2",
+      "category": "low_sensitivity_background_recheck",
+      "evidence": {
+        "kind": "low_sensitivity_background_recheck",
+        "anchor_pool_index": 124,
+        "changed_param": "Ks2",
+        "from_u": 0.24234882928431034,
+        "to_u": 0.85,
+        "from_value": 0.08635232439264656,
+        "to_value": 0.1775,
+        "sensitivity_rank": 11,
+        "S_comp": 0.005257805391518717,
+        "rotation_index": 2,
+        "anchor_case_id": "C820089"
+      }
+    },
+    {
+      "case_id": "C820093",
+      "kind": "anchor",
+      "score": 0.6802845870014895,
+      "pool_index": 80,
+      "dist_existing": 1.0749282316516355,
+      "boundary": 0.9837862402200699,
+      "risk": 0.9609375,
+      "low_s_coverage": 0.8193196449428798,
+      "min_gap_m": 0.015051747618177909,
+      "hard_qc_status": "PASS"
+    },
+    {
+      "case_id": "C820094",
+      "kind": "variant",
+      "anchor_case_id": "C820093",
+      "changed_param": "T2",
+      "category": "high_sensitivity_probe",
+      "evidence": {
+        "kind": "high_sensitivity_probe",
+        "anchor_pool_index": 80,
+        "changed_param": "T2",
+        "from_u": 0.9476605895906687,
+        "to_u": 0.15,
+        "from_value": 0.01558128471672535,
+        "to_value": 0.0092,
+        "sensitivity_rank": 5,
+        "S_comp": 0.09706542706384336,
+        "rotation_index": 3,
+        "anchor_case_id": "C820093"
+      }
+    },
+    {
+      "case_id": "C820095",
+      "kind": "variant",
+      "anchor_case_id": "C820093",
+      "changed_param": "SS2",
+      "category": "interaction_probe",
+      "evidence": {
+        "kind": "interaction_probe",
+        "anchor_pool_index": 80,
+        "changed_param": "SS2",
+        "from_u": 0.8596299318596721,
+        "to_u": 0.15,
+        "from_value": 1.0157779591158032,
+        "to_value": 0.59,
+        "sensitivity_rank": 12,
+        "S_comp": 0.0007347952409336426,
+        "interaction_partner": "SS2",
+        "interaction_index": 2.029055054940554,
+        "anchor_case_id": "C820093"
+      }
+    },
+    {
+      "case_id": "C820096",
+      "kind": "variant",
+      "anchor_case_id": "C820093",
+      "changed_param": "Ks2",
+      "category": "low_sensitivity_background_recheck",
+      "evidence": {
+        "kind": "low_sensitivity_background_recheck",
+        "anchor_pool_index": 80,
+        "changed_param": "Ks2",
+        "from_u": 0.031933773308992386,
+        "to_u": 0.85,
+        "from_value": 0.05479006599634886,
+        "to_value": 0.1775,
+        "sensitivity_rank": 11,
+        "S_comp": 0.005257805391518717,
+        "rotation_index": 3,
+        "anchor_case_id": "C820093"
+      }
+    },
+    {
+      "case_id": "C820097",
+      "kind": "anchor",
+      "score": 0.6737414277718814,
+      "pool_index": 145,
+      "dist_existing": 1.2018581549178398,
+      "boundary": 0.9671503212302923,
+      "risk": 0.8203125,
+      "low_s_coverage": 0.8970477106049658,
+      "min_gap_m": 0.017669563761035297,
+      "hard_qc_status": "PASS"
+    },
+    {
+      "case_id": "C820098",
+      "kind": "variant",
+      "anchor_case_id": "C820097",
+      "changed_param": "T1",
+      "category": "high_sensitivity_probe",
+      "evidence": {
+        "kind": "high_sensitivity_probe",
+        "anchor_pool_index": 145,
+        "changed_param": "T1",
+        "from_u": 0.9835751606151462,
+        "to_u": 0.15,
+        "from_value": 0.017868601284921168,
+        "to_value": 0.0112,
+        "sensitivity_rank": 6,
+        "S_comp": 0.08089599267805293,
+        "rotation_index": 4,
+        "anchor_case_id": "C820097"
+      }
+    },
+    {
+      "case_id": "C820099",
+      "kind": "variant",
+      "anchor_case_id": "C820097",
+      "changed_param": "SS1",
+      "category": "interaction_probe",
+      "evidence": {
+        "kind": "interaction_probe",
+        "anchor_pool_index": 145,
+        "changed_param": "SS1",
+        "from_u": 0.05995552521198988,
+        "to_u": 0.85,
+        "from_value": 2.4959288403391837,
+        "to_value": 3.76,
+        "sensitivity_rank": 13,
+        "S_comp": 0.0007173865855994296,
+        "interaction_partner": "SS1",
+        "interaction_index": 0.6295129864082716,
+        "anchor_case_id": "C820097"
+      }
+    },
+    {
+      "case_id": "C820100",
+      "kind": "variant",
+      "anchor_case_id": "C820097",
+      "changed_param": "SS2",
+      "category": "low_sensitivity_background_recheck",
+      "evidence": {
+        "kind": "low_sensitivity_background_recheck",
+        "anchor_pool_index": 145,
+        "changed_param": "SS2",
+        "from_u": 0.9570032358169556,
+        "to_u": 0.15,
+        "from_value": 1.0742019414901733,
+        "to_value": 0.59,
+        "sensitivity_rank": 12,
+        "S_comp": 0.0007347952409336426,
+        "rotation_index": 4,
+        "anchor_case_id": "C820097"
+      }
+    }
+  ]
+}

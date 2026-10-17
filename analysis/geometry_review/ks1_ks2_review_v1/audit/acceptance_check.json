@@ -1,0 +1,266 @@
+{
+  "overall_pass": true,
+  "checks": [
+    {
+      "check": "n_cases_57",
+      "pass": true,
+      "detail": "design=57, metrics=57",
+      "level": "FAIL"
+    },
+    {
+      "check": "unique_case_ids",
+      "pass": true,
+      "detail": "unique=57",
+      "level": "FAIL"
+    },
+    {
+      "check": "case_id_format",
+      "pass": true,
+      "detail": "expected C830001..C830057",
+      "level": "FAIL"
+    },
+    {
+      "check": "design_metrics_linkage",
+      "pass": true,
+      "detail": "same 57 IDs in the same order",
+      "level": "FAIL"
+    },
+    {
+      "check": "stage_counts",
+      "pass": true,
+      "detail": {
+        "A": 15,
+        "B": 30,
+        "C": 12
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "ss1_ss2_fixed",
+      "pass": true,
+      "detail": "all 57 cases: SS1=3.2, SS2=0.8",
+      "level": "FAIL"
+    },
+    {
+      "check": "ks1_7_levels",
+      "pass": true,
+      "detail": 7,
+      "level": "FAIL"
+    },
+    {
+      "check": "ks2_7_levels",
+      "pass": true,
+      "detail": 7,
+      "level": "FAIL"
+    },
+    {
+      "check": "six_backgrounds",
+      "pass": true,
+      "detail": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "b_variants_24",
+      "pass": true,
+      "detail": 24,
+      "level": "FAIL"
+    },
+    {
+      "check": "c_joint_12",
+      "pass": true,
+      "detail": {
+        "joint_rows": 3,
+        "c_cases": 12
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "no_duplicate_parameter_vectors",
+      "pass": true,
+      "detail": {
+        "groups": 0
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "failed_cases_preserved",
+      "pass": true,
+      "detail": {
+        "metrics_failed": 0,
+        "run_meta_failed": 0
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "ks1_table_7",
+      "pass": true,
+      "detail": 7,
+      "level": "FAIL"
+    },
+    {
+      "check": "ks2_table_7",
+      "pass": true,
+      "detail": 7,
+      "level": "FAIL"
+    },
+    {
+      "check": "decision_rows_include_ks",
+      "pass": true,
+      "detail": [
+        "Ks1",
+        "Ks2",
+        "SS1",
+        "SS2"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "ks_decisions_valid",
+      "pass": true,
+      "detail": [
+        "FIXED_BY_REVIEW",
+        "FURTHER_REVIEW"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "criteria_saved_before_classification",
+      "pass": true,
+      "detail": "criteria mtime < decisions mtime",
+      "level": "FAIL"
+    },
+    {
+      "check": "criteria_has_thresholds",
+      "pass": true,
+      "detail": [
+        "circle_fit_min_span_deg",
+        "circle_fit_residual_max_rel",
+        "circle_fit_window_chord",
+        "cosine_high",
+        "cosine_independence",
+        "curvature_stability_max",
+        "edge_region_chord",
+        "fix_max_backgrounds",
+        "junction_diagnostic_deg",
+        "junction_jump_diagnostic_deg",
+        "keep_local",
+        "keep_min_backgrounds",
+        "keep_rear",
+        "keep_shape",
+        "min_resolved_backgrounds",
+        "noise_multiplier",
+        "residual_independence",
+        "review_local",
+        "review_rear",
+        "review_shape",
+        "substitution_convergence_tol",
+        "substitution_max_residual"
+      ],
+      "level": "FAIL"
+    },
+    {
+      "check": "candidate_ss_fixed",
+      "pass": true,
+      "detail": {
+        "SS1_status": "FIXED_BY_REVIEW",
+        "SS2_status": "FIXED_BY_REVIEW"
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_overview.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 489090
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_ks1_xmean_comparison.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 122660
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "figure_ks2_background_comparison.png",
+      "pass": true,
+      "detail": {
+        "exists": true,
+        "bytes": 56876
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "profiles_npz_57",
+      "pass": true,
+      "detail": 57,
+      "level": "FAIL"
+    },
+    {
+      "check": "npz_reload_ok",
+      "pass": true,
+      "detail": {
+        "profiles_saved": 57,
+        "missing": [],
+        "extra": [],
+        "array_mismatches": [],
+        "reload_ok": true
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "case_reproduction_from_csv_exact",
+      "pass": true,
+      "detail": {
+        "samples": [
+          "C830001",
+          "C830041",
+          "C830057"
+        ],
+        "errors": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "frozen_assets_unchanged",
+      "pass": true,
+      "detail": {
+        "checked": 14,
+        "mismatches": []
+      },
+      "level": "FAIL"
+    },
+    {
+      "check": "regression_tests",
+      "pass": true,
+      "detail": "118 passed, 17 subtests passed in 9.37s",
+      "level": "FAIL"
+    },
+    {
+      "check": "output_size_target",
+      "pass": true,
+      "detail": "1.355 MB",
+      "level": "WARN"
+    },
+    {
+      "check": "output_size_acceptable",
+      "pass": true,
+      "detail": "1.355 MB",
+      "level": "FAIL"
+    }
+  ],
+  "output_size_mb": 1.355,
+  "warnings": [],
+  "generated_at": "2026-10-17T19:48:27"
+}

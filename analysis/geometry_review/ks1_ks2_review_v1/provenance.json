@@ -1,0 +1,334 @@
+{
+  "experiment_id": "ks1_ks2_review_v1",
+  "git_head": "02e57d1d26197d97e65f4b64ef0a23f6d06393b7",
+  "git_status_before": [
+    "?? analysis/geometry_review/ks1_ks2_review_v1/",
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_ks1_ks2_review_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "git_status_after": [
+    "?? analysis/geometry_review/ks1_ks2_review_v1/",
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_ks1_ks2_review_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "seed": 20261017,
+  "n_cases": 57,
+  "stage_counts": {
+    "A": 15,
+    "B": 30,
+    "C": 12
+  },
+  "generation_ok": 57,
+  "hard_qc_pass": 57,
+  "frozen_qc_pass": 57,
+  "frozen_qc_mismatches": 0,
+  "failed_cases": [],
+  "profiles_saved": 57,
+  "npz_check": {
+    "profiles_saved": 57,
+    "missing": [],
+    "extra": [],
+    "array_mismatches": [],
+    "reload_ok": true
+  },
+  "stage_c_selection": {
+    "rule": "rank B1-B4 by meanline_angle_range_deg; choose lowest and highest; choose the higher-camber one of B5/B6",
+    "selected_backgrounds": [
+      "B4",
+      "B2",
+      "B5"
+    ],
+    "evidence": {
+      "B4": {
+        "reference_case_id": "C830031",
+        "reason": "lowest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 38.0,
+          "contour_rms_dev_norm": 0.018579989118419887,
+          "meanline_rms_dev_norm": 0.023721910296612258
+        }
+      },
+      "B2": {
+        "reference_case_id": "C830021",
+        "reason": "highest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 84.42862145801489,
+          "contour_rms_dev_norm": 0.34484037686501534,
+          "meanline_rms_dev_norm": 0.3724062404149803
+        }
+      },
+      "B5": {
+        "reference_case_id": "C830036",
+        "reason": "highest camber response in the Metal1/Metal2 group",
+        "group": "Metal1/Metal2",
+        "scores": {
+          "meanline_angle_range_deg": 48.00000000000001,
+          "contour_rms_dev_norm": 0.11681342385303842,
+          "meanline_rms_dev_norm": 0.12586617110179468
+        }
+      }
+    }
+  },
+  "criteria_sha256": "9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1",
+  "config_sha256": "3c42b00b20abc0b55b45a55a0e1f7f1943d60e4cb5de4ce2dcc967e535e3ad32",
+  "runtime_s": 5.8,
+  "output_size_mb": 1.355,
+  "git_head_at_analysis": "02e57d1d26197d97e65f4b64ef0a23f6d06393b7",
+  "git_status_at_analysis": [
+    "?? analysis/geometry_review/ks1_ks2_review_v1/",
+    "?? analysis/geometry_review/parameter_sensitivity_v1_100cases/",
+    "?? code/geometry_parametric_exploratory_v1.py",
+    "?? tests/test_geometry_parametric_exploratory_v1.py",
+    "?? tools/geometry_ks1_ks2_review_v1.py",
+    "?? tools/geometry_parameter_sensitivity_v1.py",
+    "?? tools/geometry_sensitivity_metrics_v1.py"
+  ],
+  "criteria": {
+    "criteria_id": "ks1_ks2_review_v1_tentative",
+    "criteria_version": "1.0.0",
+    "criteria_status": "TENTATIVE_RESEARCH_THRESHOLDS_NOT_CALIBRATED",
+    "sha256": "9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1",
+    "thresholds": {
+      "keep_shape": 0.01,
+      "review_shape": 0.002,
+      "keep_rear": 0.01,
+      "review_rear": 0.002,
+      "keep_local": 0.02,
+      "review_local": 0.01,
+      "noise_multiplier": 10.0,
+      "cosine_independence": 0.9,
+      "cosine_high": 0.98,
+      "residual_independence": 0.25,
+      "substitution_max_residual": 0.25,
+      "keep_min_backgrounds": 4,
+      "fix_max_backgrounds": 2,
+      "min_resolved_backgrounds": 3,
+      "curvature_stability_max": 0.25,
+      "circle_fit_residual_max_rel": 0.05,
+      "circle_fit_min_span_deg": 45.0,
+      "circle_fit_window_chord": 0.02,
+      "edge_region_chord": 0.05,
+      "junction_diagnostic_deg": 15.0,
+      "junction_jump_diagnostic_deg": 15.0,
+      "substitution_convergence_tol": 0.0001
+    },
+    "decisions": {
+      "ks1": [
+        {
+          "id": "K1_KEEP",
+          "when": "resolved shape effect (S_shape >= keep_shape or S_local >= keep_local, signal_to_noise >= noise_multiplier) in >= keep_min_backgrounds AND (max cosine_raw < cosine_independence OR max residual_fraction > residual_independence) AND substitution residual_fraction > substitution_max_residual in >= keep_min_backgrounds",
+          "decision": "KEEP_RECOMMENDED",
+          "reason": "stable independent geometry effect that a single Xmean value cannot reproduce"
+        },
+        {
+          "id": "K1_FIX",
+          "when": "S_shape < review_shape AND S_local < review_local in >= 6/7 backgrounds AND signal_to_noise < noise_multiplier in >= 5/7 backgrounds, OR substitution residual_fraction <= substitution_max_residual in >= 6/7 backgrounds with cosine_raw >= cosine_high in >= 6/7",
+          "decision": "FIX_RECOMMENDED",
+          "reason": "no resolved independent effect, or a single Xmean value reproduces the contour"
+        },
+        {
+          "id": "K1_REVIEW",
+          "when": "none of the above",
+          "decision": "FURTHER_REVIEW",
+          "reason": "background-dependent, near threshold, or substitution evidence is mixed"
+        }
+      ],
+      "ks2": [
+        {
+          "id": "K2_KEEP",
+          "when": "resolved rear-local effect (S_rear >= keep_rear, signal_to_noise >= noise_multiplier) in >= keep_min_backgrounds AND (cosine with K_m and Metal2 < cosine_independence OR residual_fraction > residual_independence) AND substitution by K_m/Metal2 residual_fraction > substitution_max_residual in >= keep_min_backgrounds",
+          "decision": "KEEP_RECOMMENDED",
+          "reason": "stable rear-local control not reproduced by K_m or Metal2"
+        },
+        {
+          "id": "K2_FIX",
+          "when": "S_rear < review_rear AND S_shape < review_shape in >= 6/7 backgrounds AND (signal_to_noise < noise_multiplier in >= 5/7 OR substitution residual_fraction <= substitution_max_residual in >= 6/7)",
+          "decision": "FIX_RECOMMENDED",
+          "reason": "rear-local effect is below resolution or fully reproducible by K_m/Metal2"
+        },
+        {
+          "id": "K2_REVIEW",
+          "when": "none of the above",
+          "decision": "FURTHER_REVIEW",
+          "reason": "effect appears only in specific backgrounds, or evidence is contradictory"
+        }
+      ],
+      "notes": [
+        "a high cosine alone NEVER triggers FIX; the residual and substitution evidence are mandatory",
+        "a low global S_comp alone NEVER triggers FIX for Ks2; the rear-local and noise checks are mandatory",
+        "SS1/SS2 are FIXED_BY_REVIEW and are not re-classified here",
+        "all decisions are advisory; they do not change any formal parameter state"
+      ]
+    }
+  },
+  "candidate_config": {
+    "file": "geometry_parameter_candidates_v2.yaml",
+    "sha256": "fdcbe0201cec765f72360cdf0cc746b224a0fc0cafffd990df49226069e5becb"
+  },
+  "ks1": {
+    "decision": "FURTHER_REVIEW",
+    "rule_id": "K1_REVIEW",
+    "leaning": "FIX_IF_HIGH_XMEAN_REGION_EXCLUDED",
+    "resolved": 7,
+    "cos_max": 0.9936169494603888,
+    "cos_median": 0.961688005198806,
+    "sub_min": 0.017919262238607202,
+    "sub_median": 0.049246987589855226,
+    "sub_ok": 2,
+    "reason": "Ks1 effect is resolved in all backgrounds and a single Xmean reproduces it in 5/7 backgrounds, but the high-Xmean backgrounds hit the Xmean range boundary; therefore neither global equivalence nor global independence is proven."
+  },
+  "ks2": {
+    "decision": "FURTHER_REVIEW",
+    "rule_id": "K2_REVIEW",
+    "leaning": "KEEP_IF_METAL2_SUBSTITUTION_REJECTED",
+    "resolved": 7,
+    "cos_max": 0.5350844052854935,
+    "cos_median": 0.037289672886180916,
+    "sub_min": 0.09925995876283042,
+    "sub_median": 0.18134097523215995,
+    "sub_ok": 1,
+    "reason": "Ks2 has a strong, resolved rear-local effect in 7/7 backgrounds (S_rear about 0.06-0.09 per unit u), but single-parameter K_m/Metal2 substitution reaches <=25% contour residual in 6/7 backgrounds; independent geometry value is therefore not proven even though the effect is clearly resolvable."
+  },
+  "tables": {
+    "ks1_rows": 7,
+    "ks2_rows": 7,
+    "joint_rows": 3
+  },
+  "selection": {
+    "rule": "rank B1-B4 by meanline_angle_range_deg; choose lowest and highest; choose the higher-camber one of B5/B6",
+    "selected_backgrounds": [
+      "B4",
+      "B2",
+      "B5"
+    ],
+    "evidence": {
+      "B4": {
+        "reference_case_id": "C830031",
+        "reason": "lowest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 38.0,
+          "contour_rms_dev_norm": 0.018579989118419887,
+          "meanline_rms_dev_norm": 0.023721910296612258
+        }
+      },
+      "B2": {
+        "reference_case_id": "C830021",
+        "reason": "highest camber response in the Xmean/K_m group",
+        "group": "Xmean/K_m",
+        "scores": {
+          "meanline_angle_range_deg": 84.42862145801489,
+          "contour_rms_dev_norm": 0.34484037686501534,
+          "meanline_rms_dev_norm": 0.3724062404149803
+        }
+      },
+      "B5": {
+        "reference_case_id": "C830036",
+        "reason": "highest camber response in the Metal1/Metal2 group",
+        "group": "Metal1/Metal2",
+        "scores": {
+          "meanline_angle_range_deg": 48.00000000000001,
+          "contour_rms_dev_norm": 0.11681342385303842,
+          "meanline_rms_dev_norm": 0.12586617110179468
+        }
+      }
+    }
+  },
+  "output_files": {
+    "README.md": {
+      "bytes": 2083,
+      "sha256": "21c0cd981ba18171a85f39a1c281c5872cbc1098d936cd5300add3c40f33bcab"
+    },
+    "experiment_config.yaml": {
+      "bytes": 4565,
+      "sha256": "3c42b00b20abc0b55b45a55a0e1f7f1943d60e4cb5de4ce2dcc967e535e3ad32"
+    },
+    "review_criteria.yaml": {
+      "bytes": 13439,
+      "sha256": "9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1"
+    },
+    "geometry_parameter_candidates_v2.yaml": {
+      "bytes": 3626,
+      "sha256": "fdcbe0201cec765f72360cdf0cc746b224a0fc0cafffd990df49226069e5becb"
+    },
+    "case_design.csv": {
+      "bytes": 31110,
+      "sha256": "ed9a81b8ce2d803a96c7cfde57dde45c778ed8eb3b6564e5dd986b77a7166086"
+    },
+    "case_metrics.csv": {
+      "bytes": 161106,
+      "sha256": "fe938ef539dc485b5ec968f1bf2dd91f5761646994ce6e660d3e9abf7add0217"
+    },
+    "ks1_xmean_redundancy.csv": {
+      "bytes": 4211,
+      "sha256": "67293f88319dab4c4daff1ebd77fb2532f5dcbed079552d59abfaae157ba9ea4"
+    },
+    "ks2_background_sensitivity.csv": {
+      "bytes": 4522,
+      "sha256": "286e9b16de80a83c8021af7e69cc63120c69c9be899e874eabb29f6cbcafb882"
+    },
+    "joint_interaction.csv": {
+      "bytes": 702,
+      "sha256": "2d6d4086e0e4dcfcbd657fb6be288e98c9a194d5dc316ef182f6ed146afbdac9"
+    },
+    "parameter_decisions.csv": {
+      "bytes": 1647,
+      "sha256": "443d26da143df9ce9dadad7439a7c29a4b82e79b1eba5cf8cfac4f794e8905d3"
+    },
+    "profiles.npz": {
+      "bytes": 479135,
+      "sha256": "7da82caf247f3ac5e70ac33e3d58a0c74acce1033ace5032ba1523f7b192dfc9"
+    },
+    "overview.png": {
+      "bytes": 489090,
+      "sha256": "ea5467a1b07edb9dd7831f85a04f6c0c02e5371a55eade7f5555ca39ce9b3dff"
+    },
+    "ks1_xmean_comparison.png": {
+      "bytes": 122660,
+      "sha256": "c8515a1f2e0c26e74b9380cb11e1f6f8f43779acea57a664de797105f2714c45"
+    },
+    "ks2_background_comparison.png": {
+      "bytes": 56876,
+      "sha256": "a2e6a69930441d0efb0a56baa36ec059e85585c141ef668f37c01115fceec708"
+    },
+    "REPORT.md": {
+      "bytes": 14029,
+      "sha256": "96d230066cbce8939fbee8fb3a04c18c7b815caaab5307203d395ba4bd16b5d9"
+    },
+    "stage_c_selection.json": {
+      "bytes": 1212,
+      "sha256": "3a4eb2d2b74a1239a7c3f355b9320169186a1dbefa0f65b8e9e052e82c401485"
+    },
+    "audit/run_metadata.json": {
+      "bytes": 2845,
+      "sha256": "736082f02f71eee2b0e5ab40c54beb04812acdcd1e96bcd0b764762b8ce5907b"
+    },
+    "audit/sha256_before.txt": {
+      "bytes": 1735,
+      "sha256": "1c1c31009f30d9f5275b04105bdd3b0b794015ec75f10ce68460b825c0be8076"
+    },
+    "audit/sha256_after.txt": {
+      "bytes": 1735,
+      "sha256": "1c1c31009f30d9f5275b04105bdd3b0b794015ec75f10ce68460b825c0be8076"
+    },
+    "audit/step0_audit.md": {
+      "bytes": 5942,
+      "sha256": "bc2791844e3f5883336a5db0dc88873c3921582aeee0c5970dcffa64211b1d8a"
+    }
+  },
+  "notes": [
+    "geometry only; no CFD / AI / production DOE change",
+    "thresholds are tentative and uncalibrated",
+    "SS1/SS2 are FIXED_BY_REVIEW by human decision"
+  ]
+}

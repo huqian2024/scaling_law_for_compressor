@@ -1,0 +1,183 @@
+{
+  "purpose": "pre-round SHA256 baseline of protected assets",
+  "repo": "/home/qian/compressor_ai4s",
+  "n_entries": 22,
+  "manifest": {
+    "legacy/blade_batch_generation.py": {
+      "bytes": 20707,
+      "sha256": "48ed9ead4b1260790dcc2d3ad9fe05c79e745a82ad19fe2ce918268adfc36e03"
+    },
+    "legacy/blade_batch_generation_template.geomTurbo": {
+      "bytes": 25061,
+      "sha256": "92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119"
+    },
+    "legacy/lhs_samples_train.csv": {
+      "bytes": 215502,
+      "sha256": "44b4f273fab65e9dff4cc3d5fdd50d7d43f54caa854ee07f41aabcc7a8a0e28f"
+    },
+    "legacy/SHA256SUMS.txt": {
+      "bytes": 309,
+      "sha256": "e21e225b836833648b837abc66072cc7bf0ea9a2c67fa89d7328a905ee632bc0"
+    },
+    "code/geometry_legacy_v1.py": {
+      "bytes": 16222,
+      "sha256": "19b2acdc5c689b0330a3cd0e277c64f069432428276a8f54206ac8866f45076e"
+    },
+    "code/geometry_parametric_exploratory_v1.py": {
+      "bytes": 21467,
+      "sha256": "2da44933d4a6ff640ffd3c99c5c9e2dfb3b9c5fcfcd142d5aa08588d14d9fd20"
+    },
+    "code/01_generate_design.py": {
+      "bytes": 19894,
+      "sha256": "449a0e8ef1444a536efda620a5304876434f9e377c382674b3ed120b5875725e"
+    },
+    "code/02_generate_geometry.py": {
+      "bytes": 14184,
+      "sha256": "b99dc57942870f7b31157029a99759b65059567d3d7995b3eec6e5bd3ffd6fc4"
+    },
+    "code/03_geometry_qc.py": {
+      "bytes": 27555,
+      "sha256": "3018bc20a93880a5a2c0b1dec73e241678b3d2e8fd30e7df5932459ab927f127"
+    },
+    "code/generate_geomturbo_batch.py": {
+      "bytes": 17985,
+      "sha256": "1b5efdd5199a8c3e83195ac39e4c65a1b9b8b30fe940255d99358c4f3640fafe"
+    },
+    "tools/geometry_sensitivity_metrics_v1.py": {
+      "bytes": 26917,
+      "sha256": "218335f23cd4291871cf65cd7d20184ba17aeefacdede5725e147cc15bd732bd"
+    },
+    "tools/geometry_parameter_sensitivity_v1.py": {
+      "bytes": 131430,
+      "sha256": "2eea71c06d20a169088f5cdefaed71dad62de31046416e07f973d8693f3bee3e"
+    },
+    "tools/geometry_ks1_ks2_review_v1.py": {
+      "bytes": 111350,
+      "sha256": "5ff0c58a2a06d4f63917b1a17078340f3b7a66a7ce489863eb4e5bf3c4a46253"
+    },
+    "config/ranges_legacy.yaml": {
+      "bytes": 227,
+      "sha256": "237ce3f4c1da022a57c7a82e8057248871ce673c96dcba6d0add5763dcc558ef"
+    },
+    "docs/GEOMETRY_GENERATOR_CONTRACT.md": {
+      "bytes": 18936,
+      "sha256": "7a28276cfbac33b449bb2bd2b485aa866c460d5189ff878e1ba2d079a44ad144"
+    },
+    "docs/GEOMETRY_QC_CONTRACT.md": {
+      "bytes": 19182,
+      "sha256": "7564acb7194ab55449a25ccbb260144a587f278cb4b43afa681943ff2776b7b3"
+    },
+    "docs/DOE_DECISION.md": {
+      "bytes": 13621,
+      "sha256": "899e1a728be965244cd29095e3a61848e5df2fe9d44865dc09088e5b2fd07c4a"
+    },
+    "docs/DESIGN_FREEZE_2026-10-13.md": {
+      "bytes": 5587,
+      "sha256": "2e5ae668e0dcdb382ead8a0c0333eab9c7b723d4282eb968e48a2af0579fde2d"
+    },
+    "analysis/geometry_review/parameter_sensitivity_v1_100cases": {
+      "n_files": 23,
+      "bytes": 2473137,
+      "files": {
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md": "cecf7a8952030071c4ee5cd7a55fe6210954e79a2b08e61dd2ceaf63c2f1e948",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md": "3bfa3f82f4042ae9028d1ec37b9f1862e6dce97e64f546f4056ac51140dead81",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/acceptance_check.json": "d1d4ff709c1f7c86eddd4b121913e54f621de49c19d6e56cbac068c22f2c88ed",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/criteria_revision_check.json": "5cfa8485b5c71aaacac9920a1132d2c54a05269bbddbc8dec1602c108373f58f",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/run_metadata.json": "b38f56ace7726f3a8f55e2471dd21518515654b2ce04578be31a7eb3a2482cd7",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/sha256_after.txt": "61bf106672a69385b09ced419057c2c1f49aff7a9db569685e0519cce2fa9317",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/sha256_before.txt": "61bf106672a69385b09ced419057c2c1f49aff7a9db569685e0519cce2fa9317",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/stage12_design_preview.csv": "f00590436fed65cf4f73069e84899eddca519394929c64d24f542162ac899ced",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/audit/step0_audit.md": "766d51ca1bad61e66866d2ba9a3cac08647f08dec79f624fd231d6815b8919aa",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/case_design.csv": "489b164fc5c6d1fe7f978757fc900ab1d01d3963224b87ed783bf8440ec105c3",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/case_metrics.csv": "52bfcbf60739a4cd55d30955b95496a88ca8567879d73dd258b15c6447a3d775",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/experiment_config.yaml": "93dee2d16d74fba5c179dc8fbfa41de8a3de66843fd0376813894e9898262957",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/logs/run_all.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/logs/run_all.log": "16a66e0fd231d0ffa271568d3dab4f6411f6feafcc833b6a0023aa24b32d1597",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/overview_001_050.png": "504b21002549393575f84927063b3caf6d0d8f7ea356db90ffaaae2434ed3eed",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/overview_051_100.png": "7fd06c24589b239ffd733da95e60e3c62a3b8d1332439dac6b676796b5cec0e5",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv": "d0b8b59b7323cc274525aa233847b2d29c0d1847650fa977b793f9ae10bf0e90",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_sensitivity.csv": "f4602da2027d91f91071ae5dfc562c730904f9ac1313f33011f33abd0a6e3fa8",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/profiles.npz": "c035e75fbaa253281605f053e4c3d3f6a93d02b815b41d45ddd4142e0e65fce7",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/provenance.json": "6d24a0690361489960c2e678acea3d29b72c68b17f130aa18934d213a72e512a",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/screening_criteria.yaml": "28f65866be4a4092f20344e45527dc3f5c052e9b4074c544ce86ce4646ca501d",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/sensitivity_heatmap.png": "10ff49521c7ce7da30ffd36a0eb063ffed9c36c8c59e8839d224b2dfd1eff033",
+        "analysis/geometry_review/parameter_sensitivity_v1_100cases/stage3_selection.json": "af2d7de4528c73ed6b67c53e0077c2f6ea8b14bd24f6258bcc42bd2881d92638"
+      }
+    },
+    "analysis/geometry_review/ks1_ks2_review_v1": {
+      "n_files": 25,
+      "bytes": 1421193,
+      "files": {
+        "analysis/geometry_review/ks1_ks2_review_v1/README.md": "21c0cd981ba18171a85f39a1c281c5872cbc1098d936cd5300add3c40f33bcab",
+        "analysis/geometry_review/ks1_ks2_review_v1/REPORT.md": "96d230066cbce8939fbee8fb3a04c18c7b815caaab5307203d395ba4bd16b5d9",
+        "analysis/geometry_review/ks1_ks2_review_v1/audit/acceptance_check.json": "e8563921722cf133cb4e958d52cc7d50a7c10e84c6e6334273c394c6c4831400",
+        "analysis/geometry_review/ks1_ks2_review_v1/audit/run_metadata.json": "736082f02f71eee2b0e5ab40c54beb04812acdcd1e96bcd0b764762b8ce5907b",
+        "analysis/geometry_review/ks1_ks2_review_v1/audit/sha256_after.txt": "1c1c31009f30d9f5275b04105bdd3b0b794015ec75f10ce68460b825c0be8076",
+        "analysis/geometry_review/ks1_ks2_review_v1/audit/sha256_before.txt": "1c1c31009f30d9f5275b04105bdd3b0b794015ec75f10ce68460b825c0be8076",
+        "analysis/geometry_review/ks1_ks2_review_v1/audit/step0_audit.md": "bc2791844e3f5883336a5db0dc88873c3921582aeee0c5970dcffa64211b1d8a",
+        "analysis/geometry_review/ks1_ks2_review_v1/case_design.csv": "ed9a81b8ce2d803a96c7cfde57dde45c778ed8eb3b6564e5dd986b77a7166086",
+        "analysis/geometry_review/ks1_ks2_review_v1/case_metrics.csv": "fe938ef539dc485b5ec968f1bf2dd91f5761646994ce6e660d3e9abf7add0217",
+        "analysis/geometry_review/ks1_ks2_review_v1/experiment_config.yaml": "3c42b00b20abc0b55b45a55a0e1f7f1943d60e4cb5de4ce2dcc967e535e3ad32",
+        "analysis/geometry_review/ks1_ks2_review_v1/geometry_parameter_candidates_v2.yaml": "fdcbe0201cec765f72360cdf0cc746b224a0fc0cafffd990df49226069e5becb",
+        "analysis/geometry_review/ks1_ks2_review_v1/joint_interaction.csv": "2d6d4086e0e4dcfcbd657fb6be288e98c9a194d5dc316ef182f6ed146afbdac9",
+        "analysis/geometry_review/ks1_ks2_review_v1/ks1_xmean_comparison.png": "c8515a1f2e0c26e74b9380cb11e1f6f8f43779acea57a664de797105f2714c45",
+        "analysis/geometry_review/ks1_ks2_review_v1/ks1_xmean_redundancy.csv": "67293f88319dab4c4daff1ebd77fb2532f5dcbed079552d59abfaae157ba9ea4",
+        "analysis/geometry_review/ks1_ks2_review_v1/ks2_background_comparison.png": "a2e6a69930441d0efb0a56baa36ec059e85585c141ef668f37c01115fceec708",
+        "analysis/geometry_review/ks1_ks2_review_v1/ks2_background_sensitivity.csv": "286e9b16de80a83c8021af7e69cc63120c69c9be899e874eabb29f6cbcafb882",
+        "analysis/geometry_review/ks1_ks2_review_v1/logs/analyze.log": "b05b24a7ee1bbbab5f51b39a42b18c08330f2b69f6e2b184a8c71aeaae20743e",
+        "analysis/geometry_review/ks1_ks2_review_v1/logs/run_all.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "analysis/geometry_review/ks1_ks2_review_v1/logs/run_all.log": "6bc5425176d2762f47b7397e932cf3739727e119f1ba1c361d7f1f080857648f",
+        "analysis/geometry_review/ks1_ks2_review_v1/overview.png": "ea5467a1b07edb9dd7831f85a04f6c0c02e5371a55eade7f5555ca39ce9b3dff",
+        "analysis/geometry_review/ks1_ks2_review_v1/parameter_decisions.csv": "443d26da143df9ce9dadad7439a7c29a4b82e79b1eba5cf8cfac4f794e8905d3",
+        "analysis/geometry_review/ks1_ks2_review_v1/profiles.npz": "7da82caf247f3ac5e70ac33e3d58a0c74acce1033ace5032ba1523f7b192dfc9",
+        "analysis/geometry_review/ks1_ks2_review_v1/provenance.json": "ab2c441bf30490847f497d0b4a277f5bb0329b8de238c59c592f18d92f366a00",
+        "analysis/geometry_review/ks1_ks2_review_v1/review_criteria.yaml": "9fbd8cbfca2a5cab5a93396366a35fc3b4c3bfac7d694d7e9d865e6f2ecafcf1",
+        "analysis/geometry_review/ks1_ks2_review_v1/stage_c_selection.json": "3a4eb2d2b74a1239a7c3f355b9320169186a1dbefa0f65b8e9e052e82c401485"
+      }
+    },
+    "tests/fixtures/legacy_geometry_v1": {
+      "n_files": 29,
+      "bytes": 234280,
+      "files": {
+        "tests/fixtures/legacy_geometry_v1/SHA256SUMS.txt": "bb4e0c4e35541c2ae836394f7ddea13ba952dacb5ec41de721d3287585213372",
+        "tests/fixtures/legacy_geometry_v1/cases.csv": "8b896eefbc4a0b8996b6d59cc5e37b5e62afe33fe3e8751b2749445d3b16cc25",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG001.geomTurbo": "3976cf33744aa0a4e689a2f8a9db208a98e67365dd117a754a9cb6e259e0d6ac",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG002.geomTurbo": "6620306450bc84e89e615bb6e883d0f870bbce854f638a2fc595884442b61d92",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG003.geomTurbo": "849ca1df265622d5f82397b7b67b07e6f7e08fd9294eb3f870f4fdb67357fe70",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG004.geomTurbo": "53b7cff529f87d1071eddbc54023cc9702b82fc49f8130ec9105a4a3cfcc833c",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG005.geomTurbo": "57f842423137f8a97e2fc276217f345069056927fe0525c8a1844fe6f9b2ec8f",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG006.geomTurbo": "38bb33c62d362d35c88e03fac0eb6a69e0acc544a9f0268f82a5d2df581656a6",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG007.geomTurbo": "67b5921baa4341d1a94247fd278ad0d7be98b03f327dd32d5ba5a075afd9fa0d",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG008.geomTurbo": "4d7a3ac5a37032a4452cca9d90f531656bf87eb395d752ef2df09d7c91ae5f07",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG009.geomTurbo": "9ecbdaf14ae5a09f2646b348a9ecece2962f50dacfd7a8706105d6778bcac8d7",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG010.geomTurbo": "bda8b90773b86f809ac213e20e2da811b5cfc031d597270068a1dc2c5a1cb92a",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG011.geomTurbo": "c33bb5990c3b6ee338a21ee041696d5fe8bdcf3fda2719b1da19925e6cf26cf2",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG012.geomTurbo": "3976cf33744aa0a4e689a2f8a9db208a98e67365dd117a754a9cb6e259e0d6ac",
+        "tests/fixtures/legacy_geometry_v1/expected/geomturbo/LG013.geomTurbo": "3976cf33744aa0a4e689a2f8a9db208a98e67365dd117a754a9cb6e259e0d6ac",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG001.dat": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG002.dat": "7b5f8e8214e6f242ba6de71643d8433aadc768333b45678636f3e3f1488613ef",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG003.dat": "6aa69fd95f17919ed37e1418214f1b1ac87e06a4e477b054a6b049347ad2cc7b",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG004.dat": "560e027b0b2a057469905fb5e16e8822393030f4c07f29e3f5dd848e4e13c093",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG005.dat": "b4adadad523d41a7a7144bd76d9f5e84dad40ee801bb1d7fc97f3b21daeaf6b9",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG006.dat": "9e933aff71ea8b7070a4a402d358a14e15f0c6c1be928f42eb9867ac55140bc4",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG007.dat": "feaf609e3825d7eb459d0766548a3b0453f5dc9e13f480cbd27aa021e0ad0150",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG008.dat": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG009.dat": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG010.dat": "b9e773bd7e6cbac22d5001f9f8823c24f9c84be30c0c43ada34bf5d8285dbe48",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG011.dat": "9c0db8f23ca944a2817092391fd7865df107ecb5042470030eecc1bd00ea411c",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG012.dat": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+        "tests/fixtures/legacy_geometry_v1/expected/profiles/LG013.dat": "0f0c05c3a265ffb1a5a760e3689b4859575d1eea27ee8be5d7b7f33ef504741e",
+        "tests/fixtures/legacy_geometry_v1/metadata.yaml": "0b81f12d26978818880c0708f702fb84bfd1563cd0f5e90d28e064818c466cca"
+      }
+    },
+    "design": {
+      "n_files": 3,
+      "bytes": 904,
+      "files": {
+        "design/bringup/README.md": "b4edc96b759f7c48f66835f9d493f2f54e3fcb90e1dfa8f24eb162e573c827e8",
+        "design/bringup/numeca_bringup_master_design.csv": "9fab301da0780d4f43ed78fdfc8bae54fa7a4927b84dd87a1d5dddef7cfdaf08",
+        "design/subsets/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  }
+}

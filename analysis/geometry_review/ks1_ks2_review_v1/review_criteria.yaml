@@ -1,0 +1,224 @@
+# =============================================================================
+# review_criteria.yaml
+# Ks1 / Ks2 focused geometry review (57 Cases)
+# =============================================================================
+# STATUS : TENTATIVE RESEARCH THRESHOLDS — NOT CALIBRATED ON THE 1891 POPULATION
+# SAVED  : written BEFORE any case is generated or classified.
+# SCOPE  : geometry only. No NUMECA / CFX / AI training / production DOE.
+# =============================================================================
+
+criteria_id: ks1_ks2_review_v1_tentative
+criteria_version: "1.0.0"
+criteria_status: TENTATIVE_RESEARCH_THRESHOLDS_NOT_CALIBRATED
+classification_authority: ADVISORY_ONLY
+
+algorithm:
+  design_version: "ks12-design-1.0.0"
+  metrics_version: "ks12-metrics-1.0.0"
+  analysis_version: "ks12-analysis-1.0.0"
+  random_seed: 20261017
+  deterministic: true
+  search_grids:
+    Xmean: {min: 0.06, max: 0.18, points: 201}
+    Ks1: {min: 3.0, max: 7.0, points: 161}
+    Ks2: {min: 0.05, max: 0.20, points: 121}
+
+# -----------------------------------------------------------------------------
+# 1. COORDINATES / NORMALIZATION / UNITS
+# -----------------------------------------------------------------------------
+coordinates:
+  generator_units: "legacy normalized units (chord_norm about 1.14)"
+  physical_scale: "metres = normalized * 0.06 / chord_norm"
+  chord_normalization: "all length-type features divided by the background chord_norm"
+  fixed_parameters:
+    SS1: 3.2
+    SS2: 0.8
+    Incidence: 0.0
+    Mach: 0.5
+    Npoint: 101
+    Ncirc: 4
+    Nscale1: 1.7
+    Nscale2: 1.7
+    CHORD_TARGET: 0.06
+    SPAN: 0.003
+
+units:
+  S_shape: "1 (fraction of chord per unit normalized parameter change)"
+  S_rear: "1 (fraction of chord per unit normalized parameter change)"
+  S_local: "1 (relative radius or fraction of chord per unit normalized parameter change)"
+  cosine: "1 (dimensionless)"
+  residual_fraction: "1 (dimensionless; 0 = perfectly substitutable, 1 = orthogonal)"
+  signal_to_noise: "1 (feature change divided by the same-case 4-decimal serialization noise)"
+
+# -----------------------------------------------------------------------------
+# 2. FIXED FEATURE DEFINITIONS
+# -----------------------------------------------------------------------------
+sampling:
+  xc_grid: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
+            0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+  index_mapping: "all cases share the same Npoint=101 xc grid and the same arc sampling counts; a target xc is mapped to the nearest index"
+  rear_region: "xc > 0.70 (rear 30% chord)"
+  front_region: "xc < 0.30"
+  interpolation: "no smoothing for yc / beta / pressure / suction; beta=atan(sc), kappa is the exact analytic derivative of the legacy polynomial"
+
+features:
+  meanline_offset: "yc_case(xc) - yc_ref(xc), divided by reference chord"
+  tangent_angle: "beta(xc)=atan(sc(xc)) in radians; difference case-ref"
+  meanline_curvature: "kappa(xc)=|dsc/dxc|/(1+sc^2)^1.5; difference * reference chord"
+  pressure_offset: "yp_case(xc)-yp_ref(xc), divided by reference chord"
+  suction_offset: "ys_case(xc)-ys_ref(xc), divided by reference chord"
+  contour_rms: "symmetric point-to-polyline RMS between canonical closed polygons / reference chord (same definition as the 100-case experiment)"
+  contour_max: "symmetric discrete Hausdorff distance / reference chord"
+  rear_meanline_rms: "RMS of meanline_offset for xc>0.70"
+  rear_angle_rms: "RMS of tangent-angle difference (rad) for xc>0.70"
+  rear_curvature_rms: "RMS of meanline-curvature difference*chord for xc>0.70"
+  rear_pressure_rms: "RMS of pressure_offset for xc>0.70"
+  rear_suction_rms: "RMS of suction_offset for xc>0.70"
+  le_radius_change_rel: "fitted LE arc radius relative change (frozen metrics module)"
+  te_radius_change_rel: "fitted TE arc radius relative change"
+  le_region_rms: "LE 5%-chord region symmetric RMS / reference chord"
+  te_region_rms: "TE 5%-chord region symmetric RMS / reference chord"
+  junction_jumps: "LE/TE junction angle jump in degrees (legacy Ncirc truncation diagnostic)"
+  serialization_noise: "contour RMS between the high-precision contour and its own 4-decimal .dat serialization"
+
+response_vector:
+  blocks:
+    - "meanline_offset at the 19 xc points (19 values)"
+    - "tangent_angle difference at the 19 xc points (19)"
+    - "meanline_curvature difference * chord at the 19 xc points (19)"
+    - "pressure_offset at the 19 xc points (19)"
+    - "suction_offset at the 19 xc points (19)"
+  total_dimensions: 95
+  normalization: "each block uses its physical normalization above; the whole vector is divided by |Delta u|"
+  delta_u:
+    Ks1: "0.5 (5.0 -> 7.0 for +0.5; the sign is kept so that 'increase' is always positive)"
+    Ks2: "0.5 (0.10 -> 0.175 where possible, otherwise the negative direction with sign correction)"
+    Xmean: "0.5 (baseline Xmean -> the in-range side at +/-0.5 u)"
+    K_m: "0.5 (background K_m -> the in-range side at +/-0.5 u)"
+    Metal2: "0.5 (background Metal2 -> the in-range side at +/-0.5 u)"
+  cosine_raw: "cosine of the two normalized 95-D response vectors"
+  cosine_equal_weight: "cosine after dividing each component by max(rms(v1_i), rms(v2_i), 1e-12), so that no single block dominates"
+  cosine_block: "cosine computed separately on the front (xc<0.30), middle, and rear (xc>0.70) blocks"
+  amplitude_ratio: "||v_Ks|| / ||v_other||"
+  residual_fraction: "||v_Ks - (v_Ks·v_other/||v_other||^2) v_other|| / ||v_Ks||; 0 = fully explained by the other parameter"
+  stability: "min / median / max of cosine_raw over the 7 backgrounds (B0 global baseline + B1..B6)"
+
+# -----------------------------------------------------------------------------
+# 3. SENSITIVITY DEFINITIONS
+# -----------------------------------------------------------------------------
+sensitivity:
+  normalized_offset: "Delta u = (value - background_value) / (range_max - range_min); sign kept"
+  definition: "S = |feature_after - feature_background| / |Delta u|"
+  background_relative: "every B/C case is compared with ITS OWN background reference, never only with the global baseline"
+  global_shape: "S_shape = max(S_contour_rms, S_meanline_rms, S_angle_rms, S_curvature_rms)"
+  rear_local: "S_rear = max(S_rear_meanline, S_rear_angle, S_rear_curvature, S_rear_pressure, S_rear_suction)"
+  local_edges: "S_local = max(|S_le_radius|, S_le_region, |S_te_radius|, S_te_region)"
+  noise_relative: "signal_to_noise = feature_change / serialization_noise_of_the_same_case"
+  background_counts: "7 backgrounds: B0=global baseline, B1..B6 as defined in experiment_config.yaml"
+
+# -----------------------------------------------------------------------------
+# 4. THRESHOLDS (tentative, research-only)
+# -----------------------------------------------------------------------------
+thresholds:
+  keep_shape: 0.010            # 1.0 % chord per full range
+  review_shape: 0.002          # 0.2 % chord per full range
+  keep_rear: 0.010             # rear-local 1.0 % chord
+  review_rear: 0.002
+  keep_local: 0.020            # 2.0 % local edge radius/region
+  review_local: 0.010
+  noise_multiplier: 10.0       # feature change must exceed 10x the same-case 4-decimal noise
+  cosine_independence: 0.90    # below this, response directions are considered distinct
+  cosine_high: 0.98
+  residual_independence: 0.25  # >=25% of the weaker response is outside the other parameter's direction
+  substitution_max_residual: 0.25
+  keep_min_backgrounds: 4      # of 7
+  fix_max_backgrounds: 2       # of 7
+  min_resolved_backgrounds: 3  # for local-only effects
+  curvature_stability_max: 0.25
+  circle_fit_residual_max_rel: 0.05
+  circle_fit_min_span_deg: 45.0
+  circle_fit_window_chord: 0.02
+  edge_region_chord: 0.05
+  junction_diagnostic_deg: 15.0
+  junction_jump_diagnostic_deg: 15.0
+  substitution_convergence_tol: 1.0e-4
+
+threshold_sources:
+  keep_shape: "same 1%-chord tentative level as the 100-case experiment; not calibrated"
+  review_shape: "5x above the measured 4-decimal noise floor and 5x below keep_shape"
+  keep_rear: "rear-local effects are allowed to be smaller in global RMS; 1% chord is still clearly visible"
+  noise_multiplier: "10x margin over the measured 4-decimal serialization noise; prevents deleting a parameter because of text rounding"
+  cosine_independence: "90 degrees is the conventional 'distinct direction' boundary; 0.90 is a conservative research threshold"
+  residual_independence: "25% of the weaker response must remain unexplained before claiming independent geometry control"
+  substitution_max_residual: "a single-parameter substitute is accepted only if it explains at least 75% of the target contour change"
+  keep_min_backgrounds: "majority (4/7) requirement to avoid a single-background conclusion"
+  fix_max_backgrounds: "fixing requires the effect to be weak in at least 5/7 backgrounds"
+
+# -----------------------------------------------------------------------------
+# 5. DECISION RULES (evaluated in this order)
+# -----------------------------------------------------------------------------
+decisions:
+  ks1:
+    - id: K1_KEEP
+      when: "resolved shape effect (S_shape >= keep_shape or S_local >= keep_local, signal_to_noise >= noise_multiplier) in >= keep_min_backgrounds AND (max cosine_raw < cosine_independence OR max residual_fraction > residual_independence) AND substitution residual_fraction > substitution_max_residual in >= keep_min_backgrounds"
+      decision: KEEP_RECOMMENDED
+      reason: "stable independent geometry effect that a single Xmean value cannot reproduce"
+    - id: K1_FIX
+      when: "S_shape < review_shape AND S_local < review_local in >= 6/7 backgrounds AND signal_to_noise < noise_multiplier in >= 5/7 backgrounds, OR substitution residual_fraction <= substitution_max_residual in >= 6/7 backgrounds with cosine_raw >= cosine_high in >= 6/7"
+      decision: FIX_RECOMMENDED
+      reason: "no resolved independent effect, or a single Xmean value reproduces the contour"
+    - id: K1_REVIEW
+      when: "none of the above"
+      decision: FURTHER_REVIEW
+      reason: "background-dependent, near threshold, or substitution evidence is mixed"
+  ks2:
+    - id: K2_KEEP
+      when: "resolved rear-local effect (S_rear >= keep_rear, signal_to_noise >= noise_multiplier) in >= keep_min_backgrounds AND (cosine with K_m and Metal2 < cosine_independence OR residual_fraction > residual_independence) AND substitution by K_m/Metal2 residual_fraction > substitution_max_residual in >= keep_min_backgrounds"
+      decision: KEEP_RECOMMENDED
+      reason: "stable rear-local control not reproduced by K_m or Metal2"
+    - id: K2_FIX
+      when: "S_rear < review_rear AND S_shape < review_shape in >= 6/7 backgrounds AND (signal_to_noise < noise_multiplier in >= 5/7 OR substitution residual_fraction <= substitution_max_residual in >= 6/7)"
+      decision: FIX_RECOMMENDED
+      reason: "rear-local effect is below resolution or fully reproducible by K_m/Metal2"
+    - id: K2_REVIEW
+      when: "none of the above"
+      decision: FURTHER_REVIEW
+      reason: "effect appears only in specific backgrounds, or evidence is contradictory"
+
+  notes:
+    - "a high cosine alone NEVER triggers FIX; the residual and substitution evidence are mandatory"
+    - "a low global S_comp alone NEVER triggers FIX for Ks2; the rear-local and noise checks are mandatory"
+    - "SS1/SS2 are FIXED_BY_REVIEW and are not re-classified here"
+    - "all decisions are advisory; they do not change any formal parameter state"
+
+# -----------------------------------------------------------------------------
+# 6. NUMERICAL / RESOLUTION RULES
+# -----------------------------------------------------------------------------
+numerics:
+  high_precision_source: "in-memory float64 arrays; the 4-decimal .dat text is used only to measure serialization noise"
+  serialization_noise: "contour RMS/max between high-precision and 4-decimal serialized profile, computed for every case"
+  curvature: "exact analytic derivative of the legacy meanline polynomial (no sparse finite differences)"
+  contour_distance: "exact segment geometry, no tolerance, no snapping (frozen QC kernel)"
+  circle_fit: "Kasa fit on the 7 inserted arc points; invalid fits are reported as unavailable"
+  failed_cases: "generation/QC failures are kept with parameters, status and reason; never replaced"
+  probe_geometries: "the substitution search and the Xmean/K_m/Metal2 response probes are in-memory only; their parameters and numeric results are saved in the CSV/JSON, no geometry files are written"
+
+# -----------------------------------------------------------------------------
+# 7. EVIDENCE REQUIREMENTS
+# -----------------------------------------------------------------------------
+evidence:
+  ks1_required:
+    - "7 Ks1 levels at the global baseline"
+    - "Ks1 low/high at B1..B6"
+    - "response cosine / amplitude ratio / residual per background"
+    - "forward substitution: best Xmean and residual fraction per background"
+    - "reverse substitution: best Ks1 and residual fraction per background"
+    - "local LE/TE/meanline evidence"
+  ks2_required:
+    - "7 Ks2 levels at the global baseline"
+    - "Ks2 low/high at B1..B6"
+    - "rear 30% meanline / angle / curvature / pressure / suction metrics"
+    - "global contour metrics"
+    - "serialization noise and signal-to-noise ratio"
+    - "cosine / residual vs K_m and Metal2"
+    - "substitution by K_m and Metal2"
