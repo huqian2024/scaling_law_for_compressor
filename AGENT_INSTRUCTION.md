@@ -143,10 +143,12 @@ DOE 维度（不得混写）
 
 约束方案（ANALYSIS / PROPOSAL，待人工确认）
   docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
-  A  : Metal2 6.0-32，其余 10 参数不变  -> 85/85 ACCEPT，排除 1/15 REJECT（推荐）
-  A2 : Metal2 8.0-32                    -> 85/85 ACCEPT，排除 4/15（可选）
-  B  : A + K_m <= 0.3125                -> 85/85，排除 6/15，与 C840 K_m 证据冲突
-  C  : A + K_m <= 0.2012                -> 83/85（损失 2 ACCEPT），仅对照
+  A  : Metal2 6.0-32，其余 10 参数不变 -> 85/85 ACCEPT，排除 1/15 REJECT（推荐）
+       冻结 SS1/SS2 子集：ACCEPT 60/60，排除 1/6
+  B  : Metal2 8.0-32                  -> 85/85，排除 4/15
+       冻结子集仍为 ACCEPT 60/60、排除 1/6（额外 3 个来自 SS1/SS2 非冻结样本）
+  C  : Metal2 >= 10.0 且 K_m <= 0.20   -> 75/85（损失 10），排除 13/15
+       冻结子集 54/60（损失 6），且与 C840 的 K_m 证据冲突；仅作对照
   final_geometry_parameters.yaml 未修改
 ```
 

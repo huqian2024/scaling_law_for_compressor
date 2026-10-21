@@ -16,6 +16,13 @@ ACCEPT        : 85（形状合理）
 ```
 
 ```text
+记录更正（2026-10-21）:
+  本记录最初只转述了 15 个 REJECT，其余 85 个曾标为 UNREVIEWED —— 这是错误的。
+  按师兄的完整评审结论，85 个全部为 ACCEPT、UNREVIEWED = 0。
+  评审来源、日期、依据图未改变；未新增任何逐案意见。
+```
+
+```text
 字段约定（不得混用）:
   case_metrics.csv  : hard_qc_status / frozen_qc_status  -> 几何 QC（数学/自动）
   human_review_*.csv: human_acceptance / human_comment   -> 人工工程评审

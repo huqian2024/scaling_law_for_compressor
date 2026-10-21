@@ -535,9 +535,11 @@ Independently still open:
 4. FINAL_RAW_CFD_ATTEMPTS   (after a real NUMECA/CFX failure-rate stress test)
 5. K_m upper bound / Metal2 lower bound tightening (evidence documented,
    values NOT decided; final_geometry_parameters.yaml left unchanged)
+   -> current proposal: Metal2 lower bound only; K_m upper bound NOT tightened
 6. whether Solidity / Metal1 enter the production DOE
-7. which geometry constraint scheme to adopt (A / A2 / B / C proposal in
-   docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md; scheme A recommended)
+7. which geometry constraint scheme to adopt (A / B / C proposal in
+   docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md; scheme A = Metal2 >= 6.0
+   recommended; A-min variant Metal2 >= 2.0 has the same 100-sample effect)
 ```
 
 The exact values MUST NOT be decided by an AI agent.
