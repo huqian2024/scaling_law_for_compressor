@@ -8,7 +8,7 @@
 
 ---
 
-# 0. 当前权威项目状态（截至 2026-10-13）
+# 0. 当前权威项目状态（截至 2026-10-21）
 
 > 本节记录**当前已冻结的事实**。若与下文历史描述冲突，**以本节为准**。
 
@@ -46,7 +46,8 @@ FAILURE_RESERVE_POLICY      = PENDING（等真实 CFD failure rate）
 （旧的 FINAL_NMAX 一词已退役：不得再用来表示
   training N_max / usable total / raw CFD attempts 中的任何单一概念。）
 权威冻结记录: docs/DESIGN_FREEZE_2026-10-13.md
-今日 session 记录: docs/SESSION_DELIVERY_2026-10-13.md
+该冻结 session 记录: docs/SESSION_DELIVERY_2026-10-13.md
+最新 session 记录: docs/SESSION_DELIVERY_2026-10-17.md（几何参数研究，探索性）
 ```
 
 ```text
@@ -55,6 +56,53 @@ Geometry local pipeline = COMPLETE / PASS
   geometry core exact regression  PASS（26/26）
   geometry generator              PASS（generator contract FROZEN V1.2）
   Geometry QC                     PASS（QC contract FROZEN V1；frozen baseline 13/13 PASS）
+```
+
+Geometry 参数研究（2026-10-17，**全部为探索性，未批准生产范围**）：
+
+```text
+1) 全参数敏感性 + 边界检验（最新一轮敏感性扫描）
+   analysis/geometry_review/parameter_sensitivity_v1_100cases/
+   case_id C820001..C820100（100 case；S1=60, S2=20, S3=20）
+   生成 100/100，硬性 QC 100/100，冻结 QC 100/100
+   总览图：overview_001_050.png / overview_051_100.png
+   参数表：case_design.csv；几何指标：case_metrics.csv
+   自动筛选：FIX_CANDIDATE=SS1,SS2；KEEP_CANDIDATE=10 个；REVIEW=Ks2
+   注意：本轮 SS1（2.4-4.0）与 SS2（0.5-1.1）是可变参数；
+         冻结发生在之后的人工评审，不能改写成“一直固定”。
+
+2) Ks1/Ks2 专项复核
+   analysis/geometry_review/ks1_ks2_review_v1/  C830001..C830057（57/57 PASS）
+   SS1=3.2、SS2=0.8 已在每个 Case 中 FIXED_BY_REVIEW
+
+3) 几何参数最终裁决 V1（仅限探索性几何 DOE）
+   analysis/geometry_review/parameter_final_decision_v1/
+   新增 C840001..C840040（49 行设计，含 9 个复用；49/49 PASS）
+   几何维度 = 11：Xthick Tmax Metal2 Solidity Metal1 T1 T2 Xmean K_m Ks1 Ks2
+   开放范围（探索性）：见 final_geometry_parameters.yaml
+   SS1 = 3.2 FIXED_BY_REVIEW；SS2 = 0.8 FIXED_BY_REVIEW（人工决定）
+   Xmean 探索上界保持 0.18（不扩展到 0.20/0.22）
+   运行条件 2 维：Incidence=0 deg、Mach=0.5（不改变叶型；CFX 实现仍 TBD）
+```
+
+```text
+参数现状（后续参数化研究）:
+  SS1 = 3.2  FIXED（code/geometry_legacy_v1.py:44,
+                    tools/geometry_final_decision_v1.py:86,
+                    final_geometry_parameters.yaml）
+  SS2 = 0.8  FIXED（code/geometry_legacy_v1.py:45,
+                    tools/geometry_final_decision_v1.py:86,
+                    final_geometry_parameters.yaml）
+  其余 11 个几何参数 OPEN（探索性范围，不是生产范围）
+
+历史评审阶段（不代表当前进度）:
+  V1 = 30 case C800001..C800030（已归档）
+  V2 = 40 case C810001..C810040（评审包已交付，无评审记录）
+
+FINAL_PRODUCTION_RANGES 仍为 PENDING：
+    上述探索性配置 NOT a production approval / NOT a CFD certification。
+权威记录: analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
+          docs/SESSION_DELIVERY_2026-10-17.md
 ```
 
 已准备的 production 代码：
