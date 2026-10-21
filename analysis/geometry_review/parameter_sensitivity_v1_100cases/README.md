@@ -6,7 +6,14 @@ Case 号段         : C820001 .. C820100
 几何生成成功      : 100 / 100
 实验硬性 QC 通过  : 100 / 100
 冻结 QC 通过      : 100 / 100
-本目录体积        : 2.358 MB
+人工工程评审      : 15 REJECT / 85 UNREVIEWED / 0 ACCEPT（2026-10-21）
+本目录体积        : 约 2.36 MB（provenance.output_size_mb = 2.359；输出产物体积，不含未跟踪 logs）
+```
+
+```text
+几何 QC 字段（case_metrics.csv）与人工评审字段（human_review_2026-10-21.csv）
+严格分离；15 个被拒 Case 的 hard/frozen QC 全部 PASS。
+UNREVIEWED 不等于 ACCEPT；几何 QC PASS 不等于工程认可。
 ```
 
 本目录只做 13 参数几何敏感性实验与自动筛选，**不包含** NUMECA 网格、CFX 结果、
@@ -36,6 +43,9 @@ C840 40 新增 (C840001..C840040) 之后：几何参数最终裁决 V1（探索�
   analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
   analysis/geometry_review/parameter_final_decision_v1/final_geometry_parameters.yaml
   docs/SESSION_DELIVERY_2026-10-17.md
+  docs/SESSION_DELIVERY_2026-10-21.md
+  docs/PARAMETER_SPACE_RECONCILIATION.md
+  docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 ```
 
 ## 决策分布（自动建议，不等于冻结）
@@ -57,6 +67,8 @@ REVIEW          : 1
 | `case_metrics.csv` | 100 行 QC + 几何指标 |
 | `parameter_sensitivity.csv` | 13 行定量敏感性 |
 | `parameter_decisions.csv` | 13 行自动筛选建议 |
+| `human_review_2026-10-21.csv` | 100 行人工评审标签（REJECT / UNREVIEWED + 来源/日期/依据） |
+| `HUMAN_REVIEW_2026-10-21.md` | 人工评审记录、15 个 Case 参数对比与边界分析 |
 | `profiles.npz` | 生成成功 Case 的高精度曲线（按 Case ID） |
 | `stage3_selection.json` | 第三阶段候选池与选择依据 |
 | `screening_criteria.yaml` | 判据、阈值、单位、规则（分类前已保存） |

@@ -62,6 +62,13 @@ envelope_clearance      5 个 case 为负（诊断量，非失败，非碰撞）
   自动筛选建议 = parameter_decisions.csv
       FIX_CANDIDATE 2（SS1, SS2）/ KEEP_CANDIDATE 10 / REVIEW 1（Ks2）
 
+人工工程评审（2026-10-21，师兄，用户转述）:
+  记录 = human_review_2026-10-21.csv（100 行）
+  分析 = HUMAN_REVIEW_2026-10-21.md
+  REJECT 15 / UNREVIEWED 85 / ACCEPT 0
+  15 个被拒 Case 全部 hard QC + frozen QC PASS -> 自动 QC 未识别
+  逐案原因待补充；UNREVIEWED 不等于合格
+
 注意（必须区分历史扫描与后续冻结决策）:
   C820 扫描时 SS1 = 2.4-4.0、SS2 = 0.5-1.1 是可变参数；
   SS1 = 3.2 / SS2 = 0.8 的固定是之后的人工决定（FIXED_BY_REVIEW），
@@ -77,6 +84,9 @@ envelope_clearance      5 个 case 为负（诊断量，非失败，非碰撞）
   parameter_final_decision_v1/FINAL_DECISION.md
   parameter_final_decision_v1/final_geometry_parameters.yaml
   docs/SESSION_DELIVERY_2026-10-17.md
+  docs/SESSION_DELIVERY_2026-10-21.md
+  docs/PARAMETER_SPACE_RECONCILIATION.md
+  docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 ```
 
 ---
@@ -108,6 +118,8 @@ analysis/geometry_review/
 │   ├── case_metrics.csv              100 行几何指标 + QC
 │   ├── parameter_sensitivity.csv / parameter_decisions.csv   13 行敏感性 / 建议
 │   ├── screening_criteria.yaml       预登记判据
+│   ├── human_review_2026-10-21.csv   100 行人工评审标签（15 REJECT / 85 UNREVIEWED）
+│   ├── HUMAN_REVIEW_2026-10-21.md    人工评审记录与边界分析
 │   └── profiles.npz                  高精度曲线
 ├── ks1_ks2_review_v1/            C830001..C830057（57 case Ks1/Ks2 专项复核）
 │   ├── README.md / REPORT.md
@@ -255,23 +267,31 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
 ## 8. 下一步（本阶段之后）
 
 ```text
-1) 师兄 / owner 工程判断（目前仍无记录）
-   入口 A（最新）：parameter_final_decision_v1/FINAL_DECISION.md
-                   + decision_summary.png / overview.png
-   入口 B（历史）：senior_review_v2/00_all_cases_overview.png + 00_case_index.csv
-   评价写在 human_acceptance / human_comment 列（或各 case 的 parameters.json）
-2) CFD / 工程验证（仓库内尚未进行）
+1) 人工工程评审（已部分完成）
+   已完成：C820 100-case -> 15 REJECT / 85 UNREVIEWED（2026-10-21）
+           入口：parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+   待补充：15 个 Case 的逐案不合格原因（部位与判据）
+   未覆盖：C830（57）、C840（49 行）、V2（40）仍无人工评审记录
+2) 参数空间与 DOE 维度决策（owner / 导师）
+   生产 DOE 仍为 d=6；13 维只是探索空间；FINAL_PRODUCTION_RANGES 仍 PENDING
+   见 docs/PARAMETER_SPACE_RECONCILIATION.md
+3) 单参数边界复核（仅建议，需人工确认）
+   K_m 上界（低 Xmean 背景，候选 ≈0.20）、Metal2 下界（> 0）
+   证据见 HUMAN_REVIEW_2026-10-21.md 第 2 节
+   复杂联合约束（含 JC_XMEAN_KS1_KM）当前不实现，只作历史候选记录
+4) CFD / 工程验证（仓库内尚未进行）
    - Xmean 高端 × Ks1 高端的角点
    - Ks2 后段中弧线控制范围
    - 反向曲率叶瓣的网格敏感性（网格不足会被数值耗散抹平）
-3) 用历史 1891 样本校准研究阈值（当前判据为 TENTATIVE，未校准）
-4) 在 DOE 采样器中真正实现联合限制 JC_XMEAN_KS1_KM（当前未激活）
-5) 依据以上结果冻结 FINAL_PRODUCTION_RANGES（六维生产范围）
+5) 用历史 1891 样本校准研究阈值（当前判据为 TENTATIVE，未校准）
+   同时验证自动 QC 能否识别人工拒绝的叶型（当前 15/15 未被识别）
+6) 依据以上结果冻结 FINAL_PRODUCTION_RANGES（六维生产范围）
+   下一阶段筛选策略见 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 ```
 
 ```text
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
-Do not treat final_geometry_parameters.yaml as a production-range approval.
+Do not read UNREVIEWED as ACCEPT.
 ```
 
 **Geometry QC PASS ≠ 气动合理 ≠ 网格/CFD 可行。** 本目录不构成 DOE、不构成 CFD 生产。

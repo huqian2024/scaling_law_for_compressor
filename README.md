@@ -9,10 +9,12 @@
 ## 当前状态（2026-10-21）
 
 ```text
-生产规模 / DOE / 参数顺序      FROZEN（2026-10-13）  docs/DESIGN_FREEZE_2026-10-13.md
+生产规模 / DOE / 参数顺序      FROZEN（2026-10-13）：生产 DOE 仍为 d = 6
+                               docs/DESIGN_FREEZE_2026-10-13.md
 本地几何流水线 + QC 契约       PASS（legacy 回归 / 生成器 / QC 契约）
 几何参数研究（探索性）         DONE：C820 100-case 敏感性 -> C830 57-case 复核
                                     -> C840 几何参数最终裁决 V1
+C820 人工工程评审              15 REJECT / 85 UNREVIEWED / 0 ACCEPT（2026-10-21）
 SS1 / SS2                      3.2 / 0.8 FIXED_BY_REVIEW
 其余 11 个几何参数             OPEN（探索性范围，未批准为生产范围）
 FINAL_PRODUCTION_RANGES       PENDING  <- 主要 blocker
@@ -23,6 +25,8 @@ NUMECA / CFX / HPC            NOT STARTED
 ```text
 Geometry QC PASS  !=  气动合理  !=  可网格化  !=  CFD 可收敛
 探索性参数配置      !=  FINAL_PRODUCTION_RANGES
+13 维探索空间       !=  生产 DOE 已冻结为 13 维（生产 DOE 仍为 6 维）
+UNREVIEWED          !=  ACCEPT
 ```
 
 ## 几何参数研究链（Case 号段互不重叠）
@@ -45,11 +49,16 @@ Case      C820001 .. C820100（S1=60, S2=20, S3=20）
 几何指标  case_metrics.csv（100 行）
 结果      生成 100/100，硬性 QC 100/100，冻结 QC 100/100
 自动筛选  FIX_CANDIDATE=SS1,SS2 / KEEP_CANDIDATE=10 / REVIEW=Ks2
+人工评审  15 REJECT / 85 UNREVIEWED / 0 ACCEPT（human_review_2026-10-21.csv）
 ```
 
 > 该 100-case 扫描**当时**把 `SS1`（2.4–4.0）、`SS2`（0.5–1.1）作为可变参数；
 > `SS1 = 3.2`、`SS2 = 0.8` 是之后的人工评审冻结决定（`FIXED_BY_REVIEW`）。
 > 两者不能混写。
+>
+> 人工评审只覆盖 100-case 的 15 个 REJECT；其余 85 个为 UNREVIEWED（不等于合格）。
+> 15 个被拒 Case 全部通过几何 QC，说明自动 QC 尚不能替代工程评审。
+> 分析：`analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md`
 
 
 ## 文档入口
@@ -67,8 +76,13 @@ docs/SESSION_DELIVERY_2026-10-11.md             历史 session 记录
 docs/SESSION_DELIVERY_2026-10-13.md             生产冻结 session 记录
 docs/SESSION_DELIVERY_2026-10-15.md             几何评审 V1/V2 + 40-case 评审包
 docs/SESSION_DELIVERY_2026-10-17.md             ★ 100-case 敏感性 + Ks1/Ks2 复核 + 最终裁决
+docs/SESSION_DELIVERY_2026-10-21.md             ★ 参数空间核对 + 人工评审补录 + 筛选策略
+docs/PARAMETER_SPACE_RECONCILIATION.md          6D 冻结 DOE vs 13 维探索空间对照表
+docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  下一阶段筛选策略（宽范围 + 简单约束 + 筛选）
 analysis/geometry_review/README.md              几何评审/研究目录入口
 analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md   100-case 分析报告
+analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+                                                人工评审记录 + 边界分析
 analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md 几何参数最终裁决
 ```
 
@@ -103,8 +117,14 @@ conda run -n ai4s python -m pytest -q
 Do not RUN production design / geometry generation before
 FINAL_PRODUCTION_RANGES is frozen.
 Do not treat exploratory ranges (V2 / C820 / C830 / C840) as production ranges.
+Do not treat the 13-dim exploratory space as a frozen production DOE (it is d = 6).
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
+Do not read UNREVIEWED as ACCEPT, and do not equate geometry QC PASS with
+engineering acceptance.
+Do not implement complex joint constraints (JC_XMEAN_KS1_KM) in any sampler
+while Xmean upper bound is 0.18.
 Do not guess the CFX implementation of Incidence / Mach.
-Do not modify legacy files, frozen contracts or experiment results.
+Do not modify legacy files, frozen contracts, existing experiment results or
+range values without an explicit human decision.
 Do not claim aerodynamic validity or CFD feasibility from Geometry QC PASS.
 ```

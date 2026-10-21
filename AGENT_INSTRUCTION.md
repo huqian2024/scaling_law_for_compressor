@@ -105,6 +105,43 @@ FINAL_PRODUCTION_RANGES 仍为 PENDING：
           docs/SESSION_DELIVERY_2026-10-17.md
 ```
 
+2026-10-21 补充（文档核对 + 人工评审补录 + 下一阶段策略）：
+
+```text
+C820 人工评审（师兄，用户转述，2026-10-21）
+  记录 : analysis/geometry_review/parameter_sensitivity_v1_100cases/
+           human_review_2026-10-21.csv  +  HUMAN_REVIEW_2026-10-21.md
+  REJECT     : 15 -> C820033 C820034 C820035 C820036 C820043 C820062
+                     C820081 C820082 C820083 C820084
+                     C820089 C820090 C820091 C820092 C820100
+  UNREVIEWED : 85（不等于合格）；ACCEPT : 0
+  逐案原因未提供 -> 待补充，不得编造
+  15 个全部 hard/frozen QC PASS -> 现有自动 QC 未识别这类工程不合理
+
+DOE 维度（不得混写）
+  生产 DOE 仍为 2026-10-13 冻结的 d = 6：
+      [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
+  当前 13 维（11 几何 + 2 运行）是探索性研究空间，
+  不是“生产 DOE 已冻结为 13 维”
+  FINAL_PRODUCTION_RANGES 仍 PENDING
+  对照表：docs/PARAMETER_SPACE_RECONCILIATION.md
+  Metal1 = 入口金属角（legacy 53 = 48 + DeltaBeta 5）；
+  Incidence = 入口气流角工况变量；二者不得混用；CFX 实现仍 TBD
+
+联合约束
+  JC_XMEAN_KS1_KM（K_m >= 0.15，0.18 < Xmean <= 0.20）
+  在 Xmean <= 0.18 下适用区间为空 -> 无法触发
+  保持 active_at_final_bound = false；不写入采样器；不作为生产硬约束
+
+下一阶段策略（PROPOSED / NOT IMPLEMENTED）
+  宽范围采样 + 少量简单硬约束 + 自动几何筛选 + 必要人工复核
+  SS1/SS2 固定；其余 11 几何参数可变（范围仍需最终确认）
+  只收紧证据明确的单参数边界；不优先建立复杂联合约束
+  记录全部被拒样本与原因；验证自动 QC 与人工判断的一致性
+  文档：docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
+  本轮不实现采样器 / 约束过滤器 / 新 QC 算法，不修改任何范围数值
+```
+
 已准备的 production 代码：
 
 ```text

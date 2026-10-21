@@ -69,8 +69,13 @@ Geometry final decision V1      DONE / EXPLORATORY FINAL (C840001..C840040 new +
                                 9 reused = 49 rows; 11 geometry dimensions KEEP)
 SS1 / SS2                       3.2 / 0.8 FIXED_BY_REVIEW (human decision made
                                 AFTER the 100-case scan; that scan DID vary them)
+C820 human engineering review   RECORDED 2026-10-21 (15 REJECT / 85 UNREVIEWED /
+                                0 ACCEPT; per-case reasons still missing)
 FINAL_PRODUCTION_RANGES         STILL PENDING   <- main blocker (the exploratory
                                 geometry config is NOT a production approval)
+Production DOE dimension        UNCHANGED: d = 6 (2026-10-13 freeze); the 13-dim
+                                exploratory space is NOT a frozen production DOE
+Engineering acceptance          NONE recorded (Geometry QC PASS is not acceptance)
 
 01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
 generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
@@ -348,6 +353,143 @@ Full session record: `docs/SESSION_DELIVERY_2026-10-17.md`.
 Regression status at this documentation sync (2026-10-21):
 `conda run -n ai4s python -m pytest -q` -> 131 passed, 17 subtests passed.
 
+## PARAMETER SPACE RECONCILIATION (2026-10-21)
+
+Two different stages must not be conflated:
+
+```text
+Stage A — production DOE (frozen 2026-10-13)
+    d = 6 : [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
+    method/seed/order FROZEN; FINAL_PRODUCTION_RANGES still PENDING
+    (legacy ranges only, NOT final production ranges)
+
+Stage B — geometry parameter research (2026-10-17, exploratory)
+    11 geometry parameters + 2 operating parameters (SS1/SS2 fixed)
+    analysis only: NOT a production DOE, NOT approved ranges
+```
+
+```text
+The 13-dim space is NOT "the production DOE frozen at 13 dims".
+Whether the production DOE dimension changes is an owner decision (NOT taken here).
+The 2026-10-13 freeze document is preserved unchanged.
+"13" has two different meanings and must be written explicitly:
+    (a) generator PARAM_NAMES = 13 shape parameters (includes SS1/SS2)
+    (b) candidate DOF = 11 KEEP geometry + 2 operating = 13 (SS1/SS2 fixed)
+```
+
+Full comparison table, physical definitions, independence facts and the Metal1 /
+Incidence distinction: `docs/PARAMETER_SPACE_RECONCILIATION.md`.
+
+```text
+Metal1      = inlet METAL angle (geometry)   legacy 48 + DeltaBeta(5) = 53 deg
+Incidence   = inlet FLOW-angle operating variable; CFX implementation TBD
+Verified    : changing only Incidence/Mach gives byte-identical .dat / .geomTurbo
+Open        : legacy comment says 49 deg, code uses 53 deg (4 deg, unconfirmed)
+```
+
+Joint constraint status:
+
+```text
+JC_XMEAN_KS1_KM : K_m >= 0.15 for 0.18 < Xmean <= 0.20
+current Xmean upper bound = 0.18  -> the interval is EMPTY -> cannot trigger
+active_at_final_bound = false (kept)
+=> recorded as a historical / inactive candidate, NOT a production hard constraint,
+   NOT implemented in any sampler
+```
+
+
+## C820 HUMAN ENGINEERING REVIEW (2026-10-21)
+
+```text
+review file : analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
+analysis    : analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+rows        : 100 (case_design.csv order; 100 unique IDs)
+REJECT      : 15  -> C820033 C820034 C820035 C820036 C820043 C820062
+                     C820081 C820082 C820083 C820084
+                     C820089 C820090 C820091 C820092 C820100
+UNREVIEWED  : 85  (NOT accepted)
+ACCEPT      : 0
+source      : senior engineer review (师兄), transcribed by the owner
+comment     : pending (per-case reasons NOT provided; never invented)
+```
+
+```text
+All 15 rejected cases are hard QC PASS and frozen QC PASS
+=> the current automatic QC cannot detect this class of engineering problem.
+Field separation: case_metrics.csv = geometry QC; human_review_*.csv = human label.
+These labels DO NOT change any C830 / C840 historical decision.
+```
+
+Boundary findings (evidence-based, NOT decisions):
+
+```text
+supported single-parameter tightening candidates
+    K_m upper bound (only at low Xmean ~ 0.08): 0.2012 not rejected,
+        0.225 / 0.2667 / 0.3083 / 0.35 rejected consecutively -> candidate ~ 0.20
+    Metal2 lower bound: Metal2 = 0 rejected; 21.33 / 32 / 15 not rejected
+        -> lower bound must be > 0, exact value unknown
+
+interaction-driven (do NOT turn into a simple hard bound yet)
+    K_m x Xmean : 0.2875 rejected at Xmean 0.09, not rejected at 0.15;
+                  0.3125 not rejected at Xmean 0.164
+    S3 groups C820081-084 and C820089-092 : whole group rejected
+        (all 4 variants) -> common background, not the varied parameter
+    C820100 : only SS2 differs from its anchor C820097 (1.0742 -> 0.59),
+        but SS2 = 0.59 is not rejected in another background and the S1 SS2
+        sweep (0.5 / 0.9 / 1.1) is not rejected -> interaction, not a simple bound
+
+insufficient evidence
+    exact Metal2 lower bound, Solidity upper bound, SS2 low bound,
+    exact K_m threshold, cause of the human rejection
+```
+
+```text
+No data conflict with C830/C840: the 9 reused C840 cases
+(C820027/028/029, C830026/027/028, C830031/032/033) contain none of the 15 rejects
+(parameter vectors compared one by one).
+
+But there IS a judgement-scope conflict (recorded, NOT rewritten):
+    C830 has 9 cases in the same "low Xmean + high K_m" direction
+        (Xmean=0.06, K_m=0.35: C830021-025, C830050-053), all geometry QC PASS,
+        but never human-reviewed.
+    C840's soft-risk audit located the max RCR 0.2529 at C830050 in that corner
+        and kept it as "existing historical morphology", so K_m stayed KEEP
+        0.10-0.35 (a numerical substitution result, NOT an engineering review).
+    The 2026-10-21 human review rejects that direction at Xmean 0.08-0.09
+        (C820033-036, C820062).
+=> keep the historical records as they are; K_m upper bound becomes a
+   human-decision item (candidate tightening), never an automatic rewrite.
+```
+
+## NEXT-STAGE SCREENING STRATEGY (2026-10-21)
+
+```text
+wide-range sampling + few simple hard constraints + automatic geometry screening
++ necessary human review
+```
+
+```text
+1. SS1 = 3.2, SS2 = 0.8 stay FIXED
+2. the other 11 geometry parameters stay variable (ranges still to be confirmed)
+3. tighten a single-parameter bound only with clear evidence
+4. do NOT prioritize complex multi-parameter joint constraints
+5. generate many candidates and screen at geometry level before mesh / CFD
+6. record every rejected sample and reason (append-only, never delete)
+7. validate automatic QC against human judgement (current QC misses all 15)
+8. training set stays nested (D_N prefix); test set fixed and independent
+```
+
+```text
+NOT implemented this session: no sampler, no constraint filter, no new QC
+algorithm, no re-run, no change of any range value.
+```
+
+Full strategy: `docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md`.
+
+Full session record: `docs/SESSION_DELIVERY_2026-10-21.md`.
+
+
+
 ## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
 ```text
@@ -357,24 +499,39 @@ the project must first freeze the six-dimensional production ranges:
 1. FINAL_PRODUCTION_RANGES   (owner / advisor confirmation)
 ```
 
-The advisor input for that decision is now two packages:
+The advisor input for that decision is now three packages:
 
 ```text
 1. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
    (candidate 13-parameter space, SS1/SS2 fixed, Xmean upper bound 0.18)
-2. analysis/geometry_review/senior_review_v2/  (40 real V2 blades, historical stage)
+2. analysis/geometry_review/parameter_sensitivity_v1_100cases/
+   HUMAN_REVIEW_2026-10-21.md  + human_review_2026-10-21.csv
+   (15 REJECT / 85 UNREVIEWED; per-case reasons still missing)
+3. analysis/geometry_review/senior_review_v2/  (40 real V2 blades, historical stage)
 ```
 
-Neither the V2 shapes nor the C820/C830/C840 shapes have a recorded advisor
-acceptance yet (`human_acceptance` / `human_comment` are empty). Until the advisor
-has judged them and the CFD / threshold-calibration items above are answered,
-no production range may be frozen. `FINAL_PRODUCTION_RANGES` stays PENDING.
-
-and, independently:
+Current review coverage (do not overstate it):
 
 ```text
-2. FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
-3. FINAL_RAW_CFD_ATTEMPTS   (after a real NUMECA/CFX failure-rate stress test)
+C820 (100 cases) : 15 REJECT, 85 UNREVIEWED -> partial review only
+C830 (57 cases)  : no human review recorded
+C840 (49 rows)   : no human review recorded
+V2   (40 cases)  : no human review recorded (human_* still empty)
+```
+
+Until the advisor has given the missing per-case reasons and answered the CFD /
+threshold-calibration items, no production range may be frozen.
+`FINAL_PRODUCTION_RANGES` stays PENDING.
+
+Independently still open:
+
+```text
+2. production DOE dimension: keep d = 6, or adopt 11 geometry + 2 operating?
+3. FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
+4. FINAL_RAW_CFD_ATTEMPTS   (after a real NUMECA/CFX failure-rate stress test)
+5. K_m upper bound / Metal2 lower bound tightening (evidence documented,
+   values NOT decided; final_geometry_parameters.yaml left unchanged)
+6. whether Solidity / Metal1 enter the production DOE
 ```
 
 The exact values MUST NOT be decided by an AI agent.
@@ -401,11 +558,36 @@ Closed:
 Still open:
 
 - FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
+- production DOE dimension: keep d = 6 or adopt 11 geometry + 2 operating
+- per-case reasons for the 15 C820 REJECT cases
+- K_m upper bound / Metal2 lower bound (evidence only; values not decided)
+- whether Solidity / Metal1 enter the production DOE
 - FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
 - FINAL_RAW_CFD_ATTEMPTS (raw CFD attempts / failure reserve)
 - training repetition design
 - final `E` definition
 - model-size `P` grids
+
+## REMAINING DOCUMENTATION NOTES (not errors, do not "fix")
+
+```text
+49 vs 50 rows       : C840 case_design.csv / case_metrics.csv hold 49 DATA rows
+                      + 1 header = 50 text lines. FINAL_DECISION.md's file table
+                      says "50 行" using the text-line convention. Generated report
+                      intentionally left unchanged.
+provenance git_head : experiment provenance keeps the RUN-TIME head (02e57d1),
+                      not the latest commit; cite it as "run-time HEAD".
+volume              : 100-case README says ~2.36 MB = provenance.output_size_mb
+                      (2.359, output artifacts only); the current directory is
+                      ~2.5 MB because it also contains the untracked logs/ dir.
+untracked logs      : ks1_ks2_review_v1/logs/ and
+                      parameter_sensitivity_v1_100cases/logs/ stay untracked.
+                      Verified: tools/ only WRITE logs, never read them, so there is
+                      no reproduction dependency; risk is only "logs not in VCS".
+test counts         : 111/111 = record of the 2026-10-15 run; latest =
+                      131 passed + 17 subtests passed (2026-10-21, measured).
+```
+
 
 ## BLOCKED EXTERNAL INFORMATION
 
@@ -421,16 +603,23 @@ judgement on the candidate geometry space and use it to freeze
 FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
 
 Read in this order:
+  0. docs/SESSION_DELIVERY_2026-10-21.md        (parameter-space reconciliation +
+                                                 human review intake + strategy)
   1. docs/SESSION_DELIVERY_2026-10-17.md        (100-case scan -> 57-case review
                                                  -> final decision, SS1/SS2 freeze)
   2. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
      (candidate 13-parameter space; geometry_dimension = 11)
   3. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md
      + REPORT.md                                (100 real blades, C820001..C820100)
-  4. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
+  4. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+     + human_review_2026-10-21.csv              (15 REJECT / 85 UNREVIEWED)
+  5. docs/PARAMETER_SPACE_RECONCILIATION.md     (6D freeze vs 13D exploratory space)
+  6. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  (next-stage strategy)
+  7. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
 
 DO NOT start 01_generate_design.py before those ranges are frozen.
 Do not treat the exploratory candidate ranges as approved production ranges.
+Do not read UNREVIEWED as ACCEPT; Geometry QC PASS is not engineering acceptance.
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
 Do not rewrite history: the 100-case scan DID vary SS1 (2.4-4.0) and SS2 (0.5-1.1);
 they were frozen afterwards.
@@ -454,18 +643,24 @@ For a new AI conversation, upload first:
 8. docs/SESSION_DELIVERY_2026-10-15.md   (geometry range review V1/V2 + review package)
 9. docs/SESSION_DELIVERY_2026-10-17.md   (100-case sensitivity + Ks1/Ks2 review +
                                           geometry parameter final decision)
+10. docs/SESSION_DELIVERY_2026-10-21.md  (parameter-space reconciliation + human
+                                          review intake + next-stage strategy)
+11. docs/PARAMETER_SPACE_RECONCILIATION.md
+12. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 ```
 
 When continuing geometry work, also provide:
 
 ```text
-10. docs/GEOMETRY_GENERATOR_CONTRACT.md
-11. docs/GEOMETRY_QC_CONTRACT.md
-12. analysis/geometry_review/README.md                  (review dir entry point)
-13. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
-14. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
-15. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
-16. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
+13. docs/GEOMETRY_GENERATOR_CONTRACT.md
+14. docs/GEOMETRY_QC_CONTRACT.md
+15. analysis/geometry_review/README.md                  (review dir entry point)
+16. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
+17. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+    + human_review_2026-10-21.csv
+18. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
+19. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
+20. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
 ```
 
 Only when a legacy audit is actually needed, also provide:
