@@ -79,8 +79,12 @@ Human SHAPE acceptance        85/100 recorded (C820); NO mesh/CFD/aero acceptanc
 Geometry ranges (11-D)         FROZEN 2026-10-21 (scheme A): Metal2 6.0-32,
                                others unchanged; config/geometry_ranges_frozen_a.yaml
 GeomTurbo production entry     code/generate_geomturbo_production.py
-                               PREPARED / NOT EXECUTED (default 200000, d=11, seed=1)
+                               PREPARED / NOT EXECUTED (d=11, seed=1)
+Default sample count           200000  PROVISIONAL / NOT FINAL
+Actual production count        PENDING USER DECISION
 GeomTurbo files generated      0 (no batch run has been executed)
+CFD production                 NOT STARTED
+FINAL_PRODUCTION_RANGES        PENDING
 
 01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
 generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
@@ -196,6 +200,14 @@ FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 10000
 FINAL_RAW_CFD_ATTEMPTS = PENDING
   (> 120000; exact value needs a real NUMECA/CFX failure rate first)
 FAILURE_RESERVE_POLICY = PENDING
+```
+
+```text
+SCOPE NOTE (2026-10-21):
+  This 2026-10-13 freeze is about usable CFD training/test cases (N).
+  It is NOT the GeomTurbo candidate count.
+  The GeomTurbo generator default (200000) is PROVISIONAL / NOT FINAL;
+  the actual candidate count is PENDING USER DECISION.
 ```
 
 The retired umbrella term `FINAL_NMAX` must no longer be used for current status,
@@ -470,7 +482,7 @@ But there IS a judgement-scope conflict (recorded, NOT rewritten):
 ```
 
 
-## GEOMTURBO PRODUCTION FREEZE — SCHEME A (2026-10-21)
+## GEOMTURBO PRODUCTION FREEZE — SCHEME A (2026-10-21; default count provisional)
 
 ```text
 Config (runtime)   : config/geometry_ranges_frozen_a.yaml   status = FROZEN
@@ -497,29 +509,35 @@ Incidence / Mach are NOT part of this geometry sampling
 Production entry   : code/generate_geomturbo_production.py   (NEW)
 Status             : PREPARED / NOT EXECUTED
 Sampling           : Sobol d=11, scramble=True, seed=1, native order,
-                     prefix nesting; m=18 (2^18=262144), used=first 200000
-Case IDs           : G0000001 .. G0200000 (disjoint from C8xxxxx / C9xxxxx)
+                     prefix nesting; m = smallest m with 2^m >= count
+Default count      : 200000  (PROVISIONAL / NOT FINAL; code default only)
+Actual count       : PENDING USER DECISION (--count)
+                     default example: m=18 (2^18=262144), used=first 200000
+Case IDs           : G + 7 digits (default example: G0000001 .. G0200000)
 Output             : production_geomturbo/batch_XXXXXX/<case_id>.geomTurbo
 Metadata           : config_snapshot.yaml, manifest.csv, generation_summary.json
 Resume             : --execute --resume; verifies size+sha256, regenerates
                      corrupt/missing files, refuses config/seed/order mismatch
 Safety             : no file is written without --execute
-Storage estimate   : ~3.0 GB for 200000 files (observed ~14.2 kB per file)
+Storage estimate   : ~14.2 kB per file; ~3.0 GB at the 200000 default
+                     (final requirement depends on the decided count)
 Tests              : 24 new tests, all with a STUB renderer (no real GeomTurbo);
                      full suite = 155 passed + 17 subtests (2026-10-21)
 Usage guide        : docs/GEOMTURBO_PRODUCTION_200K.md
 ```
 
 ```text
-User must run manually:
+User must run manually (after deciding the final count):
     conda activate ai4s
-    python code/generate_geomturbo_production.py --plan
-    python code/generate_geomturbo_production.py --execute
-    # or: --execute --resume
+    python code/generate_geomturbo_production.py --plan --count <N>
+    # small real export validation first (e.g. --count 10 in a scratch dir)
+    python code/generate_geomturbo_production.py --execute --count <N>
+    # or: --execute --count <N> --resume
 
 Not done here: no batch run, no real .geomTurbo, no mesh, no NUMECA/CFX.
+200000 is NOT an approved final production count.
 Still to verify only by a real run: actual file size/runtime on this machine,
-real sha256 spot checks, and filesystem behaviour at 200000 inodes.
+real sha256 spot checks, and filesystem behaviour at the decided file count.
 ```
 
 ## NEXT-STAGE SCREENING STRATEGY (2026-10-21)
@@ -556,8 +574,14 @@ Full session record: `docs/SESSION_DELIVERY_2026-10-21.md`.
 ## NEXT HUMAN DECISION — HIGHEST PRIORITY
 
 ```text
-Before implementing code/01_generate_design.py,
-the project must first freeze the six-dimensional production ranges:
+IMMEDIATE (next session, 2026-10-21 close):
+  final GeomTurbo sample count N + compute / storage budget
+  (200000 is only the code default; PROVISIONAL / NOT FINAL)
+  -> then decide when to run a small real export validation and the actual run
+
+THEN (independent, unchanged):
+  Before implementing code/01_generate_design.py,
+  the project must freeze the six-dimensional production ranges:
 
 1. FINAL_PRODUCTION_RANGES   (owner / advisor confirmation)
 ```
@@ -609,9 +633,13 @@ The exact values MUST NOT be decided by an AI agent.
 Two independent tracks:
 
 A) GeomTurbo candidate pool (ranges FROZEN 2026-10-21, code PREPARED)
-   1. user activates conda ai4s and runs --plan, then --execute (200000)
-   2. verify count / manifest / sha256 with docs/GEOMTURBO_PRODUCTION_200K.md
-   3. decide how the generated pool feeds the frozen Geometry QC step
+   1. USER DECISION: final sample count + compute/storage budget
+      (200000 is only the current default, not an approved count)
+   2. run --plan --count <N>, then a SMALL real export validation
+      (e.g. --count 10 in a scratch directory) to confirm the real serializer
+   3. only then run --execute --count <N> (resumable)
+   4. verify count / manifest / sha256 with docs/GEOMTURBO_PRODUCTION_200K.md
+   5. decide how the generated pool feeds the frozen Geometry QC step
       (03_geometry_qc.py currently expects a design CSV + profile/geomturbo
        tree; the production entry writes .geomTurbo + manifest only, so a
        separate QC adapter is still PENDING and must not be assumed ready)
@@ -639,7 +667,9 @@ Closed:
 
 Still open:
 
-- run the 200,000 GeomTurbo generation manually and report real size/runtime
+- decide the final GeomTurbo sample count and compute/storage budget
+  (200000 is only the code default; PROVISIONAL / NOT FINAL)
+- run a small real GeomTurbo export validation before any large run
 - adapter from the generated .geomTurbo + manifest pool to the frozen QC step
 - FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
 - production DOE dimension: keep d = 6 or adopt 11 geometry + 2 operating
@@ -682,14 +712,20 @@ school environment.
 ## NEW CHAT START HERE
 
 ```text
-FIRST TASK:
+FIRST TASK (2026-10-21 close):
+Confirm the final GeomTurbo generation count and the compute / storage budget,
+then decide when to run a small real export validation and the actual generation.
+200000 is only the code default (PROVISIONAL / NOT FINAL); it is NOT an approved
+production count. Do NOT start a 200000-case run as an already-approved step.
+
+SECOND TASK (geometry / range track, unchanged):
 Read the geometry parameter research chain, then get the advisor's engineering
 judgement on the candidate geometry space and use it to freeze
 FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
 
 Read in this order:
   0. docs/SESSION_DELIVERY_2026-10-21.md        (parameter-space reconciliation +
-                                                 human review intake + strategy)
+                                                 human review + strategy + closeout)
   1. docs/SESSION_DELIVERY_2026-10-17.md        (100-case scan -> 57-case review
                                                  -> final decision, SS1/SS2 freeze)
   2. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
@@ -700,7 +736,13 @@ Read in this order:
      + human_review_2026-10-21.csv              (85 ACCEPT / 15 REJECT)
   5. docs/PARAMETER_SPACE_RECONCILIATION.md     (6D freeze vs 13D exploratory space)
   6. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  (next-stage strategy)
-  7. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
+  7. docs/GEOMTURBO_PRODUCTION_200K.md          (generator usage; 200k is provisional)
+  8. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
+
+GeomTurbo status at handoff:
+  ranges FROZEN_FOR_GEOMTURBO_GENERATION; generator PREPARED / NOT EXECUTED;
+  default 200000 (provisional); actual count PENDING USER DECISION;
+  files generated 0; CFD NOT STARTED; FINAL_PRODUCTION_RANGES PENDING.
 
 DO NOT start 01_generate_design.py before those ranges are frozen.
 Do not treat the exploratory candidate ranges as approved production ranges.
@@ -733,7 +775,7 @@ For a new AI conversation, upload first:
 11. docs/PARAMETER_SPACE_RECONCILIATION.md
 12. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 13. docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   (A/B/C proposal, scheme A)
-14. docs/GEOMTURBO_PRODUCTION_200K.md                 (200k generation guide)
+14. docs/GEOMTURBO_PRODUCTION_200K.md                 (generator guide; default 200k provisional)
 15. config/geometry_ranges_frozen_a.yaml              (FROZEN scheme A runtime config)
 ```
 

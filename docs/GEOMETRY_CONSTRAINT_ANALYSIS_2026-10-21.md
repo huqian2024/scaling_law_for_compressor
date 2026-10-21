@@ -1,9 +1,14 @@
 # 几何参数宽松约束与自动筛选分析（2026-10-21）
 
-> 状态：**ANALYSIS / PROPOSAL ONLY**。
+> 状态：**ANALYSIS / PROPOSAL ONLY（历史分析记录）**。
 > 本文档只做离线统计与方案建议：**不修改** `final_geometry_parameters.yaml`、
 > 采样器、几何生成器、历史实验 CSV/NPZ/PNG；**未启动任何新实验**。
 > 所有边界都是候选，不是正式冻结；需人工确认后才能进入约束决策。
+>
+> **2026-10-21 后续（同日）**：方案 A 已经被正式采纳并冻结为 GeomTurbo
+> 几何生成范围（`config/geometry_ranges_frozen_a.yaml`，Metal2 6.0–32.0）。
+> 本文档保留为当时的分析依据；A/B/C 中 B、C 未被采纳。
+> 生产数量默认 200000 也为暂定值，实际数量 PENDING USER DECISION。
 
 ## 1. 结论摘要
 

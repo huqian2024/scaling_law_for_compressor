@@ -135,7 +135,24 @@ C820/C830 logs      : 暂不纳入 Git；已核实 tools/ 只写日志、不读�
                       （2026-10-21）；同日追加生产入口测试后为 155 passed + 17 subtests
 ```
 
-## 7. GeomTurbo 生产冻结与 200k 生成入口（同日追加）
+## 7. GeomTurbo 生产冻结与生成入口（同日追加）
+
+```text
+Geometry parameter ranges:
+  FROZEN_FOR_GEOMTURBO_GENERATION
+Batch generator implementation:
+  PREPARED / NOT EXECUTED
+Default sample count:
+  200000  (PROVISIONAL / NOT FINAL)
+Actual production count:
+  PENDING USER DECISION
+GeomTurbo files generated:
+  0
+CFD production:
+  NOT STARTED
+FINAL_PRODUCTION_RANGES:
+  PENDING
+```
 
 ```text
 方案 A 正式冻结（2026-10-21）:
@@ -152,7 +169,9 @@ C820/C830 logs      : 暂不纳入 Git；已核实 tools/ 只写日志、不读�
   tests/test_generate_geomturbo_production.py（24 个测试，全部 STUB，无真实 GeomTurbo）
   docs/GEOMTURBO_PRODUCTION_200K.md
 
-默认: count=200000, seed=1, d=11, batch_size=5000, output=production_geomturbo/
+默认: count=200000（仅默认值 / 暂定）, seed=1, d=11, batch_size=5000,
+      output=production_geomturbo/
+实际数量: PENDING USER DECISION（--count）
 安全: 无 --execute 不写文件；--plan 只读；--resume 校验 size+sha256 与指纹
 
 本次未执行:
@@ -162,16 +181,52 @@ C820/C830 logs      : 暂不纳入 Git；已核实 tools/ 只写日志、不读�
   全量测试 155 passed + 17 subtests
 ```
 
-## 8. 仍需人工决策
-## 7. 仍需人工决策
+## 8. 今日没有开展的工作
 
 ```text
-1. 生产 DOE 维度（6 -> ?）与 FINAL_PRODUCTION_RANGES
-2. 15 个被拒 Case 的逐案原因（部位与判据）
-3. K_m 上界是否收紧（当前保持 0.35）；Metal2 下界已冻结为 6.0
-4. Solidity、Metal1 是否进入生产维度
-5. Incidence / Mach 的 CFX 实现与 legacy 4 deg 注释差异
-6. 若生产维度变更，PRODUCTION_ROUTE 名称中的 “6D” 需重新冻结
+1. 没有运行真实 GeomTurbo 生成
+2. 没有进行 10-case 真实试生成
+3. 没有进行 200000-case 批量生成
+4. 没有启动 NUMECA 或 CFX
+5. 没有生成 CFD 训练数据集
+6. 没有最终决定生产样本量
+7. 没有修改此前冻结的历史 DOE 记录
+8. 没有开展新的形状筛选算法研究
+
+代码准备完成 != 执行完成。
+155 passed + 17 subtests 全部使用 STUB 渲染器；
+真实生成器导出结果尚未验证。
+```
+
+## 9. 下一次会话从哪里继续
+
+```text
+首要任务：
+  确认最终生成规模及计算资源预算，然后决定何时进行少量真实 GeomTurbo
+  验证和正式生成。
+
+200000 只是代码默认值，不得当作已批准的生产规模；
+不要直接把“生成 200000 个”列为下一步已获批操作。
+
+建议顺序：
+  1) 用户根据 CFD 时间、算力、磁盘空间、样本有效率、Scaling Law 需求
+     确定目标数量 N（例如先用较小 N 试跑）
+  2) python code/generate_geomturbo_production.py --plan --count N
+  3) 在临时目录做少量真实导出验证（例如 --count 10），检查文件格式/大小
+  4) 确认无误后再 --execute --count N（可 --resume）
+  5) 生成后核对 manifest / sha256 / 文件数；再讨论 QC 适配器
+```
+
+## 10. 仍需人工决策
+
+```text
+1. 最终 GeomTurbo 生成数量 N 与计算/存储预算（200000 仅为默认值）
+2. 生产 DOE 维度（6 -> ?）与 FINAL_PRODUCTION_RANGES
+3. 15 个被拒 Case 的逐案原因（部位与判据）
+4. K_m 上界是否收紧（当前保持 0.35）；Metal2 下界已冻结为 6.0
+5. Solidity、Metal1 是否进入生产维度
+6. Incidence / Mach 的 CFX 实现与 legacy 4 deg 注释差异
+7. 若生产维度变更，PRODUCTION_ROUTE 名称中的 “6D” 需重新冻结
 ```
 
 `Geometry QC PASS` ≠ 气动合理 ≠ 网格可生成 ≠ CFD 可收敛。

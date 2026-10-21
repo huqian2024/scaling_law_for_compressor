@@ -9,8 +9,9 @@
 ## 当前状态（2026-10-21）
 
 ```text
-生产规模 / DOE / 参数顺序      FROZEN（2026-10-13）：生产 DOE 仍为 d = 6
-                               docs/DESIGN_FREEZE_2026-10-13.md
+Scaling 实验生产规模 / DOE     FROZEN（2026-10-13）：生产 DOE 仍为 d = 6
+参数顺序                       docs/DESIGN_FREEZE_2026-10-13.md
+                               （与 GeomTurbo 默认数量无关；后者为暂定）
 本地几何流水线 + QC 契约       PASS（legacy 回归 / 生成器 / QC 契约）
 几何参数研究（探索性）         DONE：C820 100-case 敏感性 -> C830 57-case 复核
                                     -> C840 几何参数最终裁决 V1
@@ -21,10 +22,29 @@ SS1 / SS2                      3.2 / 0.8 固定
                                config/geometry_ranges_frozen_a.yaml
 GeomTurbo 生产入口             PREPARED / NOT EXECUTED
                                code/generate_geomturbo_production.py
-                               默认 200000，Sobol d=11，seed=1
+默认样本数（仅默认值）         200000 — **PROVISIONAL / NOT FINAL**
+实际生产数量                   **PENDING USER DECISION**
+已生成 GeomTurbo 文件          0
 FINAL_PRODUCTION_RANGES       PENDING（本冻结仅为几何生成，不是 CFD 生产批准）
 NUMECA / CFX / HPC            NOT STARTED
 单元测试                      155 passed, 17 subtests passed（2026-10-21 实测）
+```
+
+```text
+Geometry parameter ranges:
+  FROZEN_FOR_GEOMTURBO_GENERATION
+Batch generator implementation:
+  PREPARED / NOT EXECUTED
+Default sample count:
+  200000  (PROVISIONAL / NOT FINAL)
+Actual production count:
+  PENDING USER DECISION
+GeomTurbo files generated:
+  0
+CFD production:
+  NOT STARTED
+FINAL_PRODUCTION_RANGES:
+  PENDING
 ```
 
 ```text
@@ -87,7 +107,7 @@ docs/SESSION_DELIVERY_2026-10-21.md             ★ 参数空间核对 + 人工�
 docs/PARAMETER_SPACE_RECONCILIATION.md          6D 冻结 DOE vs 13 维探索空间对照表
 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  下一阶段筛选策略（宽范围 + 简单约束 + 筛选）
 docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md ★ 参数对照 + A/B/C 约束方案（推荐 A）
-docs/GEOMTURBO_PRODUCTION_200K.md               ★ GeomTurbo 20 万批量生成使用说明
+docs/GEOMTURBO_PRODUCTION_200K.md               ★ GeomTurbo 批量生成说明（默认 200k，暂定）
 config/geometry_ranges_frozen_a.yaml            方案 A 冻结运行配置（FROZEN）
 analysis/geometry_review/README.md              几何评审/研究目录入口
 analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md   100-case 分析报告
@@ -122,22 +142,25 @@ conda run -n ai4s python -c "import numpy,scipy,matplotlib,yaml;print('env ok')"
 conda run -n ai4s python -m pytest -q
 ```
 
-## GeomTurbo 批量生成（需用户手动启动）
+## GeomTurbo 批量生成（默认 200000，暂定；需用户手动启动）
 
 ```bash
 # 1) 只读计划（不生成文件）
 conda run -n ai4s python code/generate_geomturbo_production.py --plan
 
-# 2) 正式生成（默认 200000；必须显式 --execute）
-conda run -n ai4s python code/generate_geomturbo_production.py --execute
+# 2) 生成（默认 count=200000，仅默认值；必须显式 --execute）
+#    正式数量由用户决定，先用 --count 指定
+conda run -n ai4s python code/generate_geomturbo_production.py --execute --count 50000
 
-# 3) 中断后继续
-conda run -n ai4s python code/generate_geomturbo_production.py --execute --resume
+# 3) 中断后继续（保持同一 --count）
+conda run -n ai4s python code/generate_geomturbo_production.py --execute --count 50000 --resume
 ```
 
 ```text
-默认：count=200000, seed=1, d=11, batch_size=5000, output=production_geomturbo/
-本仓库当前 NOT EXECUTED；未生成任何实际 GeomTurbo 文件。
+默认：count=200000（PROVISIONAL / NOT FINAL）, seed=1, d=11, batch_size=5000,
+      output=production_geomturbo/
+实际生产数量：PENDING USER DECISION
+本仓库当前 NOT EXECUTED；已生成 GeomTurbo 文件 = 0。
 详细说明：docs/GEOMTURBO_PRODUCTION_200K.md
 ```
 

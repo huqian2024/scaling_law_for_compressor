@@ -5,6 +5,8 @@
 >
 > **2026-10-21 后续（同日）**：方案 A 已冻结为 GeomTurbo **几何生成**范围
 > （`config/geometry_ranges_frozen_a.yaml`，Metal2 6.0–32.0，其余不变）。
+> 默认生成量 200000 只是暂定值（PROVISIONAL / NOT FINAL），
+> 实际生产数量 PENDING USER DECISION。
 > 本文的阶段划分（生产 DOE d=6 vs 探索 11+2）仍然成立；
 > 冻结细节见 `docs/GEOMTURBO_PRODUCTION_200K.md`，`FINAL_PRODUCTION_RANGES` 仍 PENDING。
 
@@ -26,7 +28,7 @@
 | 采样方法 | scrambled Sobol，`d=6`，seed=1，prefix nesting | 确定性单因素 / 2×2 耦合 / 自适应锚点（`tools/geometry_*`），不是生产采样器 |
 | 范围 | legacy 范围（`config/ranges_legacy.yaml`），**不是**最终生产范围 | 探索范围（`final_geometry_parameters.yaml`），**未批准** |
 | 用途 | 未来 100k/20k 生产数据 | 决定哪些几何参数保留、哪些固定、边界是否收紧 |
-| 状态 | 方法冻结；`FINAL_PRODUCTION_RANGES = PENDING` | 实验完成；“FINAL”仅指探索性几何 DOE |
+| 状态 | 方法冻结；`FINAL_PRODUCTION_RANGES = PENDING` | 实验完成；2026-10-21 方案 A 已冻结为**几何生成**范围（仍非 CFD 生产范围） |
 | 结论效力 | 可支撑生产，但缺范围 | 不能支撑生产，也不能当作 CFD 认证 |
 
 ```text

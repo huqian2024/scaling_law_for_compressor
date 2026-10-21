@@ -290,7 +290,7 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
    下一阶段筛选策略见 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 7) GeomTurbo 候选池生成（需用户手动启动）
    code/generate_geomturbo_production.py（PREPARED / NOT EXECUTED）
-   默认 200000；输出 production_geomturbo/（不进 Git）
+   默认 200000（仅默认值 / 暂定，实际数量待用户决定）；输出 production_geomturbo/（不进 Git）
    说明 docs/GEOMTURBO_PRODUCTION_200K.md
 ```
 

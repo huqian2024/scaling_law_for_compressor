@@ -167,9 +167,20 @@ Incidence / Mach 不参与本次几何采样
 
 生产入口（新增）：code/generate_geomturbo_production.py
   PREPARED / NOT EXECUTED（本仓库未生成任何实际 GeomTurbo）
-  默认 200000 / seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
+  默认 200000（暂定）/ seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
+  ⚠ 200000 只是代码默认值：PROVISIONAL / NOT FINAL
+    实际生产数量 PENDING USER DECISION（可用 --count 修改）
   必须 --execute 才写文件；--plan 只读
   文档：docs/GEOMTURBO_PRODUCTION_200K.md
+
+当前状态（以此为准）：
+  Geometry parameter ranges : FROZEN_FOR_GEOMTURBO_GENERATION
+  Batch generator           : PREPARED / NOT EXECUTED
+  Default sample count      : 200000 (PROVISIONAL / NOT FINAL)
+  Actual production count   : PENDING USER DECISION
+  GeomTurbo files generated : 0
+  CFD production            : NOT STARTED
+  FINAL_PRODUCTION_RANGES   : PENDING
 ```
 
 已准备的 production 代码：
@@ -178,8 +189,9 @@ Incidence / Mach 不参与本次几何采样
 code/01_generate_design.py        PREPARED / NOT EXECUTED
 code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
 code/generate_geomturbo_production.py  PREPARED / NOT EXECUTED
-                                  (11-D frozen scheme A; default 200000;
-                                   requires --execute; see production guide)
+                                  (11-D frozen scheme A; default 200000 is
+                                   provisional, actual count pending; requires
+                                   --execute; see production guide)
 
 ranges 为 runtime configurable（--ranges PATH）
 legacy ranges 不是正式 production ranges

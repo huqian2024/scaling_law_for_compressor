@@ -1,8 +1,27 @@
-# GeomTurbo 生产几何生成使用说明（200,000 规模）
+# GeomTurbo 生产几何生成使用说明（默认 200,000，暂定规模）
 
-> 状态：**代码与配置已准备（PREPARED）**。
-> **尚未生成任何实际 GeomTurbo 文件**，也未运行任何 CFD。
-> 本文档说明如何在用户本机手动启动批量生成。
+> **状态：代码与配置已准备（PREPARED / NOT EXECUTED）。**
+> **尚未生成任何实际 GeomTurbo 文件，也未运行任何 CFD。**
+> **200000 只是代码中的默认生成数量，是暂定值（PROVISIONAL / NOT FINAL），
+> 不是最终决定的生产规模；实际数量由用户决定（`--count`）。**
+> 本文档说明如何在本机手动启动生成，不构成“200000 已获批”或“已生成”的声明。
+
+```text
+Geometry parameter ranges:
+  FROZEN_FOR_GEOMTURBO_GENERATION
+Batch generator implementation:
+  PREPARED / NOT EXECUTED
+Default sample count:
+  200000  (PROVISIONAL / NOT FINAL)
+Actual production count:
+  PENDING USER DECISION
+GeomTurbo files generated:
+  0
+CFD production:
+  NOT STARTED
+FINAL_PRODUCTION_RANGES:
+  PENDING
+```
 
 ## 1. 正式冻结的方案 A
 
@@ -104,7 +123,7 @@ python code/generate_geomturbo_production.py --execute \
 
 | 选项 | 含义 | 默认 |
 |---|---|---|
-| `--count` | 生成案例数 | 配置文件 `200000` |
+| `--count` | 生成案例数 | 配置文件 `200000`（暂定默认值） |
 | `--seed` | Sobol scramble 种子 | `1` |
 | `--output-dir` | 输出目录 | `production_geomturbo` |
 | `--batch-size` | 每个 batch 目录的案例数 | `5000` |
@@ -122,14 +141,17 @@ python code/generate_geomturbo_production.py --execute \
   --plan 与 --execute 互斥。
 ```
 
-## 5. 默认数量与修改方法
+## 5. 默认数量（暂定）与修改方法
 
 ```text
 默认 count = 200000（来自 config sampling.default_count，不是硬编码逻辑）
-200000 不是 2^m，因此：
+200000 = DEFAULT / PROVISIONAL，不是最终生产规模；
+实际生产数量 PENDING USER DECISION，由用户用 --count 指定。
+
+200000 不是 2^m，因此（以默认值为例）：
   m = 18（2^18 = 262144）
   master = Sobol(d=11, scramble=True, seed=1).random_base2(18)
-  实际使用 master[:200000]
+  实际使用 master[:count]
 调整 --count 不会改变前 N 个参数向量（前缀一致）：
   D_50000 = D_200000 的前 50000 个点
 增大数量：--count 300000（m=19，前 200000 个与原来完全一致）
@@ -170,7 +192,7 @@ production_geomturbo/
 ```
 
 ```text
-Case ID   : G + 7 位数字，G0000001 .. G0200000
+Case ID   : G + 7 位数字（默认 200000 时为 G0000001 .. G0200000）
             与 C8xxxxx（评审）/ C9xxxxx（NUMECA bring-up）不冲突
 文件名    : <case_id>.geomTurbo（后缀与现有生成器一致）
 batch     : batch_XXXXXX，编号从 1 开始，按 Sobol 顺序连续切分
@@ -272,7 +294,7 @@ PY
 ```text
 实测参考：analysis/geometry_review/geometry/geomturbo/C810001.geomTurbo
           = 14,228 B（同一模板、4 位小数 profile）
-估算 200,000 个：
+估算默认 200,000 个（仅示例）：
   GeomTurbo   : 200000 × ~14.2 kB ≈ 2.85 GB
   manifest    : root + batch ≈ 100-200 MB（每行 ~500 B）
   summary/snapshot : < 1 MB
@@ -291,15 +313,19 @@ inode       : 200,000 个文件 + 40 个 batch 目录
 ```text
 未执行批量生成（没有创建 production_geomturbo/）
 未生成任何实际 .geomTurbo 文件
+未进行 10-case 真实试生成
+未进行 200000-case 批量生成
 未运行 NUMECA / CFX / CFD
+未生成 CFD 训练数据集
+未最终决定生产样本量（200000 只是默认值）
 未添加自动形状筛选或新的曲率/厚度阈值
 未修改 2026-10-13 的 DOE 冻结记录
 未修改冻结生成器与模板
 ```
 
 ```text
-因此当前交付是“流程准备完成”，不是“20 万个文件已生成”，
-更不是“CFD 已完成”。
+因此当前交付是“流程准备完成”，不是“200000 个文件已生成”，
+更不是“CFD 已完成”。200000 不是已批准的生产规模。
 ```
 
 ## 13. 需要用户手动运行后验证的内容
@@ -307,9 +333,10 @@ inode       : 200,000 个文件 + 40 个 batch 目录
 ```text
 以下项目只有真实执行 --execute 才能确认（本轮按规则未执行）：
 1) 真实生成器的单案例输出是否与冻结模板格式一致
-2) 200,000 个文件的真实总大小与磁盘占用
-3) 真实运行耗时（估算：几何计算 ~1.6 ms/case，200k 约 5-6 分钟 CPU，
-   实际还受磁盘 I/O 影响，需实测）
+   （建议先用 --count 10 在临时目录做少量真实导出验证）
+2) 按最终决定数量生成后的真实总大小与磁盘占用
+   （默认 200000 时估算 ~2.85 GB，仅供参考）
+3) 真实运行耗时（估算：几何计算 ~1.6 ms/case，实际受磁盘 I/O 影响，需实测）
 4) 真实 sha256 清单与抽查一致性
 5) 中断/续跑在真实文件系统上的行为（测试中使用的是 stub 内容）
 6) 文件系统对 200,000 个文件的 inode / 目录性能表现
@@ -326,7 +353,7 @@ A: 配置 / seed / 参数顺序 / batch_size / 模板 / 生成器哈希发生了
    用原设置续跑，或换一个新的 --output-dir 重新开始。
 
 Q: 想把数量从 200000 改成 50000？
-A: 直接 --execute --count 50000；前 50000 个参数与 200000 版本完全一致。
+A: 直接 --execute --count 50000；前 50000 个参数与默认 200000 版本完全一致。
 
 Q: 想删除部分结果重跑？
 A: 删除对应 batch 目录下的文件与 manifest 行（或整个 batch 目录），
