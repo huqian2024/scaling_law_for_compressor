@@ -14,9 +14,11 @@
 本地几何流水线 + QC 契约       PASS（legacy 回归 / 生成器 / QC 契约）
 几何参数研究（探索性）         DONE：C820 100-case 敏感性 -> C830 57-case 复核
                                     -> C840 几何参数最终裁决 V1
-C820 人工工程评审              15 REJECT / 85 UNREVIEWED / 0 ACCEPT（2026-10-21）
+C820 人工工程评审              15 REJECT / 85 ACCEPT（100/100 已判定，2026-10-21）
 SS1 / SS2                      3.2 / 0.8 FIXED_BY_REVIEW
 其余 11 个几何参数             OPEN（探索性范围，未批准为生产范围）
+几何约束方案                   A/B/C 已分析，默认推荐 A（Metal2 ≥ 6.0）；
+                               待人工确认，YAML 未修改
 FINAL_PRODUCTION_RANGES       PENDING  <- 主要 blocker
 NUMECA / CFX / HPC            NOT STARTED
 单元测试                      131 passed, 17 subtests passed（2026-10-21 实测）
@@ -26,7 +28,8 @@ NUMECA / CFX / HPC            NOT STARTED
 Geometry QC PASS  !=  气动合理  !=  可网格化  !=  CFD 可收敛
 探索性参数配置      !=  FINAL_PRODUCTION_RANGES
 13 维探索空间       !=  生产 DOE 已冻结为 13 维（生产 DOE 仍为 6 维）
-UNREVIEWED          !=  ACCEPT
+人工 ACCEPT（形状） !=  网格 / CFD / 气动合格
+人工评审状态        =  85 ACCEPT / 15 REJECT（100/100 已判定）
 ```
 
 ## 几何参数研究链（Case 号段互不重叠）
@@ -49,14 +52,15 @@ Case      C820001 .. C820100（S1=60, S2=20, S3=20）
 几何指标  case_metrics.csv（100 行）
 结果      生成 100/100，硬性 QC 100/100，冻结 QC 100/100
 自动筛选  FIX_CANDIDATE=SS1,SS2 / KEEP_CANDIDATE=10 / REVIEW=Ks2
-人工评审  15 REJECT / 85 UNREVIEWED / 0 ACCEPT（human_review_2026-10-21.csv）
+人工评审  15 REJECT / 85 ACCEPT（human_review_2026-10-21.csv）
 ```
 
 > 该 100-case 扫描**当时**把 `SS1`（2.4–4.0）、`SS2`（0.5–1.1）作为可变参数；
 > `SS1 = 3.2`、`SS2 = 0.8` 是之后的人工评审冻结决定（`FIXED_BY_REVIEW`）。
 > 两者不能混写。
 >
-> 人工评审只覆盖 100-case 的 15 个 REJECT；其余 85 个为 UNREVIEWED（不等于合格）。
+> 100 个 Case 已全部完成人工形状评审：85 ACCEPT / 15 REJECT（无 UNREVIEWED）。
+> ACCEPT 只表示形状合理，不代表网格、CFD 收敛或气动性能合格。
 > 15 个被拒 Case 全部通过几何 QC，说明自动 QC 尚不能替代工程评审。
 > 分析：`analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md`
 
@@ -79,6 +83,7 @@ docs/SESSION_DELIVERY_2026-10-17.md             ★ 100-case 敏感性 + Ks1/Ks2
 docs/SESSION_DELIVERY_2026-10-21.md             ★ 参数空间核对 + 人工评审补录 + 筛选策略
 docs/PARAMETER_SPACE_RECONCILIATION.md          6D 冻结 DOE vs 13 维探索空间对照表
 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  下一阶段筛选策略（宽范围 + 简单约束 + 筛选）
+docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md ★ 参数对照 + A/B/C 约束方案（推荐 A）
 analysis/geometry_review/README.md              几何评审/研究目录入口
 analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md   100-case 分析报告
 analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
@@ -119,8 +124,9 @@ FINAL_PRODUCTION_RANGES is frozen.
 Do not treat exploratory ranges (V2 / C820 / C830 / C840) as production ranges.
 Do not treat the 13-dim exploratory space as a frozen production DOE (it is d = 6).
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
-Do not read UNREVIEWED as ACCEPT, and do not equate geometry QC PASS with
-engineering acceptance.
+Do not read UNREVIEWED as ACCEPT (all 100 C820 cases are now decided: 85 ACCEPT /
+15 REJECT), and do not equate human shape ACCEPT or geometry QC PASS with
+mesh / CFD / aerodynamic validity.
 Do not implement complex joint constraints (JC_XMEAN_KS1_KM) in any sampler
 while Xmean upper bound is 0.18.
 Do not guess the CFX implementation of Incidence / Mach.

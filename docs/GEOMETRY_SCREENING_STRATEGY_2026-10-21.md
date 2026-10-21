@@ -94,7 +94,7 @@ K_m 上界（低 Xmean 背景）
     -> 仅对 Xmean≈0.08 成立；高 Xmean 存在反例（C820064 / C820086 未被拒）
 
 Metal2 下界
-    C820043 Metal2=0 被拒；C820044 21.33、C820045 32、基准 15 未被拒
+    C820043 Metal2=0 被拒；C820044 21.33、C820045 32、基准 15 ACCEPT
     -> 下界应 > 0；具体数值无法确定（0-21.33 未采样）
 ```
 
@@ -157,6 +157,7 @@ No new engineered QC algorithm
 analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
 analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
 docs/PARAMETER_SPACE_RECONCILIATION.md
+docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   （A/B/C 具体方案，默认推荐 A）
 docs/DESIGN_FREEZE_2026-10-13.md
 analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
 ```

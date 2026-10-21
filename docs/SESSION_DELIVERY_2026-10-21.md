@@ -15,7 +15,7 @@ A. 权威实验记录重新核对（C820 / C830 / C840）          DONE
 B. 历史 6D DOE vs 当前 13 维探索空间 对照              DONE
    -> docs/PARAMETER_SPACE_RECONCILIATION.md
 C. 联合约束 JC_XMEAN_KS1_KM 状态核实                   DONE（当前不可触发，保持非激活）
-D. C820 人工评审结果补录（15 REJECT / 85 UNREVIEWED）  DONE
+D. C820 人工评审结果补录（85 ACCEPT / 15 REJECT）  DONE
    -> analysis/geometry_review/parameter_sensitivity_v1_100cases/
         human_review_2026-10-21.csv
         HUMAN_REVIEW_2026-10-21.md
@@ -23,6 +23,8 @@ E. 拒绝 Case 与参数边界分析（仅现有数据）              DONE
 F. 下一阶段筛选策略（宽范围 + 简单约束 + 自动筛选 + 人工复核）  DONE
    -> docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 G. 剩余文档一致性项处理                               DONE（见第 6 节）
+H. 宽松约束方案 A/B/C 分析（默认推荐 A）              DONE（仅建议，未改 YAML）
+   -> docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
 ```
 
 ```text
@@ -53,7 +55,7 @@ C840   40 new + 9 reused = 49 行  几何参数最终裁决 V1
          -> 效力仅限“探索性几何 DOE”
 
 当前   人工工程评审（2026-10-21，师兄，用户转述）
-         -> 15 REJECT / 85 UNREVIEWED / 0 ACCEPT
+         -> 85 ACCEPT / 15 REJECT（100/100 已判定）
 ```
 
 ```text
@@ -72,10 +74,10 @@ C840   40 new + 9 reused = 49 行  几何参数最终裁决 V1
 文件      analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
 行数      100（与 case_design.csv 的 100 个 case_id 一一对应，顺序一致）
 REJECT    15（C820033-036, C820043, C820062, C820081-084, C820089-092, C820100）
-UNREVIEWED 85
-ACCEPT    0
-comment   待补充（师兄未提供逐案原因；不推测）
-校验      100 行 / 100 唯一 ID / 15 REJECT 无遗漏无重复 / 无 ACCEPT
+ACCEPT    85（形状合理；不代表 CFD/网格/气动合格）
+UNREVIEWED 0（100/100 已判定）
+comment   REJECT 逐案原因待补充（不推测）；ACCEPT 未提供逐例说明
+校验      100 行 / 100 唯一 ID / 15 REJECT 无遗漏无重复 / 85 ACCEPT
 ```
 
 ```text

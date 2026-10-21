@@ -65,9 +65,9 @@ envelope_clearance      5 个 case 为负（诊断量，非失败，非碰撞）
 人工工程评审（2026-10-21，师兄，用户转述）:
   记录 = human_review_2026-10-21.csv（100 行）
   分析 = HUMAN_REVIEW_2026-10-21.md
-  REJECT 15 / UNREVIEWED 85 / ACCEPT 0
+  ACCEPT 85 / REJECT 15（100/100 已判定，无 UNREVIEWED）
   15 个被拒 Case 全部 hard QC + frozen QC PASS -> 自动 QC 未识别
-  逐案原因待补充；UNREVIEWED 不等于合格
+  逐案不合格原因待补充；ACCEPT 仅代表形状合理
 
 注意（必须区分历史扫描与后续冻结决策）:
   C820 扫描时 SS1 = 2.4-4.0、SS2 = 0.5-1.1 是可变参数；
@@ -118,7 +118,7 @@ analysis/geometry_review/
 │   ├── case_metrics.csv              100 行几何指标 + QC
 │   ├── parameter_sensitivity.csv / parameter_decisions.csv   13 行敏感性 / 建议
 │   ├── screening_criteria.yaml       预登记判据
-│   ├── human_review_2026-10-21.csv   100 行人工评审标签（15 REJECT / 85 UNREVIEWED）
+│   ├── human_review_2026-10-21.csv   100 行人工评审标签（85 ACCEPT / 15 REJECT）
 │   ├── HUMAN_REVIEW_2026-10-21.md    人工评审记录与边界分析
 │   └── profiles.npz                  高精度曲线
 ├── ks1_ks2_review_v1/            C830001..C830057（57 case Ks1/Ks2 专项复核）
@@ -268,7 +268,7 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
 
 ```text
 1) 人工工程评审（已部分完成）
-   已完成：C820 100-case -> 15 REJECT / 85 UNREVIEWED（2026-10-21）
+   已完成：C820 100-case -> 85 ACCEPT / 15 REJECT（2026-10-21，100/100 已判定）
            入口：parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
    待补充：15 个 Case 的逐案不合格原因（部位与判据）
    未覆盖：C830（57）、C840（49 行）、V2（40）仍无人工评审记录
@@ -278,6 +278,8 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
 3) 单参数边界复核（仅建议，需人工确认）
    K_m 上界（低 Xmean 背景，候选 ≈0.20）、Metal2 下界（> 0）
    证据见 HUMAN_REVIEW_2026-10-21.md 第 2 节
+   约束方案 A/B/C 与 100 样本保留情况：
+     docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md（默认推荐 A：Metal2 ≥ 6.0）
    复杂联合约束（含 JC_XMEAN_KS1_KM）当前不实现，只作历史候选记录
 4) CFD / 工程验证（仓库内尚未进行）
    - Xmean 高端 × Ks1 高端的角点
@@ -291,7 +293,7 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
 
 ```text
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
-Do not read UNREVIEWED as ACCEPT.
+Do not treat human ACCEPT as CFD/mesh/aero validity.
 ```
 
 **Geometry QC PASS ≠ 气动合理 ≠ 网格/CFD 可行。** 本目录不构成 DOE、不构成 CFD 生产。

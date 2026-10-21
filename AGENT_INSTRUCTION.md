@@ -114,7 +114,7 @@ C820 人工评审（师兄，用户转述，2026-10-21）
   REJECT     : 15 -> C820033 C820034 C820035 C820036 C820043 C820062
                      C820081 C820082 C820083 C820084
                      C820089 C820090 C820091 C820092 C820100
-  UNREVIEWED : 85（不等于合格）；ACCEPT : 0
+  UNREVIEWED : 0；ACCEPT : 85（形状合理，不代表 CFD/网格/气动合格）
   逐案原因未提供 -> 待补充，不得编造
   15 个全部 hard/frozen QC PASS -> 现有自动 QC 未识别这类工程不合理
 
@@ -140,6 +140,14 @@ DOE 维度（不得混写）
   记录全部被拒样本与原因；验证自动 QC 与人工判断的一致性
   文档：docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
   本轮不实现采样器 / 约束过滤器 / 新 QC 算法，不修改任何范围数值
+
+约束方案（ANALYSIS / PROPOSAL，待人工确认）
+  docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
+  A  : Metal2 6.0-32，其余 10 参数不变  -> 85/85 ACCEPT，排除 1/15 REJECT（推荐）
+  A2 : Metal2 8.0-32                    -> 85/85 ACCEPT，排除 4/15（可选）
+  B  : A + K_m <= 0.3125                -> 85/85，排除 6/15，与 C840 K_m 证据冲突
+  C  : A + K_m <= 0.2012                -> 83/85（损失 2 ACCEPT），仅对照
+  final_geometry_parameters.yaml 未修改
 ```
 
 已准备的 production 代码：

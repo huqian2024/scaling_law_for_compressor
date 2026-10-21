@@ -69,13 +69,15 @@ Geometry final decision V1      DONE / EXPLORATORY FINAL (C840001..C840040 new +
                                 9 reused = 49 rows; 11 geometry dimensions KEEP)
 SS1 / SS2                       3.2 / 0.8 FIXED_BY_REVIEW (human decision made
                                 AFTER the 100-case scan; that scan DID vary them)
-C820 human engineering review   RECORDED 2026-10-21 (15 REJECT / 85 UNREVIEWED /
-                                0 ACCEPT; per-case reasons still missing)
+C820 human engineering review   RECORDED 2026-10-21 (85 ACCEPT / 15 REJECT;
+                                100/100 decided; per-case reject reasons still missing)
 FINAL_PRODUCTION_RANGES         STILL PENDING   <- main blocker (the exploratory
                                 geometry config is NOT a production approval)
 Production DOE dimension        UNCHANGED: d = 6 (2026-10-13 freeze); the 13-dim
                                 exploratory space is NOT a frozen production DOE
-Engineering acceptance          NONE recorded (Geometry QC PASS is not acceptance)
+Human SHAPE acceptance        85/100 recorded (C820); NO mesh/CFD/aero acceptance
+Geometry constraint proposal   A/B/C ANALYZED, PENDING owner decision
+                                (final_geometry_parameters.yaml NOT modified)
 
 01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
 generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
@@ -407,7 +409,7 @@ rows        : 100 (case_design.csv order; 100 unique IDs)
 REJECT      : 15  -> C820033 C820034 C820035 C820036 C820043 C820062
                      C820081 C820082 C820083 C820084
                      C820089 C820090 C820091 C820092 C820100
-UNREVIEWED  : 85  (NOT accepted)
+ACCEPT      : 85  (shape reasonable only; NOT mesh/CFD/aero acceptance)
 ACCEPT      : 0
 source      : senior engineer review (师兄), transcribed by the owner
 comment     : pending (per-case reasons NOT provided; never invented)
@@ -424,19 +426,19 @@ Boundary findings (evidence-based, NOT decisions):
 
 ```text
 supported single-parameter tightening candidates
-    K_m upper bound (only at low Xmean ~ 0.08): 0.2012 not rejected,
+    K_m upper bound (only at low Xmean ~ 0.08): 0.2012 ACCEPT,
         0.225 / 0.2667 / 0.3083 / 0.35 rejected consecutively -> candidate ~ 0.20
-    Metal2 lower bound: Metal2 = 0 rejected; 21.33 / 32 / 15 not rejected
+    Metal2 lower bound: Metal2 = 0 rejected; 21.33 / 32 / 15 ACCEPT
         -> lower bound must be > 0, exact value unknown
 
 interaction-driven (do NOT turn into a simple hard bound yet)
-    K_m x Xmean : 0.2875 rejected at Xmean 0.09, not rejected at 0.15;
-                  0.3125 not rejected at Xmean 0.164
+    K_m x Xmean : 0.2875 rejected at Xmean 0.09, ACCEPT at 0.15;
+                  0.3125 ACCEPT at Xmean 0.164
     S3 groups C820081-084 and C820089-092 : whole group rejected
         (all 4 variants) -> common background, not the varied parameter
     C820100 : only SS2 differs from its anchor C820097 (1.0742 -> 0.59),
-        but SS2 = 0.59 is not rejected in another background and the S1 SS2
-        sweep (0.5 / 0.9 / 1.1) is not rejected -> interaction, not a simple bound
+        but SS2 = 0.59 is ACCEPT in another background and the S1 SS2
+        sweep (0.5 / 0.9 / 1.1) is ACCEPT -> interaction, not a simple bound
 
 insufficient evidence
     exact Metal2 lower bound, Solidity upper bound, SS2 low bound,
@@ -485,6 +487,8 @@ algorithm, no re-run, no change of any range value.
 ```
 
 Full strategy: `docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md`.
+Concrete constraint proposal (A/B/C, scheme A recommended):
+`docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md`.
 
 Full session record: `docs/SESSION_DELIVERY_2026-10-21.md`.
 
@@ -506,14 +510,14 @@ The advisor input for that decision is now three packages:
    (candidate 13-parameter space, SS1/SS2 fixed, Xmean upper bound 0.18)
 2. analysis/geometry_review/parameter_sensitivity_v1_100cases/
    HUMAN_REVIEW_2026-10-21.md  + human_review_2026-10-21.csv
-   (15 REJECT / 85 UNREVIEWED; per-case reasons still missing)
+   (85 ACCEPT / 15 REJECT; per-case reject reasons still missing)
 3. analysis/geometry_review/senior_review_v2/  (40 real V2 blades, historical stage)
 ```
 
 Current review coverage (do not overstate it):
 
 ```text
-C820 (100 cases) : 15 REJECT, 85 UNREVIEWED -> partial review only
+C820 (100 cases) : 85 ACCEPT / 15 REJECT -> complete shape review
 C830 (57 cases)  : no human review recorded
 C840 (49 rows)   : no human review recorded
 V2   (40 cases)  : no human review recorded (human_* still empty)
@@ -532,6 +536,8 @@ Independently still open:
 5. K_m upper bound / Metal2 lower bound tightening (evidence documented,
    values NOT decided; final_geometry_parameters.yaml left unchanged)
 6. whether Solidity / Metal1 enter the production DOE
+7. which geometry constraint scheme to adopt (A / A2 / B / C proposal in
+   docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md; scheme A recommended)
 ```
 
 The exact values MUST NOT be decided by an AI agent.
@@ -612,14 +618,14 @@ Read in this order:
   3. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md
      + REPORT.md                                (100 real blades, C820001..C820100)
   4. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
-     + human_review_2026-10-21.csv              (15 REJECT / 85 UNREVIEWED)
+     + human_review_2026-10-21.csv              (85 ACCEPT / 15 REJECT)
   5. docs/PARAMETER_SPACE_RECONCILIATION.md     (6D freeze vs 13D exploratory space)
   6. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  (next-stage strategy)
   7. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
 
 DO NOT start 01_generate_design.py before those ranges are frozen.
 Do not treat the exploratory candidate ranges as approved production ranges.
-Do not read UNREVIEWED as ACCEPT; Geometry QC PASS is not engineering acceptance.
+Do not equate human shape ACCEPT or geometry QC PASS with mesh/CFD/aero validity.
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
 Do not rewrite history: the 100-case scan DID vary SS1 (2.4-4.0) and SS2 (0.5-1.1);
 they were frozen afterwards.
@@ -647,20 +653,21 @@ For a new AI conversation, upload first:
                                           review intake + next-stage strategy)
 11. docs/PARAMETER_SPACE_RECONCILIATION.md
 12. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
+13. docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   (A/B/C proposal, scheme A)
 ```
 
 When continuing geometry work, also provide:
 
 ```text
-13. docs/GEOMETRY_GENERATOR_CONTRACT.md
-14. docs/GEOMETRY_QC_CONTRACT.md
-15. analysis/geometry_review/README.md                  (review dir entry point)
-16. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
-17. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+14. docs/GEOMETRY_GENERATOR_CONTRACT.md
+15. docs/GEOMETRY_QC_CONTRACT.md
+16. analysis/geometry_review/README.md                  (review dir entry point)
+17. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
+18. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
     + human_review_2026-10-21.csv
-18. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
-19. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
-20. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
+19. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
+20. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
+21. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
 ```
 
 Only when a legacy audit is actually needed, also provide:
