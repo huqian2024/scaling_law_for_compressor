@@ -1,8 +1,47 @@
 config_id: final_geometry_parameters_v1
-status: EXPLORATORY_NOT_APPROVED_FOR_PRODUCTION
+status: FROZEN_FOR_GEOMTURBO_GENERATION
 decision_date: '2026-10-17'
-authority: final for the exploratory geometry DOE only; NOT a CFD certification and
-  NOT a production-range approval
+freeze_date: '2026-10-21'
+freeze_id: geometry_ranges_frozen_a
+authority: >
+  Frozen on 2026-10-21 for GeomTurbo geometry generation only (scheme A).
+  It is NOT a CFD certification and NOT a production-range approval;
+  FINAL_PRODUCTION_RANGES remains PENDING.
+authority_history: >
+  Before 2026-10-21 this file was EXPLORATORY_NOT_APPROVED_FOR_PRODUCTION:
+  final for the exploratory geometry DOE only; not a CFD certification and
+  not a production-range approval.
+freeze:
+  freeze_id: geometry_ranges_frozen_a
+  freeze_date: '2026-10-21'
+  scope: geomturbo_geometry_generation_only
+  runtime_config: config/geometry_ranges_frozen_a.yaml
+  decision_document: docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
+  human_review: analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
+  scheme: A
+  status_history:
+    - date: '2026-10-17'
+      status: EXPLORATORY_NOT_APPROVED_FOR_PRODUCTION
+    - date: '2026-10-21'
+      status: FROZEN_FOR_GEOMTURBO_GENERATION
+      change: 'Metal2 lower bound 0.0 -> 6.0'
+  superseded_values:
+    - parameter: Metal2
+      field: range[0]
+      previous: 0.0
+      frozen: 6.0
+      reason: 'C820043 (Metal2=0) human REJECT; scheme A'
+  unchanged:
+    - 'K_m upper bound stays 0.35 (no global tightening)'
+    - 'SS1 = 3.2 / SS2 = 0.8 stay fixed'
+    - 'no new joint constraint'
+  not_approved:
+    - 'production CFD ranges (FINAL_PRODUCTION_RANGES PENDING)'
+    - 'Incidence / Mach production DOE'
+  joint_constraints:
+    JC_XMEAN_KS1_KM: inactive
+  automatic_shape_screening:
+    added: false
 criteria:
   file: final_decision_criteria.yaml
   criteria_id: final_decision_criteria_v1
@@ -20,9 +59,14 @@ keep_parameters:
   status: KEEP
 - name: Metal2
   range:
-  - 0.0
+  - 6.0
   - 32.0
   status: KEEP
+  frozen_lower_bound:
+    previous: 0.0
+    frozen: 6.0
+    date: '2026-10-21'
+    reason: 'C820043 (Metal2=0) human REJECT; scheme A'
 - name: Solidity
   range:
   - 0.7

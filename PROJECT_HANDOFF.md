@@ -76,13 +76,18 @@ FINAL_PRODUCTION_RANGES         STILL PENDING   <- main blocker (the exploratory
 Production DOE dimension        UNCHANGED: d = 6 (2026-10-13 freeze); the 13-dim
                                 exploratory space is NOT a frozen production DOE
 Human SHAPE acceptance        85/100 recorded (C820); NO mesh/CFD/aero acceptance
-Geometry constraint proposal   A/B/C ANALYZED, PENDING owner decision
-                                (final_geometry_parameters.yaml NOT modified)
+Geometry ranges (11-D)         FROZEN 2026-10-21 (scheme A): Metal2 6.0-32,
+                               others unchanged; config/geometry_ranges_frozen_a.yaml
+GeomTurbo production entry     code/generate_geomturbo_production.py
+                               PREPARED / NOT EXECUTED (default 200000, d=11, seed=1)
+GeomTurbo files generated      0 (no batch run has been executed)
 
 01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
 generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
-DO-NOT-RUN                      no production design / geometry generation
-                                until FINAL_PRODUCTION_RANGES is frozen
+DO-NOT-RUN                      no production design (6-D DOE) until
+                                FINAL_PRODUCTION_RANGES is frozen
+                                (the 11-D GeomTurbo pool is a separate, frozen
+                                 geometry-generation path; user starts it manually)
 NUMECA bring-up C900001         KEPT (bring-up only; never in the
                                 production case sequence)
 NUMECA / CFX / HPC              NOT STARTED
@@ -353,7 +358,8 @@ WARNING — do not overclaim:
 
 Full session record: `docs/SESSION_DELIVERY_2026-10-17.md`.
 Regression status at this documentation sync (2026-10-21):
-`conda run -n ai4s python -m pytest -q` -> 131 passed, 17 subtests passed.
+`conda run -n ai4s python -m pytest -q` -> 155 passed, 17 subtests passed
+(2026-10-21, including the 24 production-entry tests; earlier same-day count 131).
 
 ## PARAMETER SPACE RECONCILIATION (2026-10-21)
 
@@ -463,6 +469,59 @@ But there IS a judgement-scope conflict (recorded, NOT rewritten):
    human-decision item (candidate tightening), never an automatic rewrite.
 ```
 
+
+## GEOMTURBO PRODUCTION FREEZE — SCHEME A (2026-10-21)
+
+```text
+Config (runtime)   : config/geometry_ranges_frozen_a.yaml   status = FROZEN
+Decision file      : analysis/geometry_review/parameter_final_decision_v1/
+                     final_geometry_parameters.yaml
+                     status = FROZEN_FOR_GEOMTURBO_GENERATION
+Freeze ID          : geometry_ranges_frozen_a
+Freeze scope       : geomturbo_geometry_generation_only
+                     (NOT a CFD production-range approval)
+FINAL_PRODUCTION_RANGES : PENDING (unchanged)
+2026-10-13 DOE freeze   : NOT modified
+
+11 free geometry parameters (order = Sobol dimension order):
+  Xthick 0.10-0.60, Tmax 0.025-0.095, Metal2 6.0-32.0, Solidity 0.7-2.5,
+  Metal1 48-58, T1 0.010-0.018, T2 0.008-0.016, Xmean 0.06-0.18,
+  K_m 0.10-0.35, Ks1 3.0-7.0, Ks2 0.05-0.20
+Fixed: SS1 = 3.2, SS2 = 0.8
+Only change vs the 2026-10-17 exploratory config: Metal2 lower 0.0 -> 6.0
+No joint constraint; JC_XMEAN_KS1_KM stays inactive; no shape filter added
+Incidence / Mach are NOT part of this geometry sampling
+```
+
+```text
+Production entry   : code/generate_geomturbo_production.py   (NEW)
+Status             : PREPARED / NOT EXECUTED
+Sampling           : Sobol d=11, scramble=True, seed=1, native order,
+                     prefix nesting; m=18 (2^18=262144), used=first 200000
+Case IDs           : G0000001 .. G0200000 (disjoint from C8xxxxx / C9xxxxx)
+Output             : production_geomturbo/batch_XXXXXX/<case_id>.geomTurbo
+Metadata           : config_snapshot.yaml, manifest.csv, generation_summary.json
+Resume             : --execute --resume; verifies size+sha256, regenerates
+                     corrupt/missing files, refuses config/seed/order mismatch
+Safety             : no file is written without --execute
+Storage estimate   : ~3.0 GB for 200000 files (observed ~14.2 kB per file)
+Tests              : 24 new tests, all with a STUB renderer (no real GeomTurbo);
+                     full suite = 155 passed + 17 subtests (2026-10-21)
+Usage guide        : docs/GEOMTURBO_PRODUCTION_200K.md
+```
+
+```text
+User must run manually:
+    conda activate ai4s
+    python code/generate_geomturbo_production.py --plan
+    python code/generate_geomturbo_production.py --execute
+    # or: --execute --resume
+
+Not done here: no batch run, no real .geomTurbo, no mesh, no NUMECA/CFX.
+Still to verify only by a real run: actual file size/runtime on this machine,
+real sha256 spot checks, and filesystem behaviour at 200000 inodes.
+```
+
 ## NEXT-STAGE SCREENING STRATEGY (2026-10-21)
 
 ```text
@@ -547,10 +606,23 @@ The exact values MUST NOT be decided by an AI agent.
 ## NEXT ENGINEERING TASK
 
 ```text
-FREEZE FINAL_PRODUCTION_RANGES first, then define the
-01_generate_design.py production contract.
+Two independent tracks:
 
-Do not implement 01_generate_design.py before those ranges are frozen.
+A) GeomTurbo candidate pool (ranges FROZEN 2026-10-21, code PREPARED)
+   1. user activates conda ai4s and runs --plan, then --execute (200000)
+   2. verify count / manifest / sha256 with docs/GEOMTURBO_PRODUCTION_200K.md
+   3. decide how the generated pool feeds the frozen Geometry QC step
+      (03_geometry_qc.py currently expects a design CSV + profile/geomturbo
+       tree; the production entry writes .geomTurbo + manifest only, so a
+       separate QC adapter is still PENDING and must not be assumed ready)
+
+B) Production DOE (2026-10-13 freeze, ranges still PENDING)
+   FREEZE FINAL_PRODUCTION_RANGES first, then define the
+   01_generate_design.py production contract.
+   Do not implement 01_generate_design.py before those ranges are frozen.
+
+The 11-D GeomTurbo pool does NOT resolve track B and does not approve any
+CFD production range.
 ```
 
 ## OPEN HUMAN DECISIONS
@@ -562,13 +634,17 @@ Closed:
 - production scale (2026-10-13): FINAL_N_TRAIN_MAX / FINAL_N_TEST / TRAIN_TEST_RATIO
   / MIN_USABLE_TRAIN_TEST_CASES / FINAL_N_LADDER
 - geometry reuse (DISABLED / NOT ACTIVE; PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE)
+- GeomTurbo generation ranges, scheme A (2026-10-21; Metal2 >= 6.0;
+  frozen only for geometry generation, not for CFD production)
 
 Still open:
 
+- run the 200,000 GeomTurbo generation manually and report real size/runtime
+- adapter from the generated .geomTurbo + manifest pool to the frozen QC step
 - FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
 - production DOE dimension: keep d = 6 or adopt 11 geometry + 2 operating
 - per-case reasons for the 15 C820 REJECT cases
-- K_m upper bound / Metal2 lower bound (evidence only; values not decided)
+- K_m upper bound (only if future evidence justifies it; not tightened)
 - whether Solidity / Metal1 enter the production DOE
 - FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
 - FINAL_RAW_CFD_ATTEMPTS (raw CFD attempts / failure reserve)
@@ -593,7 +669,8 @@ untracked logs      : ks1_ks2_review_v1/logs/ and
                       Verified: tools/ only WRITE logs, never read them, so there is
                       no reproduction dependency; risk is only "logs not in VCS".
 test counts         : 111/111 = record of the 2026-10-15 run; latest =
-                      131 passed + 17 subtests passed (2026-10-21, measured).
+                      155 passed + 17 subtests (2026-10-21, includes the
+                      24 production-entry tests; earlier same-day 131).
 ```
 
 
@@ -656,19 +733,21 @@ For a new AI conversation, upload first:
 11. docs/PARAMETER_SPACE_RECONCILIATION.md
 12. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
 13. docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   (A/B/C proposal, scheme A)
+14. docs/GEOMTURBO_PRODUCTION_200K.md                 (200k generation guide)
+15. config/geometry_ranges_frozen_a.yaml              (FROZEN scheme A runtime config)
 ```
 
 When continuing geometry work, also provide:
 
 ```text
-14. docs/GEOMETRY_GENERATOR_CONTRACT.md
-15. docs/GEOMETRY_QC_CONTRACT.md
-16. analysis/geometry_review/README.md                  (review dir entry point)
-17. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
-18. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+16. docs/GEOMETRY_GENERATOR_CONTRACT.md
+17. docs/GEOMETRY_QC_CONTRACT.md
+18. analysis/geometry_review/README.md                  (review dir entry point)
+19. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md + REPORT.md
+20. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
     + human_review_2026-10-21.csv
-19. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
-20. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
+21. analysis/geometry_review/parameter_sensitivity_v1_100cases/parameter_decisions.csv
+22. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
 21. analysis/geometry_review/senior_review_v2/README.md (40-case review package)
 ```
 

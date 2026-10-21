@@ -2,6 +2,11 @@
 
 > 目的：消除“历史 6 维冻结 DOE”与“当前 13 维探索性参数空间”之间的**记录性矛盾**。
 > 本文档只做**对照与阶段划分**，不冻结任何新维度，也不修改任何历史记录。
+>
+> **2026-10-21 后续（同日）**：方案 A 已冻结为 GeomTurbo **几何生成**范围
+> （`config/geometry_ranges_frozen_a.yaml`，Metal2 6.0–32.0，其余不变）。
+> 本文的阶段划分（生产 DOE d=6 vs 探索 11+2）仍然成立；
+> 冻结细节见 `docs/GEOMTURBO_PRODUCTION_200K.md`，`FINAL_PRODUCTION_RANGES` 仍 PENDING。
 
 ```text
 权威边界:

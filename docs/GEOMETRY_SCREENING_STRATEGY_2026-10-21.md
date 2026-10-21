@@ -3,6 +3,10 @@
 > 状态：**策略说明（PROPOSED / NOT IMPLEMENTED）**。
 > 本轮不实现采样器、不实现约束过滤器、不新增工程 QC 算法、不重跑任何实验。
 > 所有范围数值保持现状（`final_geometry_parameters.yaml` 数值未修改）。
+>
+> **2026-10-21 后续（同日）**：方案 A 已正式冻结为 GeomTurbo 几何生成范围
+> （`config/geometry_ranges_frozen_a.yaml`，Metal2 下界 0 → 6.0）。
+> 本文档其余策略内容保持不变；冻结记录见 `docs/GEOMTURBO_PRODUCTION_200K.md`。
 
 ## 1. 总体策略
 
@@ -145,6 +149,8 @@ N = usable training case count（只计可用样本）
 ```text
 No new sampler / No constraint filter code
 No change to final_geometry_parameters.yaml values
+(at the time of this analysis; the later 2026-10-21 freeze changed only the
+Metal2 lower bound to 6.0 and is recorded in docs/GEOMTURBO_PRODUCTION_200K.md)
 No change to frozen QC contract or generator
 No new geometry generation / No re-run of C820 / C830 / C840
 No NUMECA / CFX / HPC

@@ -275,12 +275,11 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
 2) 参数空间与 DOE 维度决策（owner / 导师）
    生产 DOE 仍为 d=6；13 维只是探索空间；FINAL_PRODUCTION_RANGES 仍 PENDING
    见 docs/PARAMETER_SPACE_RECONCILIATION.md
-3) 单参数边界复核（仅建议，需人工确认）
-   K_m 上界（低 Xmean 背景，候选 ≈0.20）、Metal2 下界（> 0）
-   证据见 HUMAN_REVIEW_2026-10-21.md 第 2 节
-   约束方案 A/B/C 与 100 样本保留情况：
-     docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md（默认推荐 A：Metal2 ≥ 6.0）
-   复杂联合约束（含 JC_XMEAN_KS1_KM）当前不实现，只作历史候选记录
+3) 单参数边界：方案 A 已冻结（2026-10-21）
+   Metal2 下界 0 -> 6.0；其余 10 个几何参数不变；SS1/SS2 固定
+   运行配置 config/geometry_ranges_frozen_a.yaml
+   证据见 HUMAN_REVIEW_2026-10-21.md 与 GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
+   复杂联合约束（含 JC_XMEAN_KS1_KM）仍不激活，只作历史候选记录
 4) CFD / 工程验证（仓库内尚未进行）
    - Xmean 高端 × Ks1 高端的角点
    - Ks2 后段中弧线控制范围
@@ -289,6 +288,10 @@ V1 的 30 个 .dat / .geomTurbo 未归档（约 0.5 MB），可由归档 CSV 逐
    同时验证自动 QC 能否识别人工拒绝的叶型（当前 15/15 未被识别）
 6) 依据以上结果冻结 FINAL_PRODUCTION_RANGES（六维生产范围）
    下一阶段筛选策略见 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
+7) GeomTurbo 候选池生成（需用户手动启动）
+   code/generate_geomturbo_production.py（PREPARED / NOT EXECUTED）
+   默认 200000；输出 production_geomturbo/（不进 Git）
+   说明 docs/GEOMTURBO_PRODUCTION_200K.md
 ```
 
 ```text

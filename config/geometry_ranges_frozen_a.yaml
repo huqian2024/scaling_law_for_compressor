@@ -1,0 +1,93 @@
+# Frozen geometry generation parameter space — Scheme A (2026-10-21)
+#
+# This file is the RUNTIME config of code/generate_geomturbo_production.py.
+# It freezes the 11-dimensional geometry sampling space for GeomTurbo candidate
+# generation only. It is NOT a production CFD range approval, and it does NOT
+# modify the 2026-10-13 design freeze.
+config_id: geometry_ranges_frozen_a
+status: FROZEN
+freeze_date: '2026-10-21'
+freeze_scope: geomturbo_geometry_generation_only
+authority: >
+  Frozen for GeomTurbo geometry generation (candidate geometry pool).
+  NOT a CFD production-range approval. FINAL_PRODUCTION_RANGES remains PENDING.
+
+provenance:
+  scheme: A
+  decision_document: docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
+  human_review: analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
+  previous_config: analysis/geometry_review/parameter_final_decision_v1/final_geometry_parameters.yaml
+  change: Metal2 lower bound 0.0 -> 6.0 (all other ranges unchanged)
+  rationale: >
+    C820043 (Metal2 = 0) was rejected by human shape review; all 85 ACCEPT
+    cases are preserved by this bound; 6.0 is the legacy lower bound.
+  review_result: 85 ACCEPT / 15 REJECT / 0 UNREVIEWED (C820, 2026-10-21)
+
+# Order is frozen: dimension i of the Sobol point maps to geometry_parameters[i].
+geometry_parameters:
+  - Xthick
+  - Tmax
+  - Metal2
+  - Solidity
+  - Metal1
+  - T1
+  - T2
+  - Xmean
+  - K_m
+  - Ks1
+  - Ks2
+
+ranges:
+  Xthick: [0.10, 0.60]
+  Tmax: [0.025, 0.095]
+  Metal2: [6.0, 32.0]
+  Solidity: [0.7, 2.5]
+  Metal1: [48.0, 58.0]
+  T1: [0.010, 0.018]
+  T2: [0.008, 0.016]
+  Xmean: [0.06, 0.18]
+  K_m: [0.10, 0.35]
+  Ks1: [3.0, 7.0]
+  Ks2: [0.05, 0.20]
+
+fixed_parameters:
+  SS1: 3.2
+  SS2: 0.8
+
+sampling:
+  method: sobol
+  engine: scipy.stats.qmc.Sobol
+  dimensions: 11
+  scramble: true
+  seed: 1
+  ordering: native
+  nesting: prefix
+  master_block: smallest_m_with_2_pow_m_ge_count
+  default_count: 200000
+
+case_id:
+  prefix: G
+  width: 7
+  scope: production_geomturbo
+  note: distinct from C8xxxxx (review) and C9xxxxx (NUMECA bring-up)
+
+output:
+  default_dir: production_geomturbo
+  extension: .geomTurbo
+  batch_size: 5000
+  layout: batch_XXXXXX/<case_id>.geomTurbo
+
+template:
+  path: legacy/blade_batch_generation_template.geomTurbo
+  sha256: 92c4296f2de27440aebaad9b03b9af4f9e09756fabff2298f4607a87f2c55119
+
+excluded_from_geometry:
+  Incidence: CFD operating condition; not sampled in this config
+  Mach: CFD operating condition; not sampled in this config
+
+not_modified:
+  design_freeze_2026_10_13: true
+  final_production_ranges: PENDING
+  joint_constraint_JC_XMEAN_KS1_KM: inactive
+  automatic_shape_screening: none_added
+  cfd_workflow: NOT_STARTED

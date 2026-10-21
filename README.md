@@ -15,13 +15,16 @@
 几何参数研究（探索性）         DONE：C820 100-case 敏感性 -> C830 57-case 复核
                                     -> C840 几何参数最终裁决 V1
 C820 人工工程评审              15 REJECT / 85 ACCEPT（100/100 已判定，2026-10-21）
-SS1 / SS2                      3.2 / 0.8 FIXED_BY_REVIEW
-其余 11 个几何参数             OPEN（探索性范围，未批准为生产范围）
-几何约束方案                   A/B/C 已分析，默认推荐 A（Metal2 ≥ 6.0）；
-                               待人工确认，YAML 未修改
-FINAL_PRODUCTION_RANGES       PENDING  <- 主要 blocker
+SS1 / SS2                      3.2 / 0.8 固定
+几何参数范围（11 维）          **FROZEN（2026-10-21，方案 A）**
+                               Metal2 6.0–32，其余保持探索范围
+                               config/geometry_ranges_frozen_a.yaml
+GeomTurbo 生产入口             PREPARED / NOT EXECUTED
+                               code/generate_geomturbo_production.py
+                               默认 200000，Sobol d=11，seed=1
+FINAL_PRODUCTION_RANGES       PENDING（本冻结仅为几何生成，不是 CFD 生产批准）
 NUMECA / CFX / HPC            NOT STARTED
-单元测试                      131 passed, 17 subtests passed（2026-10-21 实测）
+单元测试                      155 passed, 17 subtests passed（2026-10-21 实测）
 ```
 
 ```text
@@ -84,6 +87,8 @@ docs/SESSION_DELIVERY_2026-10-21.md             ★ 参数空间核对 + 人工�
 docs/PARAMETER_SPACE_RECONCILIATION.md          6D 冻结 DOE vs 13 维探索空间对照表
 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  下一阶段筛选策略（宽范围 + 简单约束 + 筛选）
 docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md ★ 参数对照 + A/B/C 约束方案（推荐 A）
+docs/GEOMTURBO_PRODUCTION_200K.md               ★ GeomTurbo 20 万批量生成使用说明
+config/geometry_ranges_frozen_a.yaml            方案 A 冻结运行配置（FROZEN）
 analysis/geometry_review/README.md              几何评审/研究目录入口
 analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md   100-case 分析报告
 analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
@@ -95,10 +100,11 @@ analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md 几何参
 
 ```text
 code/         生成/QC 流水线与几何核心（geometry_legacy_v1.py 为冻结核心）
-config/       运行时范围配置（当前只有 ranges_legacy.yaml）
+config/       运行时范围配置（ranges_legacy.yaml + geometry_ranges_frozen_a.yaml）
 legacy/       历史生成脚本与冻结 geomTurbo 模板（只读）
 geometry/     本地产物目录（bring-up C900001 等，部分按约定不进 Git）
 design/       bring-up 设计输入
+production_geomturbo/   GeomTurbo 生产输出（本地生成，不进 Git）
 analysis/     DOE 基准与几何评审/敏感性研究
 tools/        研究驱动脚本（敏感性、复核、裁决、绘图）
 tests/        回归与契约测试（含 tests/fixtures/）
@@ -116,21 +122,42 @@ conda run -n ai4s python -c "import numpy,scipy,matplotlib,yaml;print('env ok')"
 conda run -n ai4s python -m pytest -q
 ```
 
+## GeomTurbo 批量生成（需用户手动启动）
+
+```bash
+# 1) 只读计划（不生成文件）
+conda run -n ai4s python code/generate_geomturbo_production.py --plan
+
+# 2) 正式生成（默认 200000；必须显式 --execute）
+conda run -n ai4s python code/generate_geomturbo_production.py --execute
+
+# 3) 中断后继续
+conda run -n ai4s python code/generate_geomturbo_production.py --execute --resume
+```
+
+```text
+默认：count=200000, seed=1, d=11, batch_size=5000, output=production_geomturbo/
+本仓库当前 NOT EXECUTED；未生成任何实际 GeomTurbo 文件。
+详细说明：docs/GEOMTURBO_PRODUCTION_200K.md
+```
+
 ## 红线（长期不变）
 
 ```text
-Do not RUN production design / geometry generation before
+Do not RUN the 6-D production design / geometry pipeline before
 FINAL_PRODUCTION_RANGES is frozen.
+The 11-D GeomTurbo candidate pool may be generated ONLY from
+config/geometry_ranges_frozen_a.yaml, and only by the user with --execute.
 Do not treat exploratory ranges (V2 / C820 / C830 / C840) as production ranges.
 Do not treat the 13-dim exploratory space as a frozen production DOE (it is d = 6).
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
-Do not read UNREVIEWED as ACCEPT (all 100 C820 cases are now decided: 85 ACCEPT /
-15 REJECT), and do not equate human shape ACCEPT or geometry QC PASS with
-mesh / CFD / aerodynamic validity.
+Do not read UNREVIEWED as ACCEPT, and do not equate human shape ACCEPT or
+geometry QC PASS with mesh / CFD / aerodynamic validity.
 Do not implement complex joint constraints (JC_XMEAN_KS1_KM) in any sampler
 while Xmean upper bound is 0.18.
 Do not guess the CFX implementation of Incidence / Mach.
 Do not modify legacy files, frozen contracts, existing experiment results or
-range values without an explicit human decision.
-Do not claim aerodynamic validity or CFD feasibility from Geometry QC PASS.
+frozen range values without an explicit human decision.
+Do not add automatic shape filters to the production generator.
+Do not let geometry generation start NUMECA / CFX.
 ```

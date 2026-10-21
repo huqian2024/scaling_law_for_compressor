@@ -30,7 +30,8 @@ H. 宽松约束方案 A/B/C 分析（默认推荐 A）              DONE（仅�
 ```text
 FINAL_PRODUCTION_RANGES 仍为 PENDING。
 C840 的 "FINAL" 仅指“当时的探索性几何裁决”，不等于 CFD 生产参数获批。
-所有范围数值（final_geometry_parameters.yaml）本轮未修改。
+所有范围数值（final_geometry_parameters.yaml）在本轮分析中未修改；
+同日后续已按方案 A 正式冻结（见第 7 节）。
 ```
 
 ## 2. 研究演进关系（核对结论）
@@ -130,16 +131,44 @@ provenance git_head : 保留运行时刻的 02e57d1，不改为最新提交；�
                       当前目录 2.5 MB 含未跟踪 logs。两者口径不同，不强行统一。
 C820/C830 logs      : 暂不纳入 Git；已核实 tools/ 只写日志、不读日志，无复现依赖，
                       不影响复现；风险仅为“日志不在版本库”。
-历史测试数字        : 111/111（2026-10-15 当次）保留；最新 131 passed + 17 subtests
-                      （2026-10-21 实测）单独标注日期。
+历史测试数字        : 111/111（2026-10-15 当次）保留；当次 131 passed + 17 subtests
+                      （2026-10-21）；同日追加生产入口测试后为 155 passed + 17 subtests
 ```
 
+## 7. GeomTurbo 生产冻结与 200k 生成入口（同日追加）
+
+```text
+方案 A 正式冻结（2026-10-21）:
+  config/geometry_ranges_frozen_a.yaml      status = FROZEN
+  final_geometry_parameters.yaml            status = FROZEN_FOR_GEOMTURBO_GENERATION
+  Metal2 6.0 - 32.0；其余 10 个几何参数不变；SS1=3.2 / SS2=0.8 固定
+  K_m 保持 0.10-0.35（不做全局上限）
+  无联合约束；无新增形状筛选
+  冻结效力仅限 GeomTurbo 几何生成，不是 CFD 生产范围批准
+
+新增生产入口:
+  code/generate_geomturbo_production.py     PREPARED / NOT EXECUTED
+  config/geometry_ranges_frozen_a.yaml
+  tests/test_generate_geomturbo_production.py（24 个测试，全部 STUB，无真实 GeomTurbo）
+  docs/GEOMTURBO_PRODUCTION_200K.md
+
+默认: count=200000, seed=1, d=11, batch_size=5000, output=production_geomturbo/
+安全: 无 --execute 不写文件；--plan 只读；--resume 校验 size+sha256 与指纹
+
+本次未执行:
+  没有创建 production_geomturbo/
+  没有生成任何实际 .geomTurbo
+  没有运行 NUMECA / CFX / CFD
+  全量测试 155 passed + 17 subtests
+```
+
+## 8. 仍需人工决策
 ## 7. 仍需人工决策
 
 ```text
 1. 生产 DOE 维度（6 -> ?）与 FINAL_PRODUCTION_RANGES
 2. 15 个被拒 Case 的逐案原因（部位与判据）
-3. K_m 上界 / Metal2 下界是否收紧（本轮只给建议）
+3. K_m 上界是否收紧（当前保持 0.35）；Metal2 下界已冻结为 6.0
 4. Solidity、Metal1 是否进入生产维度
 5. Incidence / Mach 的 CFX 实现与 legacy 4 deg 注释差异
 6. 若生产维度变更，PRODUCTION_ROUTE 名称中的 “6D” 需重新冻结

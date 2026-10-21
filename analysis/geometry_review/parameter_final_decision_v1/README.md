@@ -2,6 +2,8 @@
 
 ```text
 状态            : EXPLORATORY / NOT APPROVED（不是 CFD 认证）
+                  2026-10-21 起：final_geometry_parameters.yaml 已冻结为
+                  GeomTurbo 几何生成参数空间（config/geometry_ranges_frozen_a.yaml）
 新增 Case       : 40（复用历史 9）
 Ks1             : KEEP（K1_KEEP）
 Ks2             : KEEP（K2_KEEP）

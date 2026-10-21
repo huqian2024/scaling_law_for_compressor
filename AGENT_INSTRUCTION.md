@@ -139,7 +139,7 @@ DOE 维度（不得混写）
   只收紧证据明确的单参数边界；不优先建立复杂联合约束
   记录全部被拒样本与原因；验证自动 QC 与人工判断的一致性
   文档：docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
-  本轮不实现采样器 / 约束过滤器 / 新 QC 算法，不修改任何范围数值
+  约束过滤器 / 新 QC 算法仍未实现；生产采样入口见下（2026-10-21 冻结）
 
 约束方案（ANALYSIS / PROPOSAL，待人工确认）
   docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
@@ -149,7 +149,27 @@ DOE 维度（不得混写）
        冻结子集仍为 ACCEPT 60/60、排除 1/6（额外 3 个来自 SS1/SS2 非冻结样本）
   C  : Metal2 >= 10.0 且 K_m <= 0.20   -> 75/85（损失 10），排除 13/15
        冻结子集 54/60（损失 6），且与 C840 的 K_m 证据冲突；仅作对照
-  final_geometry_parameters.yaml 未修改
+  方案 A 已于 2026-10-21 正式冻结（见下）
+```
+
+2026-10-21 几何生成冻结（方案 A）：
+
+```text
+config/geometry_ranges_frozen_a.yaml   status = FROZEN
+final_geometry_parameters.yaml         status = FROZEN_FOR_GEOMTURBO_GENERATION
+11 个几何参数：Xthick 0.10-0.60, Tmax 0.025-0.095, Metal2 6.0-32.0,
+  Solidity 0.7-2.5, Metal1 48-58, T1 0.010-0.018, T2 0.008-0.016,
+  Xmean 0.06-0.18, K_m 0.10-0.35, Ks1 3.0-7.0, Ks2 0.05-0.20
+固定：SS1 = 3.2, SS2 = 0.8
+范围效力：仅 GeomTurbo 几何生成；不是 CFD 生产范围批准
+FINAL_PRODUCTION_RANGES 仍 PENDING；2026-10-13 DOE 冻结未修改
+Incidence / Mach 不参与本次几何采样
+
+生产入口（新增）：code/generate_geomturbo_production.py
+  PREPARED / NOT EXECUTED（本仓库未生成任何实际 GeomTurbo）
+  默认 200000 / seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
+  必须 --execute 才写文件；--plan 只读
+  文档：docs/GEOMTURBO_PRODUCTION_200K.md
 ```
 
 已准备的 production 代码：
@@ -157,6 +177,9 @@ DOE 维度（不得混写）
 ```text
 code/01_generate_design.py        PREPARED / NOT EXECUTED
 code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
+code/generate_geomturbo_production.py  PREPARED / NOT EXECUTED
+                                  (11-D frozen scheme A; default 200000;
+                                   requires --execute; see production guide)
 
 ranges 为 runtime configurable（--ranges PATH）
 legacy ranges 不是正式 production ranges
