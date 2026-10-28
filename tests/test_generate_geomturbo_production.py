@@ -391,3 +391,42 @@ class TestGenerationWithStub(unittest.TestCase):
         summary = json.loads((self.out / prod.SUMMARY_NAME).read_text())
         self.assertEqual(summary["count_requested"], 4)
 
+
+    def test_interrupt_flushes_partial_batch_manifest(self):
+        counter = {"n": 0}
+
+        def flaky(params, template):
+            counter["n"] += 1
+            if counter["n"] == 3:
+                raise KeyboardInterrupt
+            return "STUB GEOMTURBO\n"
+
+        with mock.patch.object(prod, "render_geomturbo_text",
+                               side_effect=flaky):
+            code, _, stderr = self._run("--count", "5", "--batch-size", "5")
+        self.assertEqual(code, 130)
+        self.assertIn("interrupted after 2/5", stderr)
+        self.assertEqual(len(self._manifest_rows()), 2)
+        batch_manifest = self.out / "batch_000001" / prod.MANIFEST_NAME
+        self.assertTrue(batch_manifest.is_file())
+        with open(batch_manifest, newline="") as f:
+            self.assertEqual(len(list(csv.DictReader(f))), 2)
+
+        # --resume must not regenerate cases 1-2 whose rows were flushed
+        rendered = []
+
+        def counting(params, template):
+            rendered.append(params)
+            return "STUB GEOMTURBO\n"
+
+        with mock.patch.object(prod, "render_geomturbo_text",
+                               side_effect=counting):
+            code, _, stderr = self._run("--count", "5", "--batch-size", "5",
+                                        "--resume")
+        self.assertEqual(code, 0, stderr)
+        self.assertEqual(len(rendered), 3)
+        summary = json.loads((self.out / prod.SUMMARY_NAME).read_text())
+        self.assertEqual(summary["written_this_run"], 3)
+        self.assertEqual(summary["skipped_existing"], 2)
+        self.assertEqual(len(self._manifest_rows()), 5)
+

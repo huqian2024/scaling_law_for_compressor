@@ -804,6 +804,8 @@ def run_execute(plan: Plan, resume: bool, progress_every: int) -> int:
     started = time.monotonic()
     written = skipped = failed = 0
     processed = 0
+    current_batch_dir: Optional[Path] = None
+    current_rows: Dict[str, dict] = {}
 
     try:
         for batch_no in range(1, plan.n_batches + 1):
@@ -812,6 +814,8 @@ def run_execute(plan: Plan, resume: bool, progress_every: int) -> int:
             batch_dir = out / batch_dir_name(batch_no)
             batch_dir.mkdir(parents=True, exist_ok=True)
             rows = _load_batch_rows(batch_dir)
+            current_batch_dir = batch_dir
+            current_rows = rows
 
             batch_written = batch_skipped = batch_failed = 0
             batch_changed = []
@@ -845,8 +849,22 @@ def run_execute(plan: Plan, resume: bool, progress_every: int) -> int:
                   f"written={batch_written} skipped={batch_skipped} "
                   f"failed={batch_failed}", flush=True)
     except KeyboardInterrupt:
-        print("\ninterrupted: completed batches are on disk; "
-              "re-run with --resume to continue.", file=sys.stderr)
+        # Ctrl+C can arrive in the middle of a batch.  Case files are written
+        # atomically, but the batch manifest is normally flushed only at the
+        # end of the batch.  Flush it here so that:
+        #   1) the manifest matches the files already on disk, and
+        #   2) --resume can skip those cases instead of regenerating them.
+        try:
+            if current_batch_dir is not None and current_rows:
+                _write_batch_manifest(current_batch_dir, current_rows)
+                _rebuild_root_manifest(plan)
+        except Exception as exc:  # noqa: BLE001 - never mask the interrupt
+            print(f"warning: could not flush partial batch manifest: {exc}",
+                  file=sys.stderr)
+        print(f"\ninterrupted after {processed}/{plan.count} cases "
+              f"(written={written} skipped={skipped} failed={failed}); "
+              "partial progress was flushed, re-run with --resume to continue.",
+              file=sys.stderr)
         return EXIT_INTERRUPTED
 
     stats = _rebuild_root_manifest(plan)
