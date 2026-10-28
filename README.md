@@ -2,7 +2,16 @@
 
 二维压气机叶栅 CFD 数据生成与 scaling-law 研究（研究目标 `E = f(N, P)`）。
 
-当前阶段：**TRANSITION / PLANNING（2026-10-23）**
+当前阶段：**GEOMTURBO PRODUCTION COMPLETED（2026-10-28）**
+下一阶段：几何 QC 适配 + CFD 入口工况设计 + CFD 数据集构建准备
+
+```text
+GeomTurbo Production          COMPLETED（195,000 / 195,000）
+File-level Sanity Check       PASSED（未发现明显异常）
+Geometry QC                   NOT YET PERFORMED
+CFD Operating Conditions      PENDING FINAL DESIGN
+CFD Dataset Construction      NOT STARTED
+```
 
 ```text
 本地负责   11D Sobol 参数采样 + GeomTurbo 生成 + 几何 QC + 数据管理 + 后续 GPU 训练
@@ -12,58 +21,63 @@
 
 > 本文件只是仓库入口与文档索引。
 > 当前阶段规划：`docs/PROJECT_TRANSITION_PLAN.md`
+> 阶段完成报告：`docs/GEOMTURBO_PRODUCTION_COMPLETION.md`
 > 训练规划：`docs/TRAINING_TRANSITION_PLAN.md`
 > 交接状态：`PROJECT_HANDOFF.md` 的 TRANSITION STATUS；长期指令：`AGENT_INSTRUCTION.md` §0
 >
 > 2026-10-13 / 2026-10-21 的冻结记录保留为历史；其中 **6D 生产 DOE / 单一种子 /
 > 200000 默认候选数** 等项目规划约束已标记 `HISTORICAL / SUPERSEDED`。
 
-## 当前状态（2026-10-23）
+## 当前状态（2026-10-28）
 
 ```text
-项目阶段                        TRANSITION / PLANNING
+项目阶段                        GeomTurbo 生产完成 / 下一阶段设计
 11D 几何参数范围（方案 A）      CURRENT_BASELINE（数值未修改）
 SS1 / SS2                       3.2 / 0.8（不变）
-本地几何流水线 + QC 契约        VERIFIED PASS（155 passed, 17 subtests, 2026-10-21）
-几何生成入口                    PREPARED / NOT EXECUTED；已生成 GeomTurbo = 0
-三组 Sobol 生成计划             PROPOSED / NOT EXECUTED（150000 / 15000 / 30000）
+本地几何流水线 + QC 契约        VERIFIED PASS（173 passed, 17 subtests）
+11D GeomTurbo 候选几何生产      COMPLETED（2026-10-28）
+已生成 GeomTurbo 文件           195,000（Train 150,000 / Val 15,000 / Test 30,000）
+Sobol Seeds                     Train 101 / Val 202 / Test 303（独立、已记录）
+文件级 Sanity Check             PASSED（0 失败 / 0 缺失 / 60-60 SHA256 抽检通过）
+几何候选文件体积                ≈2.793 GB（实际磁盘分配 ≈3.2 GB）
+几何 QC                         NOT YET PERFORMED
 目标有效 CFD 数                 PROPOSED（100000 / 10000 / 20000 = 130000）
-最低总体有效率                  66.67%（130000 / 195000）
-小规模 CFD 成功率               USER-REPORTED ≈75%（未本地复现）
+最低总体有效率                  66.67%（130000 / 195000），仍需 CFD 实测
+入口工况 Incidence / Mach       暂沿用历史参考（−4…+4° / 0.3…0.7），未冻结
 CFD 网格 / 工况 / 求解 / 调度   师兄独立服务器（本地不实现）
+CFD 数据集构建                  NOT STARTED
 AI 训练（GPU HPC + Slurm）      PROPOSED / NOT STARTED
 6D 生产 DOE / ONE_6D_POINT_ONE_CASE   HISTORICAL / SUPERSEDED
-代码默认候选数 200000           HISTORICAL DEFAULT（不是当前计划数量）
+代码默认候选数 200000           HISTORICAL DEFAULT（不是本阶段数量）
 FINAL_PRODUCTION_RANGES         PENDING（CFD 侧）
 ```
 
 ```text
 Geometry parameter ranges:
   CURRENT_BASELINE — config/geometry_ranges_frozen_a.yaml（数值未改）
-Batch generator implementation:
-  PREPARED / NOT EXECUTED
-Current production plan (PROPOSED):
-  Train 150000 / Validation 15000 / Test 30000 = 195000 候选
-  -> 目标有效 100000 / 10000 / 20000 = 130000
-Seed values:
-  PENDING（三组各自固定，但数值未定）
+Candidate geometry generation:
+  COMPLETED — 195000 / 195000 files, 0 failed, 39 batches
+Per-group counts / seeds:
+  Train 150000 (seed 101) / Validation 15000 (seed 202) / Test 30000 (seed 303)
+Usable CFD targets (still PROPOSED):
+  100000 / 10000 / 20000 = 130000
 GeomTurbo files generated:
-  0
-CFD production:
-  师兄独立服务器（本地 NOT EXECUTED）
-AI training:
-  PROPOSED / NOT STARTED
+  195000（仅保存在本地 production_geomturbo/，不进入 Git）
+Next stage:
+  geometry QC adapter + Incidence/Mach design + CFD dataset construction
 ```
 
 ```text
 Geometry QC PASS  !=  气动合理  !=  可网格化  !=  CFD 可收敛
-探索性参数配置      !=  当前几何生成基线（后者数值已固定，见 frozen_a 配置）
+文件完整性检查 PASS !=  几何 QC（本阶段只做了前者）
+几何候选 195,000   !=  有效 CFD 数据（后者当前为 0）
 历史 6D DOE        =   HISTORICAL / SUPERSEDED（不再是当前几何生成约束）
-当前几何采样        =   11D scrambled Sobol（三组独立种子，PROPOSED）
-13 维（11+2）探索空间 =  历史对照口径，不是当前生产 DOE
+当前几何采样        =   11D scrambled Sobol（三组独立种子，已执行）
+入口工况            =   Incidence/Mach 参考范围，未冻结；不是“每个几何 2 个工况”
 人工 ACCEPT（形状） !=  网格 / CFD / 气动合格
 人工评审状态        =  85 ACCEPT / 15 REJECT（100/100 已判定）
 ```
+
 
 
 ## 几何参数研究链（Case 号段互不重叠）
@@ -121,9 +135,11 @@ docs/PARAMETER_SPACE_RECONCILIATION.md          历史维度对照（6D 生产 D
 docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  几何筛选策略（PROPOSED）
 docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md 参数对照 + A/B/C 约束方案（历史分析）
 docs/GEOMTURBO_PRODUCTION_200K.md               ★ GeomTurbo 生成说明（200000 = 历史默认值）
-code/run_geomturbo.py                           ★ 三组生产启动入口（推荐；--group/--N/--seed）
+docs/GEOMTURBO_PRODUCTION_COMPLETION.md         ★ 195,000 阶段完成报告（Sanity Check 结果）
+code/run_geomturbo.py                           ★ 三组生产启动入口（--group/--N/--seed）
 code/generate_geomturbo_production.py           底层生成器（高级用法；显式 --execute）
 config/geometry_ranges_frozen_a.yaml            当前几何生成基线（数值未修改）
+production_geomturbo/{train,val,test}/          ★ 195,000 个已生成文件（本地，不进 Git）
 analysis/geometry_review/README.md              几何评审/研究目录入口
 analysis/geometry_review/parameter_sensitivity_v1_100cases/REPORT.md   100-case 分析报告
 analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
@@ -139,7 +155,7 @@ config/       运行时范围配置（ranges_legacy.yaml + geometry_ranges_froze
 legacy/       历史生成脚本与冻结 geomTurbo 模板（只读）
 geometry/     本地产物目录（bring-up C900001 等，部分按约定不进 Git）
 design/       bring-up 设计输入
-production_geomturbo/   GeomTurbo 生产输出（本地生成，不进 Git）
+production_geomturbo/   195,000 个 GeomTurbo 候选文件（本地生成，不进 Git）
 analysis/     DOE 基准与几何评审/敏感性研究
 tools/        研究驱动脚本（敏感性、复核、裁决、绘图）
 tests/        回归与契约测试（含 tests/fixtures/）
@@ -157,8 +173,13 @@ conda run -n ai4s python -c "import numpy,scipy,matplotlib,yaml;print('env ok')"
 conda run -n ai4s python -m pytest -q
 ```
 
-## GeomTurbo 生成（推荐入口：`code/run_geomturbo.py`）
+## GeomTurbo 生成（已完成：195,000 / 195,000）
 
+**本阶段已执行完成**：Train 150,000（seed 101）、Validation 15,000（seed 202）、
+Test 30,000（seed 303），共 39 个 batch，0 失败，文件级 Sanity Check 通过。
+完成报告：`docs/GEOMTURBO_PRODUCTION_COMPLETION.md`。
+
+下面的命令保留用于**复现或扩展**（同 config / seed / N 可逐字节复现；N 可增大以延长前缀）。
 一条命令即一次明确的生成授权：启动脚本内部调用现有冻结生成器的 `--execute`，
 原有安全机制全部保留（配置校验、快照指纹、原子写入、sha256 校验、断点续跑、拒绝混目录）。
 
@@ -167,27 +188,27 @@ conda run -n ai4s python -m pytest -q
 conda run -n ai4s python code/run_geomturbo.py \
     --group train --N 150000 --seed 101 --plan
 
-# 1) 三组正式启动（建议各自在 tmux 窗口中运行；种子仅作示例，启动后必须记录）
-#    Train：150000 个候选几何
+# 1) 三组启动（实际已使用的参数；如重跑请先确认目录策略）
+#    Train：150000 个候选几何（30 batches）
 conda run -n ai4s python code/run_geomturbo.py --group train --N 150000 --seed 101
-#    Validation：15000 个候选几何
+#    Validation：15000 个候选几何（3 batches）
 conda run -n ai4s python code/run_geomturbo.py --group val   --N 15000  --seed 202
-#    Test：30000 个候选几何
+#    Test：30000 个候选几何（6 batches）
 conda run -n ai4s python code/run_geomturbo.py --group test  --N 30000  --seed 303
 ```
 
 ```bash
-# 2) 中断后继续（group / N / seed 必须与首次一致；N 可以增大以延长前缀）
+# 2) 中断后继续（group / seed 必须与首次一致；N 可以增大以延长前缀）
 conda run -n ai4s python code/run_geomturbo.py --group train --N 150000 --seed 101 --resume
 conda run -n ai4s python code/run_geomturbo.py --group val   --N 15000  --seed 202 --resume
 conda run -n ai4s python code/run_geomturbo.py --group test  --N 30000  --seed 303 --resume
 ```
 
 ```text
-默认输出目录（每组独立）:
-  production_geomturbo/train/
-  production_geomturbo/val/
-  production_geomturbo/test/
+输出目录（每组独立，均已生成）:
+  production_geomturbo/train/   150000 files / 30 batches / seed 101
+  production_geomturbo/val/      15000 files /  3 batches / seed 202
+  production_geomturbo/test/     30000 files /  6 batches / seed 303
 每组各自拥有 manifest.csv、batch_*/manifest.csv、config_snapshot.yaml、
 generation_summary.json、group_info.json。
 case_id（G0000001…）在每组内重复；全局身份 = group + seed + sobol_index，
@@ -242,11 +263,15 @@ tmux 建议：
 
 ```text
 N = 几何候选数量，不是 CFD 成功数量。
-目标有效 CFD 数（Train 100000 / Val 10000 / Test 20000）需要按实测 CFD 成功率
-（当前小规模约 75%，USER-REPORTED）由候选数折算，不能把 N 当作可用样本数。
+本阶段已生成：Train 150000 / Val 15000 / Test 30000 = 195000 个候选文件
+             （全部通过文件级检查；几何 QC 尚未执行）。
 
-当前计划：Train 150000 / Val 15000 / Test 30000 候选（PROPOSED / NOT EXECUTED）。
-200000 只是旧代码默认值（HISTORICAL DEFAULT），不是当前计划。
+目标有效 CFD 数（Train 100000 / Val 10000 / Test 20000）仍为 PROPOSED，
+需要按实测 CFD 成功率（小规模约 75%，USER-REPORTED）与数据筛选结果折算，
+不能把 195000 当作可用样本数，也不能把文件级检查当作几何 QC。
+
+200000 只是旧代码默认值（HISTORICAL DEFAULT），不是本阶段生成数量。
+完成报告：docs/GEOMTURBO_PRODUCTION_COMPLETION.md
 详细说明：docs/GEOMTURBO_PRODUCTION_200K.md
 当前规划：docs/PROJECT_TRANSITION_PLAN.md
 高级用法（自行管理 --execute / batch size / 进度间隔）：code/generate_geomturbo_production.py
@@ -257,7 +282,12 @@ N = 几何候选数量，不是 CFD 成功数量。
 ```text
 Do not treat the 6-D production DOE as the current generation route:
 it is HISTORICAL / SUPERSEDED. Current geometry sampling is 11-D
-(config/geometry_ranges_frozen_a.yaml), three independent Sobol groups (PROPOSED).
+(config/geometry_ranges_frozen_a.yaml), three independent Sobol groups (COMPLETED:
+train 150000/seed 101, val 15000/seed 202, test 30000/seed 303).
+Do not re-run generation into an existing group directory without --resume,
+and do not change the recorded seeds for the completed groups.
+A file-level sanity check PASS does not mean geometry QC PASS:
+geometry quality, meshability and CFD validity are still unverified.
 The 11-D GeomTurbo candidate pool may be generated ONLY from
 config/geometry_ranges_frozen_a.yaml, and only by the user via
 code/run_geomturbo.py (or with an explicit --execute on

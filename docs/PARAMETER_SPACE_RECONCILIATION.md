@@ -2,8 +2,8 @@
 
 > ## ⚠ 状态更新（2026-10-23）：`HISTORICAL / SUPERSEDED`（6D 生产 DOE 部分）
 >
-> 本文是 2026-10-21 的维度对照记录（保留原文）。项目现进入
-> `TRANSITION / PLANNING` 阶段，当前规划见
+> 本文是 2026-10-21 的维度对照记录（保留原文）。项目当前阶段：
+> GeomTurbo 生产已 COMPLETED（2026-10-28），当前规划见
 > [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
 >
 > ```text
@@ -22,7 +22,8 @@
 > ```
 >
 > 当前几何生成路线：11 维 scrambled Sobol、三组独立固定种子
-> （`PROPOSED / NOT EXECUTED`），数值范围未修改。
+> （已 COMPLETED：195000 个文件，文件级检查通过；有效 CFD 数仍为 0），
+> 数值范围未修改。
 
 > 目的：消除“历史 6 维冻结 DOE”与“当时 13 维探索性参数空间”之间的**记录性矛盾**。
 > 本文档只做**对照与阶段划分**，不冻结任何新维度，也不修改任何历史记录。

@@ -474,11 +474,11 @@ FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 10000
 ```
 
 ```text
-当前计划（PROPOSED / NOT EXECUTED，见 PROJECT_TRANSITION_PLAN.md）:
-  Train 候选 150000 -> 目标有效 100000
-  Validation 候选 15000 -> 目标有效 10000
-  Test 候选 30000 -> 目标有效 20000
-  三组独立 Sobol、独立固定种子（种子数值 PENDING）
+当前状态（2026-10-28，见 PROJECT_TRANSITION_PLAN.md）:
+  Train 150000 候选（seed 101）-> 目标有效 100000（PROPOSED）
+  Validation 15000 候选（seed 202）-> 目标有效 10000（PROPOSED）
+  Test 30000 候选（seed 303）-> 目标有效 20000（PROPOSED）
+  195000 个候选几何已生成并通过文件级检查；有效 CFD 数仍为 0
 ```
 
 The umbrella term `FINAL_NMAX` is retired for current status; it must not be used to

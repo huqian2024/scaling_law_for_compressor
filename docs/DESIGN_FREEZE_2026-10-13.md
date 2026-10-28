@@ -3,7 +3,7 @@
 > ## ⚠ 状态更新（2026-10-23）：`HISTORICAL / SUPERSEDED`（仅限项目规划约束）
 >
 > 本文记录的是 2026-10-13 当时真实的设计冻结（保留原文，**不抹除**）。
-> 项目现进入 `TRANSITION / PLANNING` 阶段，当前规划见
+> 项目当前阶段：GeomTurbo 生产已 COMPLETED（2026-10-28），当前规划见
 > [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md) 与
 > [`docs/TRAINING_TRANSITION_PLAN.md`](TRAINING_TRANSITION_PLAN.md)。
 >
@@ -25,8 +25,9 @@
 > 几何算法 / 历史回归 / GeomTurbo 格式 / QC 契约     -> 不受影响（技术冻结仍有效）
 > ```
 >
-> 当前几何生成路线是 11 维、三组独立 Sobol（`PROPOSED / NOT EXECUTED`），
-> 数值范围沿用 `config/geometry_ranges_frozen_a.yaml`，本次未修改任何数值。
+> 当前几何生成路线是 11 维、三组独立 Sobol（已 COMPLETED：195,000 个文件，
+> 文件级检查通过），数值范围沿用 `config/geometry_ranges_frozen_a.yaml`，
+> 本次未修改任何数值。
 
 Date: 2026-10-13
 Status at the time: **FROZEN** — 现为 `HISTORICAL / SUPERSEDED`（见上方状态更新）

@@ -6,20 +6,23 @@
 > Agent 的主要职责是：帮助我完成压气机二维叶栅 AI4S 项目的**数据准备前端、自动化脚本、数据管理、质量检查和最终 canonical dataset 构建**。  
 > Agent 必须清楚哪些任务可以在本地完成，哪些任务必须在 Windows/NUMECA/CFX GUI 环境完成，哪些任务必须在学校 HPC 完成，并且**不能越过边界自行假设、伪造或替代 CFD 物理设置**。
 >
-> **2026-10-23 适用范围更新**：项目进入 `TRANSITION / PLANNING`。CFD 网格/工况/求解/调度
-> 由师兄在独立服务器负责，本地不实现；本地负责 11D 几何生成 + 几何 QC + 数据管理，
-> 并规划后续 GPU HPC 训练。当前权威状态见下方 §0。
+> **2026-10-28 适用范围更新**：GeomTurbo 候选几何生产已完成（195,000 个文件，
+> 文件级检查通过）。CFD 网格/工况/求解/调度由师兄在独立服务器负责，本地不实现；
+> 本地当前负责几何 QC 适配、入口工况设计与数据管理，并规划后续 GPU HPC 训练。
+> 当前权威状态见下方 §0。
 
 ---
 
-# 0. 当前权威项目状态（2026-10-23 — TRANSITION / PLANNING）
+# 0. 当前权威项目状态（2026-10-28 — GEOMTURBO PRODUCTION COMPLETED）
 
 > 本节是**当前唯一权威状态**。若与下文（含 §0-L 历史快照、§11–§12、§53–§57）
 > 冲突，**以本节为准**。历史记录保留原文，但不作为当前执行命令。
 
 ```text
-阶段                TRANSITION / PLANNING（2026-10-23）
+阶段                GEOMTURBO PRODUCTION COMPLETED（2026-10-28）
+下一阶段            几何 QC 适配 + CFD 入口工况设计 + CFD 数据集构建准备
 主规划文档          docs/PROJECT_TRANSITION_PLAN.md
+阶段完成报告        docs/GEOMTURBO_PRODUCTION_COMPLETION.md
 训练规划文档        docs/TRAINING_TRANSITION_PLAN.md
 ```
 
@@ -35,17 +38,18 @@
 ```
 
 ```text
-当前几何生成方案（PROPOSED / NOT EXECUTED）:
+GeomTurbo 候选几何生产（COMPLETED / NOT A CFD RESULT）:
   方法        11D scrambled Sobol（配置与参数范围不变）
-  执行        同一生成程序运行三次，各自固定种子 + 独立输出目录
-  Train       150000 候选 -> 目标有效 100000
-  Validation   15000 候选 -> 目标有效 10000
-  Test         30000 候选 -> 目标有效 20000
-  合计        195000 候选 -> 目标有效 130000
-  种子数值    PENDING（本轮不强制确定）
+  执行        同一生成程序运行三次，固定种子 + 独立输出目录
+  Train       150000 文件 / seed 101 / 30 batches -> 目标有效 100000（PROPOSED）
+  Validation   15000 文件 / seed 202 /  3 batches -> 目标有效  10000（PROPOSED）
+  Test         30000 文件 / seed 303 /  6 batches -> 目标有效  20000（PROPOSED）
+  合计        195000 文件 / 39 batches / 0 failed / 0 missing
+  体积        ≈2.793 GB 文件 / ≈3.2 GB 实际磁盘
+  检查        文件级 Sanity Check PASSED（60/60 SHA256 抽检）
+  数据位置    production_geomturbo/{train,val,test}/（本地，gitignored）
   规模依据    130000 / 195000 = 66.67% 最低总体有效率；
               小规模 CFD 成功率 ≈ 75%（USER-REPORTED，本仓库未复现）
-  已生成文件  0
 ```
 
 ```text
@@ -53,22 +57,23 @@
   config/geometry_ranges_frozen_a.yaml   方案 A 11 维范围
   SS1 = 3.2 / SS2 = 0.8（FIXED_BY_REVIEW，不重新开放）
   几何数学 / 序列化 / 模板 / QC 契约      保持冻结，不改
-  生成入口 code/generate_geomturbo_production.py   PREPARED / NOT EXECUTED
+  生成入口 code/run_geomturbo.py（按 group）-> generate_geomturbo_production.py
 ```
 
 ```text
-本次解除的项目规划约束（不是技术约束）:
-  生产 DOE d = 6 / SOBOL_SEED = 1 / 单一主序列    -> HISTORICAL / SUPERSEDED
-  ONE_6D_POINT_ONE_CASE 作为唯一生产路线名称       -> HISTORICAL / SUPERSEDED
-  默认 200000 候选数                              -> HISTORICAL DEFAULT
-  FINAL_N_TRAIN_MAX / N_TEST / FINAL_N_LADDER     -> 参考值 / 候选梯度
-  生产规模冻结作为本地几何生成前置条件              -> 不再适用
+当前状态分层:
+  已完成  GeomTurbo 生产（195000）+ 文件级检查 + 组级元数据
+  已决定  三组数量/种子、组内嵌套/组间独立、身份 = group+seed+sobol_index
+  暂定    Incidence −4…+4°、Mach 0.3…0.7（历史参考，未冻结）
+  待讨论  入口参数最终范围/采样/组合/每几何工况数/CFX 映射/CFD Manifest
+  未执行  几何 QC、NUMECA/CFX、网格、CFD、CFD 数据集、训练
+```
 
-继续有效:
-  N = usable training case count（定义不变）
-  训练集 / 验证集 / 测试集分离原则
-  几何算法 / legacy 回归 / GeomTurbo 格式 / Generator 契约 / QC 契约
-  11D 方案 A 参数范围数值、SS1=3.2、SS2=0.8
+```text
+本次（2026-10-28）文档同步:
+  只更新文档与 .gitignore；未修改生成器 / 配置 / 种子 / 生产数据
+  未重新生成几何；未启动 CFD；未启动 GPU 训练
+  未创建新的 FINAL / FROZEN 决策
 ```
 
 ```text
@@ -265,15 +270,15 @@ final_geometry_parameters.yaml         status = FROZEN_FOR_GEOMTURBO_GENERATION
 FINAL_PRODUCTION_RANGES 仍 PENDING；2026-10-13 DOE 冻结未修改
 Incidence / Mach 不参与本次几何采样
 
-生产入口（新增）：code/generate_geomturbo_production.py
-  PREPARED / NOT EXECUTED（本仓库未生成任何实际 GeomTurbo）
+生产入口（2026-10-21 历史快照；当前状态见 §0）：code/generate_geomturbo_production.py
+  PREPARED / NOT EXECUTED（本仓库未生成任何实际 GeomTurbo）  <- 历史状态，已被 §0 取代
   代码默认 200000 / seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
   ⚠ 200000 只是历史代码默认值（HISTORICAL DEFAULT）
-    当前计划：Train 150000 / Validation 15000 / Test 30000（PROPOSED / NOT EXECUTED）
+    当前状态：已生成 Train 150000 / Validation 15000 / Test 30000（COMPLETED）
   必须 --execute 才写文件；--plan 只读
   文档：docs/GEOMTURBO_PRODUCTION_200K.md
 
-2026-10-21 状态（HISTORICAL — 当前状态见 §0）：
+2026-10-21 状态（HISTORICAL — 已被 §0 取代，仅保留记录）:
   Geometry parameter ranges : CURRENT_BASELINE（方案 A 数值未改）
   Batch generator           : PREPARED / NOT EXECUTED
   Default sample count      : 200000 (HISTORICAL DEFAULT)
@@ -2704,7 +2709,8 @@ PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE（名称 HISTORICAL；
 
 即当前 production 采样结构仍保持“一个参数点对应一个 CFD case”；
 6D 名称与 13 维目标均不再作为当前规划依据。当前几何采样为 11 维
-（`config/geometry_ranges_frozen_a.yaml`，三组独立 Sobol，PROPOSED / NOT EXECUTED）。
+（`config/geometry_ranges_frozen_a.yaml`，三组独立 Sobol，已 COMPLETED：
+195000 个文件，文件级检查通过）。
 
 ---
 

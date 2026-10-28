@@ -1,54 +1,46 @@
-# GeomTurbo 生产几何生成使用说明（默认 200,000 = 历史默认值）
+# GeomTurbo 生产几何生成使用说明（200,000 = 历史默认值；实际已完成 195,000）
 
-> ## ⚠ 状态更新（2026-10-23）：当前生产计划为三组独立 Sobol（`PROPOSED / NOT EXECUTED`）
+> ## ✅ 状态更新（2026-10-28）：三组生产已 COMPLETED
 >
-> 生成器用法、安全机制、manifest 字段与存储估算继续有效（保留原文）。
-> **200000 只是代码中的历史默认值，不是当前计划数量。**
-> 当前规划见 [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
->
-> | 数据集 | Sobol 候选数 | 目标有效 CFD 数 | 建议输出目录（尚未创建） |
-> |---|---:|---:|---|
-> | Train | 150000 | 100000 | `production_geomturbo/train/` |
-> | Validation | 15000 | 10000 | `production_geomturbo/val/` |
-> | Test | 30000 | 20000 | `production_geomturbo/test/` |
-> | 合计 | 195000 | 130000 | |
+> | 数据集 | 几何数量 | Seed | Batch | 状态 |
+> |---|---:|---:|---:|---|
+> | Train | 150,000 | 101 | 30 | COMPLETED |
+> | Validation | 15,000 | 202 | 3 | COMPLETED |
+> | Test | 30,000 | 303 | 6 | COMPLETED |
+> | **合计** | **195,000** | — | **39** | **COMPLETED** |
 >
 > ```text
-> 执行方式: 同一个生成程序运行三次，每次不同固定种子、不同输出目录
-> 种子数值: PENDING（未确定；不使用代码默认 seed=1 作为三组计划的一部分）
-> 代码默认值: 本次未修改（count=200000 / seed=1 / production_geomturbo）
-> 三组运行会在各自目录内产生相同的 case_id（G0000001..）
->   -> 全局身份 = (group, seed, sobol_index)；`code/run_geomturbo.py` 会写入
->      `group_info.json`（group 目录本身也携带组归属）
->   -> 去重策略仍 PENDING
-> 规模依据: 130000 / 195000 = 66.67% 最低总体有效率；
->           小规模 CFD 成功率约 75%（USER-REPORTED）
+> 文件级 Sanity Check   PASSED（0 failed / 0 missing / 60-60 SHA256 抽检）
+> 体积                  ≈2.793 GB 文件 / ≈3.2 GB 实际磁盘
+> 几何 QC               NOT YET PERFORMED
+> 入口工况              PENDING FINAL DESIGN（Incidence/Mach 仅历史参考）
+> CFD 数据集            NOT STARTED
+> 完成报告              docs/GEOMTURBO_PRODUCTION_COMPLETION.md
 > ```
-
-> **状态：代码与配置已准备（PREPARED / NOT EXECUTED）。**
-> **尚未生成任何实际 GeomTurbo 文件，也未运行任何 CFD。**
-> **200000 只是代码中的默认生成数量，是暂定值（PROVISIONAL / NOT FINAL），
-> 不是最终决定的生产规模；实际数量由用户决定（`--count`）。**
-> 本文档说明如何在本机手动启动生成，不构成“200000 已获批”或“已生成”的声明。
+>
+> 本文档其余部分保留为生成器使用说明与**复现 / 扩展**指南；
+> **200000 只是历史代码默认值，不是本阶段生成数量。**
+> 当前规划见 [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
 
 ```text
 Geometry parameter ranges:
   CURRENT_BASELINE（方案 A，数值未修改；原冻结记录保留）
 Batch generator implementation:
-  PREPARED / NOT EXECUTED
+  COMPLETED（195000 / 195000 files，0 failed）
 Default sample count (code default):
-  200000  HISTORICAL DEFAULT（不是当前计划数量）
-Current production plan (PROPOSED / NOT EXECUTED):
-  Train 150000 / Validation 15000 / Test 30000 = 195000 候选
-  目标有效 CFD: 100000 / 10000 / 20000 = 130000
-Actual production count:
-  PENDING（三个种子与最终规模仍需人工确认）
+  200000  HISTORICAL DEFAULT（不是本阶段生成数量）
+Actual production (COMPLETED):
+  Train 150000 / Val 15000 / Test 30000 = 195000 files / 39 batches
+Seeds (recorded):
+  Train 101 / Validation 202 / Test 303
 GeomTurbo files generated:
-  0
+  195000（production_geomturbo/{train,val,test}/，本地，gitignored）
+File-level sanity check:
+  PASSED 2026-10-28
 CFD production:
   由师兄在独立服务器执行（本地不实现）
 FINAL_PRODUCTION_RANGES:
-  PENDING（CFD 侧；不再是本地几何生成阻塞项）
+  PENDING（CFD 侧；不是本地几何生成阻塞项）
 ```
 
 ## 1. 正式冻结的方案 A
@@ -201,44 +193,39 @@ python code/generate_geomturbo_production.py --execute \
   --plan 与 --execute 互斥。
 ```
 
-### 4.1 三组独立运行（PROPOSED / NOT EXECUTED）
+### 4.1 三组独立运行（COMPLETED 2026-10-28）
 
-当前计划用同一程序运行三次，三组互不共用输出目录，也不共用种子：
+实际生产用同一程序运行三次，三组互不共用输出目录，也不共用种子（已完成）：
 
 ```bash
-# Train（目标有效 100000 / 候选 150000）
-python code/generate_geomturbo_production.py --plan \
-    --count 150000 --seed <TRAIN_SEED> --output-dir production_geomturbo/train
-python code/generate_geomturbo_production.py --execute \
-    --count 150000 --seed <TRAIN_SEED> --output-dir production_geomturbo/train --resume
+# Train（150000 个候选；seed 101）
+python code/run_geomturbo.py --group train --N 150000 --seed 101
 
-# Validation（目标有效 10000 / 候选 15000）
-python code/generate_geomturbo_production.py --execute \
-    --count 15000 --seed <VALIDATION_SEED> --output-dir production_geomturbo/val --resume
+# Validation（15000 个候选；seed 202）
+python code/run_geomturbo.py --group val   --N 15000  --seed 202
 
-# Test（目标有效 20000 / 候选 30000）
-python code/generate_geomturbo_production.py --execute \
-    --count 30000 --seed <TEST_SEED> --output-dir production_geomturbo/test --resume
+# Test（30000 个候选；seed 303）
+python code/run_geomturbo.py --group test  --N 30000  --seed 303
 ```
 
 ```text
 说明（不改代码）：
-  三个种子数值 PENDING，必须由用户确定并记录；
+  实际种子：Train 101 / Validation 202 / Test 303（已在 group_info.json 记录）；
   每个输出目录各自有 config_snapshot.yaml / manifest.csv / batch_*/，
   因 seed 不同，指纹不同 -> 不能共用一个输出目录续跑；
-  三组 case_id 都会从 G0000001 开始；全局身份 = group + seed + sobol_index
-  （run_geomturbo.py 写入 group_info.json；去重策略仍 PENDING）；
-  上面命令本轮没有执行，且必须由用户显式启动。
+  三组 case_id 都会从 G0000001 开始；全局身份 = group + seed + sobol_index；
+  结果：195000 / 195000 文件，39 batches，0 failed；
+  本次文档同步没有重新执行生成。
 ```
 
 ## 5. 默认数量（历史默认值）与修改方法
 
 ```text
 默认 count = 200000（来自 config sampling.default_count，不是硬编码逻辑）
-200000 = HISTORICAL DEFAULT，不是当前计划数量；
-当前计划（PROPOSED / NOT EXECUTED）：150000 / 15000 / 30000 候选
-实际数量仍由用户用 --count 指定（种子数值 PENDING），见
-docs/PROJECT_TRANSITION_PLAN.md。
+200000 = HISTORICAL DEFAULT，不是本阶段生成数量；
+本阶段实际生成：Train 150000 / Val 15000 / Test 30000 = 195000 文件（COMPLETED）
+如需扩展，用 --count / --N 指定；同 seed 下前 N 个点不变，见
+docs/PROJECT_TRANSITION_PLAN.md 与 docs/GEOMTURBO_PRODUCTION_COMPLETION.md。
 
 200000 不是 2^m，因此（以默认值为例）：
   m = 18（2^18 = 262144）
@@ -400,39 +387,35 @@ inode       : 200,000 个文件 + 40 个 batch 目录
   默认按 batch 分目录（每批 5000 个），便于浏览、校验与增量重跑。
 ```
 
-## 12. 本次没有做的事
+## 12. 本文档初版时没有做的事（历史）与当前状态
 
 ```text
-未执行批量生成（没有创建 production_geomturbo/）
-未生成任何实际 .geomTurbo 文件
-未进行 10-case 真实试生成
-未进行 200000-case 批量生成
-未运行 NUMECA / CFX / CFD
-未生成 CFD 训练数据集
-未最终决定生产样本量（200000 只是默认值）
-未添加自动形状筛选或新的曲率/厚度阈值
-未修改 2026-10-13 的 DOE 冻结记录
-未修改冻结生成器与模板
+初版（生成器使用说明）时未执行批量生成，也没有实际 .geomTurbo 文件。
+该状态已于 2026-10-28 结束：
+  195000 个文件已生成（Train 150000 / Val 15000 / Test 30000）
+  文件级 Sanity Check PASSED；真实导出、sha256 抽查、批次/断点行为均已实测。
+仍未执行（与生成器无关）：
+  NUMECA / CFX / CFD、几何 QC、CFD 训练数据集、AI 训练。
 ```
 
 ```text
-因此当前交付是“流程准备完成”，不是“200000 个文件已生成”，
-更不是“CFD 已完成”。200000 不是已批准的生产规模。
+因此当前状态是“几何候选池已完成”，
+不是“几何 QC 已完成”，更不是“CFD 已完成”。
+200000 仍只是历史代码默认值，不是本阶段生成数量。
 ```
 
 ## 13. 需要用户手动运行后验证的内容
 
 ```text
-以下项目只有真实执行 --execute 才能确认（本轮按规则未执行）：
-1) 真实生成器的单案例输出是否与冻结模板格式一致
-   （建议先用 --count 10 在临时目录做少量真实导出验证）
-2) 按最终决定数量生成后的真实总大小与磁盘占用
-   （默认 200000 时估算 ~2.85 GB，仅供参考）
-3) 真实运行耗时（估算：几何计算 ~1.6 ms/case，实际受磁盘 I/O 影响，需实测）
-4) 真实 sha256 清单与抽查一致性
-5) 中断/续跑在真实文件系统上的行为（测试中使用的是 stub 内容）
-6) 文件系统对 200,000 个文件的 inode / 目录性能表现
+以下项目已在 2026-10-28 的真实生产中得到验证（保留清单以便复核）：
+1) 真实生成器的单案例输出与冻结模板格式一致（已实测）
+2) 真实总大小与磁盘占用（≈2.793 GB / ≈3.2 GB）
+3) 真实运行耗时（Val 27 s、Test 55 s、Train 305 s）
+4) 真实 sha256 清单与抽查一致性（60/60 通过）
+5) 中断/续跑在真实文件系统上的行为（单元测试 + 实际批次）
+6) 195000 个文件的文件系统表现（扫描约 4.6 s）
 ```
+
 
 ## 14. 常见问题
 
