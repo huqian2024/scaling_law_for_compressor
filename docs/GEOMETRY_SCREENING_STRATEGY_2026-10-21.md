@@ -160,11 +160,14 @@ No new engineered QC algorithm
 ## 8. 相关文档
 
 ```text
+docs/PROJECT_TRANSITION_PLAN.md                  当前阶段总规划（11D 三组生成 / CFD 边界）
+docs/TRAINING_TRANSITION_PLAN.md                 训练规划（GPU Slurm / 早停 / 测试集）
+docs/GEOMTURBO_PRODUCTION_200K.md                生成器使用说明（200000 为历史默认值）
 analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
 analysis/geometry_review/parameter_sensitivity_v1_100cases/human_review_2026-10-21.csv
 docs/PARAMETER_SPACE_RECONCILIATION.md
-docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   （A/B/C 具体方案，默认推荐 A）
-docs/DESIGN_FREEZE_2026-10-13.md
+docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   （A/B/C 具体方案，方案 A 已采纳）
+docs/DESIGN_FREEZE_2026-10-13.md                  （历史冻结记录）
 analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
 ```
 

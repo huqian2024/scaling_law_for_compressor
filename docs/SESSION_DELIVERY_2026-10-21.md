@@ -1,6 +1,13 @@
 # AI4S Compressor CFD Project — Session Delivery
 Date: 2026-10-21
 
+> **2026-10-23 说明**：本文件是 2026-10-21 的 session 记录（历史）。
+> 其中第 9 节“下一次会话从哪里继续”与第 10 节“仍需人工决策”里的
+> 6D 生产 DOE / 200000 默认计数等表述已被
+> [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md) 取代
+> （`HISTORICAL / SUPERSEDED`）；当前计划为三组独立 11D Sobol（PROPOSED）。
+> 原始记录保留不改写。
+
 > Delivery record for the 2026-10-21 **documentation reconciliation + human review
 > intake + next-stage strategy** session. It complements, and does not replace,
 > `PROJECT_HANDOFF.md`.

@@ -1,14 +1,38 @@
 # Scaling Experiment Statistical Design
 
+> ## ⚠ 状态更新（2026-10-23）：统计原则保留，训练规模与验证政策降为参考/候选
+>
+> 本文是**统计设计原则**文档（保留原文）。当前阶段规划见
+> [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md) 与
+> [`docs/TRAINING_TRANSITION_PLAN.md`](TRAINING_TRANSITION_PLAN.md)。
+>
+> ```text
+> 保留（原则仍有效）:
+>   N = usable training case count
+>   嵌套训练集思路（组内前缀）、测试集固定且与训练完全分离
+>   随机性分类（DOE seed / split seed / training seed）
+>   防泄漏清单、误差契约需要显式定义的要求
+>
+> 降级（不再强制约束当前工作）:
+>   FINAL_N_LADDER 1k..100k        -> 候选梯度（可调整）
+>   FINAL_N_TRAIN_MAX / N_TEST     -> 参考值（当前计划目标数值相同，但属 PROPOSED）
+>   FINAL_VALIDATION_POLICY=PENDING-> 当前计划：验证集用于 Early Stopping / 模型选择，
+>                                     具体规模与参数仍 PENDING
+>   d = 6 生产 DOE                 -> HISTORICAL / SUPERSEDED（当前为 11D 几何采样）
+> ```
+>
+> 本文档不确定任何新数值；测试集不参与训练 / 早停 / 超参搜索的规则保持不变。
+
 > Status: design specification (living document).
 > This file records the **statistical design principles**, **open decisions** and
 > **leakage risks** that a future `E(N, P)` scaling-law experiment must obey.
 > It is **NOT** a final experiment parameter table and does **NOT** fix `P`, `metric`
 > or repetition count.
 >
-> Exception (FROZEN 2026-10-13): `N` itself **is** now frozen — see
-> `docs/DESIGN_FREEZE_2026-10-13.md`. Section 1 defines `N`, section 2 fixes the
-> nested training ladder, section 3 fixes the test-set principle.
+> Exception (recorded 2026-10-13, 现降级): `N` 的定义**继续保留**；
+> `FINAL_N_LADDER` / `FINAL_N_TRAIN_MAX` / `FINAL_N_TEST` 现为候选或参考值，
+> 不再作为强制冻结约束。见 `docs/PROJECT_TRANSITION_PLAN.md`。
+> `docs/DESIGN_FREEZE_2026-10-13.md` 保留为历史记录。
 
 ## 1. Experiment objects
 
@@ -74,7 +98,7 @@ Main-experiment principle:
 D_train(N1) ⊂ D_train(N2) ⊂ ... ⊂ D_train(Nmax)
 ```
 
-### Frozen ladder (2026-10-13)
+### Ladder recorded 2026-10-13（现为候选梯度，非强制）
 
 ```text
 FINAL_N_LADDER = [
@@ -140,7 +164,11 @@ PREFERRED DESIGN
 and, for the **validation** part only, is **not** FINAL
 (`FINAL_VALIDATION_POLICY = PENDING`).
 
-### Fixed test set (FROZEN 2026-10-13)
+### Fixed test set（原则保留；规模为当前计划目标）
+
+> 2026-10-23 更新：训练集 / 验证集 / 测试集分离的原则保留。
+> `FINAL_N_TEST = 20000` 现为当前计划（PROPOSED）的目标值，
+> 不再作为冻结约束；验证集计划目标为 10000（PROPOSED，非冻结）。
 
 ```text
 FINAL_N_TEST      = 20000 usable test cases
@@ -440,7 +468,8 @@ legacy 1891 role  = historical reference / regression / Golden-Case source only
                                                 (CLOSED)
 ```
 
-Closed by the design freeze (2026-10-13, `docs/DESIGN_FREEZE_2026-10-13.md`):
+Recorded by the 2026-10-13 design freeze（现为 `HISTORICAL / SUPERSEDED` 规划约束，
+`N` 定义保留；见 `docs/PROJECT_TRANSITION_PLAN.md`）:
 
 ```text
 N definition         = usable training case count                 (CLOSED)

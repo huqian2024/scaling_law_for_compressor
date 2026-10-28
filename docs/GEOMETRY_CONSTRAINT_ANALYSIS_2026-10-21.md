@@ -8,7 +8,8 @@
 > **2026-10-21 后续（同日）**：方案 A 已经被正式采纳并冻结为 GeomTurbo
 > 几何生成范围（`config/geometry_ranges_frozen_a.yaml`，Metal2 6.0–32.0）。
 > 本文档保留为当时的分析依据；A/B/C 中 B、C 未被采纳。
-> 生产数量默认 200000 也为暂定值，实际数量 PENDING USER DECISION。
+> 生产数量默认 200000 为 HISTORICAL DEFAULT；当前计划为三组独立 11D Sobol
+> （150000 / 15000 / 30000 候选，PROPOSED），见 `docs/PROJECT_TRANSITION_PLAN.md`。
 
 ## 1. 结论摘要
 

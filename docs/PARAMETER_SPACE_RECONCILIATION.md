@@ -1,14 +1,39 @@
 # 参数空间与 DOE 维度对照（2026-10-21）
 
-> 目的：消除“历史 6 维冻结 DOE”与“当前 13 维探索性参数空间”之间的**记录性矛盾**。
+> ## ⚠ 状态更新（2026-10-23）：`HISTORICAL / SUPERSEDED`（6D 生产 DOE 部分）
+>
+> 本文是 2026-10-21 的维度对照记录（保留原文）。项目现进入
+> `TRANSITION / PLANNING` 阶段，当前规划见
+> [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
+>
+> ```text
+> 继续有效:
+>   “历史 6D 冻结 DOE”与“探索性参数空间”是两个不同阶段
+>   生成器 13 个形状参数 与 11+2 候选自由度 的区分
+>   Metal1（入口金属角） != Incidence（工况变量）
+>   SS1 = 3.2 / SS2 = 0.8 固定
+>   几何参数 KEEP 范围数值（不动）
+>
+> 已失效（不再约束当前工作）:
+>   “生产 DOE 仍为 d = 6”              -> HISTORICAL / SUPERSEDED
+>   “生产 DOE 是否改为 13 维待决策”     -> 不再以 13 维为目标；
+>                                          当前几何采样为 11 维（frozen_a 配置）
+>   FINAL_PRODUCTION_RANGES 作为本地几何生成阻塞项 -> 由 CFD 侧工况/网格设定负责
+> ```
+>
+> 当前几何生成路线：11 维 scrambled Sobol、三组独立固定种子
+> （`PROPOSED / NOT EXECUTED`），数值范围未修改。
+
+> 目的：消除“历史 6 维冻结 DOE”与“当时 13 维探索性参数空间”之间的**记录性矛盾**。
 > 本文档只做**对照与阶段划分**，不冻结任何新维度，也不修改任何历史记录。
 >
 > **2026-10-21 后续（同日）**：方案 A 已冻结为 GeomTurbo **几何生成**范围
 > （`config/geometry_ranges_frozen_a.yaml`，Metal2 6.0–32.0，其余不变）。
-> 默认生成量 200000 只是暂定值（PROVISIONAL / NOT FINAL），
-> 实际生产数量 PENDING USER DECISION。
-> 本文的阶段划分（生产 DOE d=6 vs 探索 11+2）仍然成立；
-> 冻结细节见 `docs/GEOMTURBO_PRODUCTION_200K.md`，`FINAL_PRODUCTION_RANGES` 仍 PENDING。
+> **2026-10-23 更新**：默认生成量 200000 为 HISTORICAL DEFAULT；
+> 当前计划为三组独立 11D Sobol（150000 / 15000 / 30000 候选），
+> 见 `docs/PROJECT_TRANSITION_PLAN.md`。
+> 本文的阶段划分（历史 6D vs 探索 11+2）作为历史对照仍然成立；
+> `FINAL_PRODUCTION_RANGES` 仍 PENDING（CFD 侧）。
 
 ```text
 权威边界:
@@ -32,12 +57,15 @@
 | 结论效力 | 可支撑生产，但缺范围 | 不能支撑生产，也不能当作 CFD 认证 |
 
 ```text
-关键结论 1：13 维是“当前研究空间”，不是“已冻结的生产 DOE”。
-关键结论 2：生产 DOE 目前仍记录为 d = 6；是否改成更多维，需要 owner/导师决策，
-           本仓库不做该决策，也不修改 2026-10-13 的冻结文件。
-关键结论 3：生产路线语义（ONE_6D_POINT_ONE_CASE）本身未变，
-           但名称里的 “6D” 绑定在冻结维度上；若生产维度变更，该常量需重新冻结。
+关键结论 1：13 维是“当时的研究空间”，不是“已冻结的生产 DOE”。
+关键结论 2：生产 DOE 当时仍记录为 d = 6；该记录现为 HISTORICAL / SUPERSEDED。
+            当前几何生成采用 11 维（config/geometry_ranges_frozen_a.yaml）。
+关键结论 3：历史生产路线语义（ONE_6D_POINT_ONE_CASE）同样降为 HISTORICAL；
+            “一个参数点对应一个 case”的做法本身仍然成立，只是不再绑定 6D 名称。
 ```
+
+> 2026-10-23 补充：下文表格中的“历史 6D DOE 状态”一列保留为历史记录；
+> 当前实际使用的几何维度与参数顺序以 `config/geometry_ranges_frozen_a.yaml` 为准。
 
 ## 2. “13” 的两种含义（易混淆，必须区分）
 
@@ -162,16 +190,24 @@ active_at_final_bound : false
 -> 历史判据与实验结果不修改。
 ```
 
-## 7. 待决策清单（不由 Agent 决定）
+## 7. 待决策清单（2026-10-23 更新）
 
 ```text
-1. 生产 DOE 维度：维持 6 维，还是改为 11 几何 + 2 运行（并重新冻结 d / 参数顺序）
-2. FINAL_PRODUCTION_RANGES（始终 PENDING）
-3. Solidity 是否保留为生产维度（当前只影响栅距）
-4. Metal1 是否进入生产维度（当前只是 legacy 常量 / 探索参数）
-5. Incidence / Mach 的 CFX 实现与 4 deg 注释差异
-6. K_m 上界与 Metal2 下界是否收紧（见人工评审分析，仅为建议）
-7. 若生产维度改为 13，`PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE` 的名称需重新冻结
+已关闭 / 已失效:
+  1. 生产 DOE 维度 —— 历史 6 维记录为 HISTORICAL / SUPERSEDED；
+     当前几何生成固定为 11 维（config/geometry_ranges_frozen_a.yaml）
+  2. FINAL_PRODUCTION_RANGES —— 不再是本地几何生成的阻塞项；
+     CFD 侧工况/网格设定由师兄负责，交接接口格式仍 PENDING
+  7. PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE —— 名称降为 HISTORICAL；
+     实际仍是“一个参数点一个 case”，不新增几何/工况复用
+
+仍然开放（不由 Agent 决定）:
+  3. Solidity 在几何采样中当前仍然可变（0.7-2.5），是否需要单独研究其影响
+  4. Metal1 作为入口金属角继续保持可变（48-58），CFD 侧仍需确认与 Incidence 的关系
+  5. Incidence / Mach 的 CFX 实现与 legacy 4 deg 注释差异（CFD 侧）
+  6. K_m 上界与 Metal2 下界是否进一步收紧（Metal2 下界已为 6.0；K_m 保持 0.35）
+
+训练侧待决项见 docs/TRAINING_TRANSITION_PLAN.md §8。
 ```
 
 ## 8. 核对方式（可复现，只读）

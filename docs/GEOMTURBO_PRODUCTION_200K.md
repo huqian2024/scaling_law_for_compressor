@@ -1,4 +1,29 @@
-# GeomTurbo 生产几何生成使用说明（默认 200,000，暂定规模）
+# GeomTurbo 生产几何生成使用说明（默认 200,000 = 历史默认值）
+
+> ## ⚠ 状态更新（2026-10-23）：当前生产计划为三组独立 Sobol（`PROPOSED / NOT EXECUTED`）
+>
+> 生成器用法、安全机制、manifest 字段与存储估算继续有效（保留原文）。
+> **200000 只是代码中的历史默认值，不是当前计划数量。**
+> 当前规划见 [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
+>
+> | 数据集 | Sobol 候选数 | 目标有效 CFD 数 | 建议输出目录（尚未创建） |
+> |---|---:|---:|---|
+> | Train | 150000 | 100000 | `production_geomturbo/train/` |
+> | Validation | 15000 | 10000 | `production_geomturbo/val/` |
+> | Test | 30000 | 20000 | `production_geomturbo/test/` |
+> | 合计 | 195000 | 130000 | |
+>
+> ```text
+> 执行方式: 同一个生成程序运行三次，每次不同固定种子、不同输出目录
+> 种子数值: PENDING（未确定；不使用代码默认 seed=1 作为三组计划的一部分）
+> 代码默认值: 本次未修改（count=200000 / seed=1 / production_geomturbo）
+> 三组运行会在各自目录内产生相同的 case_id（G0000001..）
+>   -> 全局身份 = (group, seed, sobol_index)；`code/run_geomturbo.py` 会写入
+>      `group_info.json`（group 目录本身也携带组归属）
+>   -> 去重策略仍 PENDING
+> 规模依据: 130000 / 195000 = 66.67% 最低总体有效率；
+>           小规模 CFD 成功率约 75%（USER-REPORTED）
+> ```
 
 > **状态：代码与配置已准备（PREPARED / NOT EXECUTED）。**
 > **尚未生成任何实际 GeomTurbo 文件，也未运行任何 CFD。**
@@ -8,19 +33,22 @@
 
 ```text
 Geometry parameter ranges:
-  FROZEN_FOR_GEOMTURBO_GENERATION
+  CURRENT_BASELINE（方案 A，数值未修改；原冻结记录保留）
 Batch generator implementation:
   PREPARED / NOT EXECUTED
-Default sample count:
-  200000  (PROVISIONAL / NOT FINAL)
+Default sample count (code default):
+  200000  HISTORICAL DEFAULT（不是当前计划数量）
+Current production plan (PROPOSED / NOT EXECUTED):
+  Train 150000 / Validation 15000 / Test 30000 = 195000 候选
+  目标有效 CFD: 100000 / 10000 / 20000 = 130000
 Actual production count:
-  PENDING USER DECISION
+  PENDING（三个种子与最终规模仍需人工确认）
 GeomTurbo files generated:
   0
 CFD production:
-  NOT STARTED
+  由师兄在独立服务器执行（本地不实现）
 FINAL_PRODUCTION_RANGES:
-  PENDING
+  PENDING（CFD 侧；不再是本地几何生成阻塞项）
 ```
 
 ## 1. 正式冻结的方案 A
@@ -100,9 +128,41 @@ python -c "import numpy, scipy, yaml; print(numpy.__version__, scipy.__version__
 
 ## 4. 命令行用法
 
+### 4.0 推荐入口：`code/run_geomturbo.py`（按 group 启动）
+
 ```bash
 cd /home/qian/compressor_ai4s
 
+# 只读预览（不创建目录 / 文件）
+python code/run_geomturbo.py --group train --N 150000 --seed 101 --plan
+
+# 正式启动（一条命令 = 一次明确授权；内部调用生成器的 --execute）
+python code/run_geomturbo.py --group train --N 150000 --seed 101
+python code/run_geomturbo.py --group val   --N 15000  --seed 202
+python code/run_geomturbo.py --group test  --N 30000  --seed 303
+
+# 中断后继续（group / seed 不变；N 可增大以延长 Sobol 前缀）
+python code/run_geomturbo.py --group train --N 150000 --seed 101 --resume
+```
+
+```text
+--group {train,val,test}  必填；默认目录 production_geomturbo/<group>/
+--N                       必填；候选几何数量（不是 CFD 成功数）
+--seed                    必填；Sobol 种子（续跑时必须一致）
+--resume                  继续已有目录（同 config / seed；N 可增大）
+--plan                    严格只读
+--output-dir              可选，覆盖默认目录
+```
+
+```text
+每组目录内新增 group_info.json：group / seed / N_candidates / global_identity。
+全局身份 = group + seed + sobol_index；case_id 格式不变（G + 7 位数字）。
+Ctrl+C 中断时，当前批次已完成的 Case 会先写入 batch manifest，--resume 不会重算它们。
+```
+
+以下为底层生成器的直接用法（高级用法 / 等价能力，必须显式 `--execute`）：
+
+```bash
 # 1) 只查看计划（只读，不写任何文件）
 python code/generate_geomturbo_production.py --plan
 
@@ -141,12 +201,44 @@ python code/generate_geomturbo_production.py --execute \
   --plan 与 --execute 互斥。
 ```
 
-## 5. 默认数量（暂定）与修改方法
+### 4.1 三组独立运行（PROPOSED / NOT EXECUTED）
+
+当前计划用同一程序运行三次，三组互不共用输出目录，也不共用种子：
+
+```bash
+# Train（目标有效 100000 / 候选 150000）
+python code/generate_geomturbo_production.py --plan \
+    --count 150000 --seed <TRAIN_SEED> --output-dir production_geomturbo/train
+python code/generate_geomturbo_production.py --execute \
+    --count 150000 --seed <TRAIN_SEED> --output-dir production_geomturbo/train --resume
+
+# Validation（目标有效 10000 / 候选 15000）
+python code/generate_geomturbo_production.py --execute \
+    --count 15000 --seed <VALIDATION_SEED> --output-dir production_geomturbo/val --resume
+
+# Test（目标有效 20000 / 候选 30000）
+python code/generate_geomturbo_production.py --execute \
+    --count 30000 --seed <TEST_SEED> --output-dir production_geomturbo/test --resume
+```
+
+```text
+说明（不改代码）：
+  三个种子数值 PENDING，必须由用户确定并记录；
+  每个输出目录各自有 config_snapshot.yaml / manifest.csv / batch_*/，
+  因 seed 不同，指纹不同 -> 不能共用一个输出目录续跑；
+  三组 case_id 都会从 G0000001 开始；全局身份 = group + seed + sobol_index
+  （run_geomturbo.py 写入 group_info.json；去重策略仍 PENDING）；
+  上面命令本轮没有执行，且必须由用户显式启动。
+```
+
+## 5. 默认数量（历史默认值）与修改方法
 
 ```text
 默认 count = 200000（来自 config sampling.default_count，不是硬编码逻辑）
-200000 = DEFAULT / PROVISIONAL，不是最终生产规模；
-实际生产数量 PENDING USER DECISION，由用户用 --count 指定。
+200000 = HISTORICAL DEFAULT，不是当前计划数量；
+当前计划（PROPOSED / NOT EXECUTED）：150000 / 15000 / 30000 候选
+实际数量仍由用户用 --count 指定（种子数值 PENDING），见
+docs/PROJECT_TRANSITION_PLAN.md。
 
 200000 不是 2^m，因此（以默认值为例）：
   m = 18（2^18 = 262144）

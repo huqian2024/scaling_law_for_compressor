@@ -1,14 +1,45 @@
 # DESIGN FREEZE — Scaling-Law Data Scale & Experiment Design
 
+> ## ⚠ 状态更新（2026-10-23）：`HISTORICAL / SUPERSEDED`（仅限项目规划约束）
+>
+> 本文记录的是 2026-10-13 当时真实的设计冻结（保留原文，**不抹除**）。
+> 项目现进入 `TRANSITION / PLANNING` 阶段，当前规划见
+> [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md) 与
+> [`docs/TRAINING_TRANSITION_PLAN.md`](TRAINING_TRANSITION_PLAN.md)。
+>
+> 已失效（不再约束当前工作）：
+>
+> ```text
+> 生产 DOE d = 6 / seed = 1 / 单一主序列          -> HISTORICAL / SUPERSEDED
+> ONE_6D_POINT_ONE_CASE 作为唯一生产路线           -> HISTORICAL / SUPERSEDED
+> FINAL_N_TRAIN_MAX 100000 / FINAL_N_TEST 20000    -> 降为参考值（非冻结约束）
+> FINAL_N_LADDER 1k..100k                          -> 降为候选梯度（非强制）
+> 生产规模冻结作为本地几何生成的前置条件            -> 不再适用
+> ```
+>
+> 继续有效：
+>
+> ```text
+> N = usable training case count                   -> RETAINED（定义不变）
+> 训练集 / 测试集完全分离的原则                     -> RETAINED
+> 几何算法 / 历史回归 / GeomTurbo 格式 / QC 契约     -> 不受影响（技术冻结仍有效）
+> ```
+>
+> 当前几何生成路线是 11 维、三组独立 Sobol（`PROPOSED / NOT EXECUTED`），
+> 数值范围沿用 `config/geometry_ranges_frozen_a.yaml`，本次未修改任何数值。
+
 Date: 2026-10-13
-Status: **FROZEN (current authoritative status)**
+Status at the time: **FROZEN** — 现为 `HISTORICAL / SUPERSEDED`（见上方状态更新）
 Scope: design freeze ONLY — **no production data was generated.**
 
-This document is the current authoritative status for production scale, training
-ladder, test set and the production route. Where it conflicts with older documents
-(or with older `PENDING` entries), **this document wins**.
 
-## 1. Definition of N (FROZEN)
+This document **was** the authoritative status for production scale, training ladder,
+test set and the production route **at the time of the 2026-10-13 freeze**.
+It is now kept as a historical record: the planning constraints are
+`HISTORICAL / SUPERSEDED`, while the `N` definition and the train/test separation
+principle are retained. See `docs/PROJECT_TRANSITION_PLAN.md` for the current plan.
+
+## 1. Definition of N (RETAINED)
 
 ```text
 N = usable training case count

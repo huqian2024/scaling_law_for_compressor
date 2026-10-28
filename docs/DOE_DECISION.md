@@ -1,8 +1,39 @@
 # DOE Decision Memo
 
-> Status: **FINAL PRODUCTION DOE DECISION FROZEN**.
+> ## ⚠ 状态更新（2026-10-23）：部分为 `HISTORICAL / SUPERSEDED`
+>
+> 本文记录 2026-10-13 当时的 DOE 方法决策（保留原文）。当前规划见
+> [`docs/PROJECT_TRANSITION_PLAN.md`](PROJECT_TRANSITION_PLAN.md)。
+>
+> 继续有效：
+>
+> ```text
+> DOE 方法    = SCRAMBLED_SOBOL（scrambled Sobol + 固定种子的思路继续沿用）
+> 嵌套前缀    = 组内 D_N 取同一序列前缀（原则继续沿用）
+> A1 / A2     = BASELINE_ONLY / DEPRIORITIZED（历史基准结论不变）
+> legacy 1891 = historical reference / regression / Golden-Case only（不变）
+> ```
+>
+> 已失效（不再约束当前工作）：
+>
+> ```text
+> 生产 DOE 维度 d = 6                     -> HISTORICAL / SUPERSEDED
+> 单一生产序列 + SOBOL_SEED = 1            -> HISTORICAL / SUPERSEDED
+>                                       （现为三组独立固定种子，数值 PENDING）
+> 参数顺序 [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
+>                                         -> 6D 生产参数顺序不再适用；
+>                                            当前几何参数顺序为 11 维（见 frozen_a 配置）
+> FINAL_N_TRAIN_MAX / FINAL_N_TEST / FINAL_N_LADDER -> 降为参考值，不再强制
+> ```
+>
+> 当前 11D 几何生成的参数范围与顺序由
+> `config/geometry_ranges_frozen_a.yaml` 决定（本次未修改数值）。
+
+> Status at the time: **FINAL PRODUCTION DOE DECISION FROZEN**.
 > `FINAL_DOE = SCRAMBLED_SOBOL` (owner / human approval received).
 > The historical benchmark evidence below is retained unchanged.
+> 现状态：DOE 方法决策保留，6D 生产规划约束为 `HISTORICAL / SUPERSEDED`。
+
 
 ## 1. Background and objective
 
@@ -92,7 +123,8 @@ NumPy  = 2.2.6
 - Prefixes are naturally nested.
 - Best centered discrepancy and marginal balance in the current experiment.
 - Constitutes a **DOE family change** relative to the legacy LHS.
-- Status: `FINAL_PRODUCTION_DOE` (APPROVED, FINAL — see section 12).
+- Status: `FINAL_PRODUCTION_DOE` (recorded APPROVED / FINAL at the time — see section 12;
+  the 6-D binding part is `HISTORICAL / SUPERSEDED`).
 
 ## 5. Metric results (recorded, not re-run)
 
@@ -215,11 +247,12 @@ No `01_generate_design.py`, no `master_design.csv`, no official subsets, no new 
 benchmark run, no final `N`/`Nmax` decision, no change to `ranges_legacy.yaml` or any
 legacy file, no geometry or CFD work was produced by this checkpoint.
 
-## 12. FINAL DOE DECISION (FROZEN, owner / human approved)
+## 12. FINAL DOE DECISION (at the time: FROZEN — 6D 生产约束现为 HISTORICAL / SUPERSEDED)
 
 ```text
-FINAL_DOE = SCRAMBLED_SOBOL
-status    = APPROVED / FINAL
+FINAL_DOE = SCRAMBLED_SOBOL          （DOE 方法决策，继续沿用）
+status    = APPROVED / FINAL         （仅指 2026-10-13 的方法选择）
+6D 生产 DOE 维度 / 单一 seed=1 序列   = HISTORICAL / SUPERSEDED（2026-10-23）
 ```
 
 ### Decision authority
@@ -425,23 +458,33 @@ The historical benchmark sizes
 
 remain **DOE-method comparison values** and are still NOT the production ladder.
 
-### Current authoritative status (2026-10-13) — FROZEN
+### Status recorded on 2026-10-13 — 现为 `HISTORICAL / SUPERSEDED`（规划约束）
 
-See `docs/DESIGN_FREEZE_2026-10-13.md`:
+See `docs/DESIGN_FREEZE_2026-10-13.md`（原文保留）与
+`docs/PROJECT_TRANSITION_PLAN.md`（当前规划）:
 
 ```text
-N definition                = usable training case count
-FINAL_N_TRAIN_MAX           = 100000 usable training cases
-FINAL_N_TEST                = 20000 usable test cases (fixed)
-TRAIN_TEST_RATIO            = 5:1
-MIN_USABLE_TRAIN_TEST_CASES = 120000
+N definition                = usable training case count          RETAINED
+FINAL_N_TRAIN_MAX           = 100000 usable training cases        参考值（非冻结）
+FINAL_N_TEST                = 20000 usable test cases (fixed)     参考值（非冻结）
+TRAIN_TEST_RATIO            = 5:1                                 参考值
+MIN_USABLE_TRAIN_TEST_CASES = 120000                              参考值
 FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 100000
+                                                                  候选梯度（非强制）
+```
+
+```text
+当前计划（PROPOSED / NOT EXECUTED，见 PROJECT_TRANSITION_PLAN.md）:
+  Train 候选 150000 -> 目标有效 100000
+  Validation 候选 15000 -> 目标有效 10000
+  Test 候选 30000 -> 目标有效 20000
+  三组独立 Sobol、独立固定种子（种子数值 PENDING）
 ```
 
 The umbrella term `FINAL_NMAX` is retired for current status; it must not be used to
 mean training `N_max`, usable total, or raw CFD attempts.
 
-Still **PENDING** (not decided by an AI agent):
+Still **PENDING** (not decided by an AI agent; CFD 侧主导):
 
 ```text
 FINAL_VALIDATION_POLICY

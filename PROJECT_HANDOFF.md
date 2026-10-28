@@ -1,5 +1,76 @@
 # PROJECT_HANDOFF
 
+## TRANSITION STATUS（2026-10-23 — 当前权威状态）
+
+```text
+项目阶段                  TRANSITION / PLANNING
+主规划文档                docs/PROJECT_TRANSITION_PLAN.md
+训练规划文档              docs/TRAINING_TRANSITION_PLAN.md
+```
+
+```text
+当前分工:
+  本地    11D Sobol 采样 + GeomTurbo 生成 + 几何 QC + 数据管理 + GPU 训练（后续）
+  师兄    CFD 网格 / 边界条件 / 工况 / 求解 / 收敛检查 / 调度（独立服务器）
+  本地不做 NUMECA/CFX 自动化、CFD 服务器管理、求解器设置猜测
+```
+
+```text
+当前几何生产方案（PROPOSED / NOT EXECUTED）:
+  Train        150000 候选 -> 目标有效 100000
+  Validation    15000 候选 -> 目标有效 10000
+  Test          30000 候选 -> 目标有效 20000
+  合计         195000 候选 -> 目标有效 130000
+  方法         11D scrambled Sobol，三组各用不同固定种子，输出目录相互独立
+  种子数值     PENDING
+  规模依据     130000 / 195000 = 66.67% 最低总体有效率；
+               小规模 CFD 成功率 ≈ 75%（USER-REPORTED，未本地复现）
+  已生成文件   0（本仓库未执行任何批量生成）
+```
+
+```text
+状态语义（本项目统一使用）:
+  VERIFIED              已验证事实
+  CURRENT_BASELINE      当前实际采用的技术基线
+  PROPOSED              待验证的工作设想
+  PENDING               尚无决定
+  HISTORICAL / SUPERSEDED  历史有效但已不再约束当前工作
+  NOT EXECUTED          尚未实际运行
+```
+
+```text
+本次（2026-10-23）文档整理解除的项目规划约束:
+  6D 生产 DOE（d = 6, seed = 1）           -> HISTORICAL / SUPERSEDED
+  单一生产序列 / ONE_6D_POINT_ONE_CASE 名称 -> HISTORICAL / SUPERSEDED
+  默认 200000 候选数                        -> HISTORICAL DEFAULT
+  FINAL_N_TRAIN_MAX / N_TEST / ladder       -> 参考值与候选梯度
+  生产规模冻结作为本地几何生成前置条件       -> 不再适用
+
+继续有效的技术冻结（未解除）:
+  几何算法 / legacy 回归 / GeomTurbo 格式 / Generator 契约 / QC 契约
+  11D 方案 A 参数范围数值（未修改）
+  SS1 = 3.2 / SS2 = 0.8
+  N = usable training case count 的定义
+  训练集 / 验证集 / 测试集分离原则
+```
+
+历史记录（保留原文，不改写当时决定）：
+
+```text
+docs/DESIGN_FREEZE_2026-10-13.md    HISTORICAL / SUPERSEDED（规划约束）
+docs/DOE_DECISION.md                DOE 方法决策保留，6D 生产约束失效
+docs/SCALING_EXPERIMENT_DESIGN.md   统计原则保留，训练阶梯降为候选
+docs/PARAMETER_SPACE_RECONCILIATION.md  历史维度对照
+docs/GEOMTURBO_PRODUCTION_200K.md   生成器说明保留，200000 为历史默认值
+```
+
+```text
+本轮没有做的事:
+  未修改任何 Python 程序 / 测试 / YAML 配置 / GeomTurbo 模板 / 历史数据
+  未批量生成 GeomTurbo；未启动 CFD；未启动 GPU 训练
+  未创建新的 FINAL / FROZEN 决策
+```
+
 ## PROJECT
 
 Two-dimensional compressor cascade AI4S CFD data-generation and scaling-law project.
@@ -10,7 +81,10 @@ Research target:
 E = f(N, P)
 ```
 
-Current phase: build a **reliable data-generation and canonical-dataset pipeline** only.
+Current phase: **TRANSITION / PLANNING** — local 11D geometry generation, geometry QC,
+data management and (later) GPU training planning. CFD execution is handled by the
+senior engineer on a separate server. See `## TRANSITION STATUS` above and
+`docs/PROJECT_TRANSITION_PLAN.md`.
 No model training in this phase.
 
 ## CURRENT_STATUS
@@ -24,27 +98,27 @@ Legacy range freeze             PASS
 
 DOE design review               PASS
 DOE benchmark                   PASS
-DOE decision                    PASS / FROZEN
+DOE decision                    PASS / 方法决策保留（6D 部分 HISTORICAL）
 Scaling statistical design      PASS
 
-FINAL_DOE                       SCRAMBLED_SOBOL — APPROVED / FINAL
-SOBOL_SEED                      1
+FINAL_DOE                       SCRAMBLED_SOBOL — 方法保留
+SOBOL_SEED                      1（HISTORICAL DEFAULT；三组种子 PENDING）
 
-Design freeze (2026-10-13)      PASS / FROZEN
-N definition                    N = usable training case count
-FINAL_N_TRAIN_MAX               100000 usable training cases
-FINAL_N_TEST                    20000 usable test cases (fixed)
-TRAIN_TEST_RATIO                5:1
-MIN_USABLE_TRAIN_TEST_CASES     120000
-FINAL_N_LADDER                  1000 2000 5000 10000 20000 35000 50000 70000 100000
-SOBOL_MASTER_M                  m >= 17 (lower bound only; FINAL m PENDING)
-GEOMETRY_REUSE                  DISABLED / NOT ACTIVE
-PRODUCTION_ROUTE                ONE_6D_POINT_ONE_CASE
-FINAL_VALIDATION_POLICY         PENDING
-FINAL_N_VALIDATION              PENDING
-FINAL_PRODUCTION_RANGES         PENDING   <- main blocker
-FINAL_RAW_CFD_ATTEMPTS          PENDING
-FAILURE_RESERVE_POLICY          PENDING
+Design freeze (2026-10-13)      HISTORICAL / SUPERSEDED（规划约束；原文保留）
+N definition                    N = usable training case count        RETAINED
+FINAL_N_TRAIN_MAX               100000 usable training cases          参考值
+FINAL_N_TEST                    20000 usable test cases (fixed)       参考值
+TRAIN_TEST_RATIO                5:1                                   参考值
+MIN_USABLE_TRAIN_TEST_CASES     120000                                参考值
+FINAL_N_LADDER                  1000..100000                          候选梯度
+SOBOL_MASTER_M                  m >= 17（历史下界；不再是当前约束）
+GEOMETRY_REUSE                  DISABLED / NOT ACTIVE（默认假设保留）
+PRODUCTION_ROUTE                ONE_6D_POINT_ONE_CASE（名称 HISTORICAL）
+FINAL_VALIDATION_POLICY         PENDING（验证集将用于 Early Stopping）
+FINAL_N_VALIDATION              PENDING（当前计划目标 10000）
+FINAL_PRODUCTION_RANGES         PENDING（CFD 侧；本地几何生成不再阻塞）
+FINAL_RAW_CFD_ATTEMPTS          PENDING（CFD 侧）
+FAILURE_RESERVE_POLICY          PENDING（由实测有效率 66.67% 需求 + 75% 现状替代）
 
 Geometry regression fixtures    PASS
 Geometry generator contract     PASS
@@ -71,27 +145,31 @@ SS1 / SS2                       3.2 / 0.8 FIXED_BY_REVIEW (human decision made
                                 AFTER the 100-case scan; that scan DID vary them)
 C820 human engineering review   RECORDED 2026-10-21 (85 ACCEPT / 15 REJECT;
                                 100/100 decided; per-case reject reasons still missing)
-FINAL_PRODUCTION_RANGES         STILL PENDING   <- main blocker (the exploratory
-                                geometry config is NOT a production approval)
-Production DOE dimension        UNCHANGED: d = 6 (2026-10-13 freeze); the 13-dim
-                                exploratory space is NOT a frozen production DOE
+FINAL_PRODUCTION_RANGES         PENDING（CFD 侧；不再是本地几何生成阻塞项）
+Production DOE dimension        HISTORICAL / SUPERSEDED: d = 6 (2026-10-13);
+                                current geometry sampling is 11-D
+                                (config/geometry_ranges_frozen_a.yaml)
 Human SHAPE acceptance        85/100 recorded (C820); NO mesh/CFD/aero acceptance
-Geometry ranges (11-D)         FROZEN 2026-10-21 (scheme A): Metal2 6.0-32,
-                               others unchanged; config/geometry_ranges_frozen_a.yaml
+Geometry ranges (11-D)         CURRENT_BASELINE 2026-10-21 (scheme A, values unchanged):
+                               Metal2 6.0-32, others unchanged;
+                               config/geometry_ranges_frozen_a.yaml
 GeomTurbo production entry     code/generate_geomturbo_production.py
-                               PREPARED / NOT EXECUTED (d=11, seed=1)
-Default sample count           200000  PROVISIONAL / NOT FINAL
-Actual production count        PENDING USER DECISION
+                               PREPARED / NOT EXECUTED (d=11)
+Default sample count           200000  HISTORICAL DEFAULT (not the current plan)
+Current production plan        PROPOSED / NOT EXECUTED: 150000 / 15000 / 30000
+                               candidates -> 100000 / 10000 / 20000 usable
+Seed values                    PENDING (three independent fixed seeds)
 GeomTurbo files generated      0 (no batch run has been executed)
-CFD production                 NOT STARTED
+CFD production                 handed to the senior engineer's server (not local)
+AI training (GPU HPC / Slurm)  PROPOSED / NOT STARTED
 FINAL_PRODUCTION_RANGES        PENDING
 
-01_generate_design.py           PREPARED / NOT EXECUTED / BLOCKED
-generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / BLOCKED
-DO-NOT-RUN                      no production design (6-D DOE) until
-                                FINAL_PRODUCTION_RANGES is frozen
-                                (the 11-D GeomTurbo pool is a separate, frozen
-                                 geometry-generation path; user starts it manually)
+01_generate_design.py           PREPARED / NOT EXECUTED / HISTORICAL (6-D path)
+generate_geomturbo_batch.py     PREPARED / NOT EXECUTED / HISTORICAL (6-D path)
+DO-NOT-RUN (historical)         the 6-D production design path is superseded and is
+                                NOT the current generation route. Current route:
+                                11-D GeomTurbo from config/geometry_ranges_frozen_a.yaml,
+                                started manually by the user with --execute.
 NUMECA bring-up C900001         KEPT (bring-up only; never in the
                                 production case sequence)
 NUMECA / CFX / HPC              NOT STARTED
@@ -125,25 +203,25 @@ OperatingCondition = f(Incidence, Mach)
 The CFX implementation of `Incidence` / `Mach` is still **TBD**; guessing is
 forbidden.
 
-## DOE STATUS
+## DOE STATUS（2026-10-23：方法决策保留，6D 生产约束为 HISTORICAL / SUPERSEDED）
 
 ```text
-FINAL_DOE = SCRAMBLED_SOBOL — APPROVED
+FINAL_DOE = SCRAMBLED_SOBOL — DOE 方法决策保留 / 继续沿用
   method   = scipy.stats.qmc.Sobol
-  d        = 6
-  scramble = True
-  seed     = 1     (verified: analysis/doe_compare_benchmark.py line 44)
-  ordering = native Sobol sequence order
-  nesting  = prefix nesting (D_N = first N of the frozen master sequence)
+  d        = 6            -> HISTORICAL / SUPERSEDED（当前几何采样 d = 11）
+  scramble = True         -> 保留
+  seed     = 1            -> HISTORICAL DEFAULT（三组独立种子，数值 PENDING）
+  ordering = native Sobol sequence order   -> 保留
+  nesting  = prefix nesting (同一组内 D_N = first N)  -> 保留
 
 A1 Master LHS + raw prefix
-STATUS = BASELINE_ONLY
+STATUS = BASELINE_ONLY      （历史基准结论不变）
 
 A2 Master LHS + greedy maximin ordering
-STATUS = DEPRIORITIZED
+STATUS = DEPRIORITIZED      （历史基准结论不变）
 
 B Scrambled Sobol
-STATUS = FINAL_PRODUCTION_DOE
+STATUS = FINAL_PRODUCTION_DOE   （当时的方法决策；6D 绑定部分已失效）
 ```
 
 Legacy:
@@ -154,7 +232,7 @@ historical 1891 =
   NOT part of the new production Sobol pool
 ```
 
-Parameter order (frozen):
+Parameter order (recorded for the historical 6-D DOE — `HISTORICAL / SUPERSEDED`):
 
 ```text
 0 Xthick
@@ -165,63 +243,73 @@ Parameter order (frozen):
 5 Mach
 ```
 
-Production principles (frozen):
+```text
+当前几何生成参数顺序（11 维，config/geometry_ranges_frozen_a.yaml）:
+  Xthick, Tmax, Metal2, Solidity, Metal1, T1, T2, Xmean, K_m, Ks1, Ks2
+```
+
+Production principles (staged 2026-10-13; 组内原则保留):
 
 ```text
-one fixed master Sobol sequence
-generated once
-D_N = first N points
+one fixed Sobol sequence per dataset group   （现在是三组，各组一条）
+D_N = first N points of that group's sequence
 no independent redraw per N
 no sorting / reordering
-no LHS / Sobol mixing in the main production pool
+no LHS / Sobol mixing in the same pool
 ```
 
 References:
 
 - `docs/DOE_DECISION.md`
 - `docs/SCALING_EXPERIMENT_DESIGN.md`
+- `docs/PROJECT_TRANSITION_PLAN.md`
 
-## PRODUCTION SCALE (FROZEN 2026-10-13)
+## PRODUCTION SCALE (2026-10-13 record — HISTORICAL / SUPERSEDED as a constraint)
+
+> 2026-10-23：本节保留为历史记录。`N` 的定义继续有效；
+> 规模数值降为参考值，训练阶梯降为候选梯度。
+> 当前计划（PROPOSED / NOT EXECUTED）：Train 150000 / Validation 15000 / Test 30000
+> 候选，对应目标有效 100000 / 10000 / 20000。见 `docs/PROJECT_TRANSITION_PLAN.md`。
 
 ```text
-N = usable training case count
+N = usable training case count          （RETAINED，定义不变）
     (test / validation / failed / rejected cases are NOT counted)
 ```
 
 ```text
-FINAL_N_TRAIN_MAX           = 100000 usable training cases
-FINAL_N_TEST                = 20000 usable test cases (fixed)
-TRAIN_TEST_RATIO            = 5:1
-MIN_USABLE_TRAIN_TEST_CASES = 120000
+FINAL_N_TRAIN_MAX           = 100000 usable training cases   参考值
+FINAL_N_TEST                = 20000 usable test cases        参考值
+TRAIN_TEST_RATIO            = 5:1                            参考值
+MIN_USABLE_TRAIN_TEST_CASES = 120000                         参考值
 FINAL_N_LADDER              = 1000 2000 5000 10000 20000 35000 50000 70000 100000
+                                                             候选梯度（非强制）
 ```
 
 ```text
-FINAL_RAW_CFD_ATTEMPTS = PENDING
-  (> 120000; exact value needs a real NUMECA/CFX failure rate first)
+FINAL_RAW_CFD_ATTEMPTS = PENDING   （CFD 侧；最低总体有效率 66.67% 为当前规划依据）
 FAILURE_RESERVE_POLICY = PENDING
 ```
 
 ```text
-SCOPE NOTE (2026-10-21):
-  This 2026-10-13 freeze is about usable CFD training/test cases (N).
-  It is NOT the GeomTurbo candidate count.
-  The GeomTurbo generator default (200000) is PROVISIONAL / NOT FINAL;
-  the actual candidate count is PENDING USER DECISION.
+SCOPE NOTE (2026-10-21, 更新 2026-10-23):
+  2026-10-13 的冻结是关于可用 CFD 训练/测试样本数 (N)。
+  它不是 GeomTurbo 候选数量。
+  代码默认 200000 = HISTORICAL DEFAULT；
+  当前候选数计划为 195000（PROPOSED，NOT EXECUTED）。
 ```
 
 The retired umbrella term `FINAL_NMAX` must no longer be used for current status,
 because it conflates training `N_max`, usable total and raw CFD attempts.
-Full freeze record: `docs/DESIGN_FREEZE_2026-10-13.md`.
+Full freeze record (historical): `docs/DESIGN_FREEZE_2026-10-13.md`.
 
-## PREPARED PRODUCTION PIPELINE (2026-10-13 — PREPARED, NOT EXECUTED)
+## PREPARED PRODUCTION PIPELINE (2026-10-13 — HISTORICAL 6-D PATH, NOT EXECUTED)
 
-```text
-code/01_generate_design.py        PREPARED / NOT EXECUTED
-code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
-```
+> 2026-10-23：这条 6-D 生产流水线已被 `HISTORICAL / SUPERSEDED` 取代，
+> 不是当前几何生成路线。当前路线是 `code/generate_geomturbo_production.py`
+> （11 维、三组独立 Sobol，PROPOSED / NOT EXECUTED）。
+> 下列代码保留在仓库中，但**不得**当作当前生产入口执行。
 
-One command (single entry point; **DO NOT RUN** yet):
+One command (historical 6-D entry point; **DO NOT RUN**):
 
 ```bash
 conda run -n ai4s python code/generate_geomturbo_batch.py \
@@ -378,10 +466,11 @@ Regression status at this documentation sync (2026-10-21):
 Two different stages must not be conflated:
 
 ```text
-Stage A — production DOE (frozen 2026-10-13)
+HISTORICAL / SUPERSEDED（2026-10-23）:
+Stage A — production DOE (recorded 2026-10-13)
     d = 6 : [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
-    method/seed/order FROZEN; FINAL_PRODUCTION_RANGES still PENDING
-    (legacy ranges only, NOT final production ranges)
+    该路线已不再是当前几何生成路线；当前为 11D（frozen_a 配置）
+    FINAL_PRODUCTION_RANGES 仍 PENDING（CFD 侧）
 
 Stage B — geometry parameter research (2026-10-17, exploratory)
     11 geometry parameters + 2 operating parameters (SS1/SS2 fixed)
@@ -390,8 +479,8 @@ Stage B — geometry parameter research (2026-10-17, exploratory)
 
 ```text
 The 13-dim space is NOT "the production DOE frozen at 13 dims".
-Whether the production DOE dimension changes is an owner decision (NOT taken here).
-The 2026-10-13 freeze document is preserved unchanged.
+当前也没有“13 维生产 DOE”这个目标；几何采样固定为 11 维。
+The 2026-10-13 freeze document is preserved unchanged (historical record).
 "13" has two different meanings and must be written explicitly:
     (a) generator PARAM_NAMES = 13 shape parameters (includes SS1/SS2)
     (b) candidate DOF = 11 KEEP geometry + 2 operating = 13 (SS1/SS2 fixed)
@@ -482,18 +571,22 @@ But there IS a judgement-scope conflict (recorded, NOT rewritten):
 ```
 
 
-## GEOMTURBO PRODUCTION FREEZE — SCHEME A (2026-10-21; default count provisional)
+## GEOMTURBO PRODUCTION BASELINE — SCHEME A (2026-10-21; values unchanged 2026-10-23)
+
+> 2026-10-23：方案 A 的**数值**继续作为当前生成器基线（`CURRENT_BASELINE`），
+> 原冻结记录保留。生产数量不再是"200000 待定"，而是下面的三组计划（`PROPOSED`）。
+> 三个种子数值仍为 `PENDING`。
 
 ```text
-Config (runtime)   : config/geometry_ranges_frozen_a.yaml   status = FROZEN
+Config (runtime)   : config/geometry_ranges_frozen_a.yaml   status = FROZEN（数值未改）
 Decision file      : analysis/geometry_review/parameter_final_decision_v1/
                      final_geometry_parameters.yaml
                      status = FROZEN_FOR_GEOMTURBO_GENERATION
 Freeze ID          : geometry_ranges_frozen_a
 Freeze scope       : geomturbo_geometry_generation_only
                      (NOT a CFD production-range approval)
-FINAL_PRODUCTION_RANGES : PENDING (unchanged)
-2026-10-13 DOE freeze   : NOT modified
+FINAL_PRODUCTION_RANGES : PENDING（CFD 侧；不再是本地几何生成阻塞项）
+2026-10-13 DOE freeze   : NOT modified（其规划约束已 HISTORICAL / SUPERSEDED）
 
 11 free geometry parameters (order = Sobol dimension order):
   Xthick 0.10-0.60, Tmax 0.025-0.095, Metal2 6.0-32.0, Solidity 0.7-2.5,
@@ -506,36 +599,50 @@ Incidence / Mach are NOT part of this geometry sampling
 ```
 
 ```text
-Production entry   : code/generate_geomturbo_production.py   (NEW)
-Status             : PREPARED / NOT EXECUTED
-Sampling           : Sobol d=11, scramble=True, seed=1, native order,
-                     prefix nesting; m = smallest m with 2^m >= count
-Default count      : 200000  (PROVISIONAL / NOT FINAL; code default only)
-Actual count       : PENDING USER DECISION (--count)
-                     default example: m=18 (2^18=262144), used=first 200000
-Case IDs           : G + 7 digits (default example: G0000001 .. G0200000)
-Output             : production_geomturbo/batch_XXXXXX/<case_id>.geomTurbo
+Production entry   : code/run_geomturbo.py（推荐，按 group 启动）
+                     code/generate_geomturbo_production.py（底层，需要 --execute）
+Status             : PREPARED / NOT EXECUTED（已生成 0 个文件）
+Sampling           : Sobol d=11, scramble=True, native order, prefix nesting
+                     m = smallest m with 2^m >= count
+Seed               : 三组各一个固定种子，数值 PENDING
+                     （代码默认 seed=1 保留为默认值，不是三组计划的一部分）
+Current plan       : Train 150000 / Validation 15000 / Test 30000
+                     -> 目标有效 100000 / 10000 / 20000（PROPOSED / NOT EXECUTED）
+Output dirs        : production_geomturbo/train|val|test（尚未创建）
+Case IDs           : G + 7 digits，组内各自从 G0000001 开始
+                     全局身份 = group + seed + sobol_index
+                     （run_geomturbo.py 写入 group_info.json；case_id 格式不变）
 Metadata           : config_snapshot.yaml, manifest.csv, generation_summary.json
+                     （不含 group / QC 状态；需后续数据管理层补充）
 Resume             : --execute --resume; verifies size+sha256, regenerates
                      corrupt/missing files, refuses config/seed/order mismatch
 Safety             : no file is written without --execute
-Storage estimate   : ~14.2 kB per file; ~3.0 GB at the 200000 default
-                     (final requirement depends on the decided count)
-Tests              : 24 new tests, all with a STUB renderer (no real GeomTurbo);
-                     full suite = 155 passed + 17 subtests (2026-10-21)
+Storage estimate   : ~14.2 kB per file; ~2.9 GB at 195000 candidates
+                     (--plan default estimate: 15000 B/case)
+Tests              : 24 production-entry tests with a STUB renderer (no real
+                     GeomTurbo); full suite = 155 passed + 17 subtests (2026-10-21)
 Usage guide        : docs/GEOMTURBO_PRODUCTION_200K.md
+Current plan doc   : docs/PROJECT_TRANSITION_PLAN.md
 ```
 
 ```text
-User must run manually (after deciding the final count):
+User must run manually (per group, after fixing seeds and count):
     conda activate ai4s
-    python code/generate_geomturbo_production.py --plan --count <N>
+    python code/generate_geomturbo_production.py --plan \
+        --count <N> --seed <SEED> --output-dir production_geomturbo/<group>
     # small real export validation first (e.g. --count 10 in a scratch dir)
-    python code/generate_geomturbo_production.py --execute --count <N>
-    # or: --execute --count <N> --resume
+    python code/generate_geomturbo_production.py --execute \
+        --count <N> --seed <SEED> --output-dir production_geomturbo/<group>
+    # or: ... --execute --resume
 
-Not done here: no batch run, no real .geomTurbo, no mesh, no NUMECA/CFX.
-200000 is NOT an approved final production count.
+Current plan (PROPOSED / NOT EXECUTED):
+    train      150000 candidates / target 100000 usable
+    validation  15000 candidates / target  10000 usable
+    test        30000 candidates / target  20000 usable
+Seed values are PENDING; each group needs its own output directory.
+
+Not done here: no batch run, no real .geomTurbo, no mesh, no NUMECA/CFX, no training.
+200000 is a historical code default, NOT the current plan.
 Still to verify only by a real run: actual file size/runtime on this machine,
 real sha256 spot checks, and filesystem behaviour at the decided file count.
 ```
@@ -627,60 +734,66 @@ Independently still open:
 
 The exact values MUST NOT be decided by an AI agent.
 
-## NEXT ENGINEERING TASK
+## NEXT ENGINEERING TASK（2026-10-23 — PROPOSED，未执行）
 
 ```text
-Two independent tracks:
+A) 几何候选池（当前主线；PROPOSED / NOT EXECUTED）
+   1. USER DECISION: 三个固定种子 + 组间唯一身份方案 + 去重策略
+   2. 每组先 --plan（只读），核对 count / seed / output-dir / 指纹 / 存储估算
+   3. 每组做少量真实导出验证（例如 --count 10 到临时目录），确认实际序列化格式
+   4. 用户手动 --execute（可 --resume）；三组目录相互独立
+   5. 核对文件数 / manifest / sha256
+   6. 几何 QC 适配器：production pool（.geomTurbo + manifest）
+      -> 冻结 QC 步骤（03_geometry_qc.py 目前期望 design CSV + profile/geomturbo 树，
+         适配器仍 PENDING）
+   7. 交付清单：group / seed / sobol_index / case_id / 参数向量 / QC 状态 / 去重结果
+      -> 交给师兄进行 CFD（交错进行）
 
-A) GeomTurbo candidate pool (ranges FROZEN 2026-10-21, code PREPARED)
-   1. USER DECISION: final sample count + compute/storage budget
-      (200000 is only the current default, not an approved count)
-   2. run --plan --count <N>, then a SMALL real export validation
-      (e.g. --count 10 in a scratch directory) to confirm the real serializer
-   3. only then run --execute --count <N> (resumable)
-   4. verify count / manifest / sha256 with docs/GEOMTURBO_PRODUCTION_200K.md
-   5. decide how the generated pool feeds the frozen Geometry QC step
-      (03_geometry_qc.py currently expects a design CSV + profile/geomturbo
-       tree; the production entry writes .geomTurbo + manifest only, so a
-       separate QC adapter is still PENDING and must not be assumed ready)
+B) CFD 侧（不由本地实现）
+   网格、边界条件、工况、求解、收敛与有效性检查、任务调度
+   本地只接收“有效 / 无效 + 原因”的交接信息（格式 PENDING）
 
-B) Production DOE (2026-10-13 freeze, ranges still PENDING)
-   FREEZE FINAL_PRODUCTION_RANGES first, then define the
-   01_generate_design.py production contract.
-   Do not implement 01_generate_design.py before those ranges are frozen.
+C) 训练侧（PROPOSED / NOT STARTED）
+   有效 CFD 结果返回 -> 数据快照 -> 阶段性训练（GPU HPC + Slurm + Early Stopping）
+   详见 docs/TRAINING_TRANSITION_PLAN.md
+```
 
-The 11-D GeomTurbo pool does NOT resolve track B and does not approve any
-CFD production range.
+```text
+历史说明：2026-10-13 的 6-D 生产 DOE 路线（01_generate_design.py /
+generate_geomturbo_batch.py）已被 HISTORICAL / SUPERSEDED 取代，
+不再是当前工作项，也不得被 Agent 重新激活为“当前必做”。
 ```
 
 ## OPEN HUMAN DECISIONS
 
-Closed:
+Closed / retired:
 
-- FINAL_DOE (scrambled Sobol — approved)
-- legacy 1891 future role (historical reference / regression / Golden-Case only)
-- production scale (2026-10-13): FINAL_N_TRAIN_MAX / FINAL_N_TEST / TRAIN_TEST_RATIO
-  / MIN_USABLE_TRAIN_TEST_CASES / FINAL_N_LADDER
-- geometry reuse (DISABLED / NOT ACTIVE; PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE)
-- GeomTurbo generation ranges, scheme A (2026-10-21; Metal2 >= 6.0;
-  frozen only for geometry generation, not for CFD production)
+- FINAL_DOE 方法（scrambled Sobol）—— 方法保留，6D 绑定部分 HISTORICAL / SUPERSEDED
+- legacy 1891 future role（historical reference / regression / Golden-Case only）
+- production scale（2026-10-13）—— 降为参考值 / 候选梯度，不再强制
+- geometry reuse（DISABLED / NOT ACTIVE）—— 作为默认假设继续有效
+- ONE_6D_POINT_ONE_CASE —— 名称 HISTORICAL；实际仍是“一个参数点一个 case”
+- GeomTurbo generation ranges, scheme A（2026-10-21；Metal2 >= 6.0；
+  frozen only for geometry generation, not for CFD production）—— 数值保持不变
 
-Still open:
+Still open (Agent must not decide):
 
-- decide the final GeomTurbo sample count and compute/storage budget
-  (200000 is only the code default; PROVISIONAL / NOT FINAL)
-- run a small real GeomTurbo export validation before any large run
+- 三个 Sobol 种子的具体数值
+- 去重策略与容差（不同种子不保证无重复参数 / 相同几何）
+  （全局样本身份已由 group + seed + sobol_index 解决，见 group_info.json）
+- 195000 / 130000 这组规模是否最终采纳（当前为 PROPOSED）
+- 每次真实导出验证的执行时间与规模
 - adapter from the generated .geomTurbo + manifest pool to the frozen QC step
-- FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges)
-- production DOE dimension: keep d = 6 or adopt 11 geometry + 2 operating
+- CFD 交接文件命名 / 结果容器格式 / 状态码字典（与师兄共同确定）
+- CFD 侧运行工况取值（Incidence / Mach 的实际配置）
 - per-case reasons for the 15 C820 REJECT cases
-- K_m upper bound (only if future evidence justifies it; not tightened)
-- whether Solidity / Metal1 enter the production DOE
-- FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION
-- FINAL_RAW_CFD_ATTEMPTS (raw CFD attempts / failure reserve)
-- training repetition design
+- K_m upper bound（只有未来证据支持时才收紧；当前保持 0.35）
+- 训练启动阈值、训练阶梯最终档位、验证集规模与早停参数
+- 续训 vs 从头训练的正式对照方案
+- FINAL_VALIDATION_POLICY / FINAL_N_VALIDATION / FINAL_RAW_CFD_ATTEMPTS
 - final `E` definition
 - model-size `P` grids
+- GPU 平台实际额度 / 分区 / 队列 / 时间上限
 
 ## REMAINING DOCUMENTATION NOTES (not errors, do not "fix")
 
@@ -706,53 +819,59 @@ test counts         : 111/111 = record of the 2026-10-15 run; latest =
 
 ## BLOCKED EXTERNAL INFORMATION
 
-Golden Case / NUMECA / CFX / HPC details are still pending confirmation at the
-school environment.
+CFD mesh / boundary conditions / solver configuration / result format details belong
+to the senior engineer's CFD server and are not confirmed here. GPU HPC quotas,
+partitions, queue rules and time limits are also unconfirmed.
 
 ## NEW CHAT START HERE
 
 ```text
-FIRST TASK (2026-10-21 close):
-Confirm the final GeomTurbo generation count and the compute / storage budget,
-then decide when to run a small real export validation and the actual generation.
-200000 is only the code default (PROVISIONAL / NOT FINAL); it is NOT an approved
-production count. Do NOT start a 200000-case run as an already-approved step.
+FIRST TASK (2026-10-23):
+Read docs/PROJECT_TRANSITION_PLAN.md. The current plan is three independent
+11-D Sobol groups (Train 150000 / Validation 15000 / Test 30000 candidates ->
+100000 / 10000 / 20000 usable). It is PROPOSED / NOT EXECUTED.
+The outstanding decisions are: the three seed values and the
+deduplication policy.  The group-qualified sample identity is already
+expressed as group + seed + sobol_index (recorded in group_info.json).
+Do NOT treat the 6-D production DOE as the current task; it is HISTORICAL / SUPERSEDED.
+Do NOT start generation, CFD or training without an explicit user instruction.
 
-SECOND TASK (geometry / range track, unchanged):
-Read the geometry parameter research chain, then get the advisor's engineering
-judgement on the candidate geometry space and use it to freeze
-FINAL_PRODUCTION_RANGES (six-dimensional production parameter ranges).
+SECOND TASK (geometry / QC track):
+Implement (only after user approval) the production-pool -> frozen geometry QC
+adapter and the delivery manifest (group / seed / sobol_index / QC status / dedup).
+Do not change geometry mathematics, the QC contract or any frozen range value.
 
 Read in this order:
-  0. docs/SESSION_DELIVERY_2026-10-21.md        (parameter-space reconciliation +
+  0. docs/PROJECT_TRANSITION_PLAN.md            (current stage plan)
+  1. docs/TRAINING_TRANSITION_PLAN.md           (GPU / early stopping / test set)
+  2. docs/SESSION_DELIVERY_2026-10-21.md        (parameter-space reconciliation +
                                                  human review + strategy + closeout)
-  1. docs/SESSION_DELIVERY_2026-10-17.md        (100-case scan -> 57-case review
+  3. docs/SESSION_DELIVERY_2026-10-17.md        (100-case scan -> 57-case review
                                                  -> final decision, SS1/SS2 freeze)
-  2. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
-     (candidate 13-parameter space; geometry_dimension = 11)
-  3. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md
+  4. analysis/geometry_review/parameter_final_decision_v1/FINAL_DECISION.md
+  5. analysis/geometry_review/parameter_sensitivity_v1_100cases/README.md
      + REPORT.md                                (100 real blades, C820001..C820100)
-  4. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
+  6. analysis/geometry_review/parameter_sensitivity_v1_100cases/HUMAN_REVIEW_2026-10-21.md
      + human_review_2026-10-21.csv              (85 ACCEPT / 15 REJECT)
-  5. docs/PARAMETER_SPACE_RECONCILIATION.md     (6D freeze vs 13D exploratory space)
-  6. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md  (next-stage strategy)
-  7. docs/GEOMTURBO_PRODUCTION_200K.md          (generator usage; 200k is provisional)
-  8. analysis/geometry_review/senior_review_v2/ (40 real V2 blades, historical stage)
+  7. docs/GEOMTURBO_PRODUCTION_200K.md          (generator usage; 200000 historical)
+  8. config/geometry_ranges_frozen_a.yaml       (current geometry baseline, values unchanged)
 
 GeomTurbo status at handoff:
-  ranges FROZEN_FOR_GEOMTURBO_GENERATION; generator PREPARED / NOT EXECUTED;
-  default 200000 (provisional); actual count PENDING USER DECISION;
-  files generated 0; CFD NOT STARTED; FINAL_PRODUCTION_RANGES PENDING.
+  geometry baseline CURRENT_BASELINE (values unchanged); generator PREPARED /
+  NOT EXECUTED; three-group plan PROPOSED / NOT EXECUTED; seed values PENDING;
+  files generated 0; CFD on the senior engineer's server; training NOT STARTED;
+  FINAL_PRODUCTION_RANGES PENDING (CFD side); AI training PROPOSED.
 
-DO NOT start 01_generate_design.py before those ranges are frozen.
 Do not treat the exploratory candidate ranges as approved production ranges.
 Do not equate human shape ACCEPT or geometry QC PASS with mesh/CFD/aero validity.
 Do not re-open SS1 = 3.2 / SS2 = 0.8 without an explicit human decision.
 Do not rewrite history: the 100-case scan DID vary SS1 (2.4-4.0) and SS2 (0.5-1.1);
 they were frozen afterwards.
 
-Production scale itself is already FROZEN (2026-10-13):
-see docs/DESIGN_FREEZE_2026-10-13.md.
+Historical records (do not treat as current constraints):
+  docs/DESIGN_FREEZE_2026-10-13.md    HISTORICAL / SUPERSEDED (planning constraints)
+  docs/DOE_DECISION.md                6-D production DOE superseded
+  docs/SCALING_EXPERIMENT_DESIGN.md   statistics retained, ladder is a candidate
 Geometry review V1/V2 status: docs/SESSION_DELIVERY_2026-10-15.md.
 Geometry parameter research status: docs/SESSION_DELIVERY_2026-10-17.md.
 ```
@@ -763,20 +882,18 @@ For a new AI conversation, upload first:
 1. PROJECT_HANDOFF.md
 2. AGENT_INSTRUCTION.md
 3. README.md                              (repository entry point)
-4. docs/DOE_DECISION.md
-5. docs/SCALING_EXPERIMENT_DESIGN.md
-6. docs/SESSION_DELIVERY_2026-10-11.md   (historical record)
-7. docs/DESIGN_FREEZE_2026-10-13.md      (current production-scale freeze)
-8. docs/SESSION_DELIVERY_2026-10-15.md   (geometry range review V1/V2 + review package)
-9. docs/SESSION_DELIVERY_2026-10-17.md   (100-case sensitivity + Ks1/Ks2 review +
-                                          geometry parameter final decision)
-10. docs/SESSION_DELIVERY_2026-10-21.md  (parameter-space reconciliation + human
-                                          review intake + next-stage strategy)
-11. docs/PARAMETER_SPACE_RECONCILIATION.md
-12. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
-13. docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md   (A/B/C proposal, scheme A)
-14. docs/GEOMTURBO_PRODUCTION_200K.md                 (generator guide; default 200k provisional)
-15. config/geometry_ranges_frozen_a.yaml              (FROZEN scheme A runtime config)
+4. docs/PROJECT_TRANSITION_PLAN.md        (current stage plan)
+5. docs/TRAINING_TRANSITION_PLAN.md       (training plan)
+6. docs/GEOMTURBO_PRODUCTION_200K.md      (generator guide; 200000 historical default)
+7. config/geometry_ranges_frozen_a.yaml   (current geometry baseline)
+8. docs/SCALING_EXPERIMENT_DESIGN.md      (statistical principles)
+9. docs/DOE_DECISION.md                   (DOE method; 6-D part superseded)
+10. docs/DESIGN_FREEZE_2026-10-13.md      (historical freeze record)
+11. docs/SESSION_DELIVERY_2026-10-21.md
+12. docs/SESSION_DELIVERY_2026-10-17.md
+13. docs/PARAMETER_SPACE_RECONCILIATION.md
+14. docs/GEOMETRY_SCREENING_STRATEGY_2026-10-21.md
+15. docs/GEOMETRY_CONSTRAINT_ANALYSIS_2026-10-21.md
 ```
 
 When continuing geometry work, also provide:

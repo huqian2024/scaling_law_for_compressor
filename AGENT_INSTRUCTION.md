@@ -5,49 +5,149 @@
 > 本文件是给运行在 Ubuntu 笔记本上的本地 Agent 使用的长期项目说明。  
 > Agent 的主要职责是：帮助我完成压气机二维叶栅 AI4S 项目的**数据准备前端、自动化脚本、数据管理、质量检查和最终 canonical dataset 构建**。  
 > Agent 必须清楚哪些任务可以在本地完成，哪些任务必须在 Windows/NUMECA/CFX GUI 环境完成，哪些任务必须在学校 HPC 完成，并且**不能越过边界自行假设、伪造或替代 CFD 物理设置**。
+>
+> **2026-10-23 适用范围更新**：项目进入 `TRANSITION / PLANNING`。CFD 网格/工况/求解/调度
+> 由师兄在独立服务器负责，本地不实现；本地负责 11D 几何生成 + 几何 QC + 数据管理，
+> 并规划后续 GPU HPC 训练。当前权威状态见下方 §0。
 
 ---
 
-# 0. 当前权威项目状态（截至 2026-10-21）
+# 0. 当前权威项目状态（2026-10-23 — TRANSITION / PLANNING）
 
-> 本节记录**当前已冻结的事实**。若与下文历史描述冲突，**以本节为准**。
+> 本节是**当前唯一权威状态**。若与下文（含 §0-L 历史快照、§11–§12、§53–§57）
+> 冲突，**以本节为准**。历史记录保留原文，但不作为当前执行命令。
 
 ```text
-FINAL_DOE  = SCRAMBLED_SOBOL          （已获 owner 批准 / FINAL）
-SOBOL_SEED = 1                        （来源：analysis/doe_compare_benchmark.py L44，可验证）
-             scipy.stats.qmc.Sobol(d=6, scramble=True, seed=1)
-ordering   = native Sobol sequence order
-nested     = D_N = 前 N 个点（prefix nesting）
-参数顺序   = [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]
+阶段                TRANSITION / PLANNING（2026-10-23）
+主规划文档          docs/PROJECT_TRANSITION_PLAN.md
+训练规划文档        docs/TRAINING_TRANSITION_PLAN.md
 ```
 
 ```text
-N 定义（FROZEN 2026-10-13）:
+分工边界:
+  本地    11D Sobol 参数采样 + GeomTurbo 文件生成 + 几何 QC
+          文件组织 / 元数据 / 交付 + 接收有效 CFD 结果后的数据管理
+          后续 AI 模型训练与 Scaling Law 研究（GPU HPC + Slurm）
+  师兄    CFD 网格生成、边界条件与运行工况配置、服务器资源设置、
+          求解运行、收敛与结果有效性检查、CFD 任务提交与调度
+  禁止    本地实现 NUMECA/CFX 自动化、CFD 服务器管理；
+          不得在信息不完整时编造求解器配置、结果格式或物理边界条件
+```
+
+```text
+当前几何生成方案（PROPOSED / NOT EXECUTED）:
+  方法        11D scrambled Sobol（配置与参数范围不变）
+  执行        同一生成程序运行三次，各自固定种子 + 独立输出目录
+  Train       150000 候选 -> 目标有效 100000
+  Validation   15000 候选 -> 目标有效 10000
+  Test         30000 候选 -> 目标有效 20000
+  合计        195000 候选 -> 目标有效 130000
+  种子数值    PENDING（本轮不强制确定）
+  规模依据    130000 / 195000 = 66.67% 最低总体有效率；
+              小规模 CFD 成功率 ≈ 75%（USER-REPORTED，本仓库未复现）
+  已生成文件  0
+```
+
+```text
+当前技术基线（CURRENT_BASELINE，数值未修改）:
+  config/geometry_ranges_frozen_a.yaml   方案 A 11 维范围
+  SS1 = 3.2 / SS2 = 0.8（FIXED_BY_REVIEW，不重新开放）
+  几何数学 / 序列化 / 模板 / QC 契约      保持冻结，不改
+  生成入口 code/generate_geomturbo_production.py   PREPARED / NOT EXECUTED
+```
+
+```text
+本次解除的项目规划约束（不是技术约束）:
+  生产 DOE d = 6 / SOBOL_SEED = 1 / 单一主序列    -> HISTORICAL / SUPERSEDED
+  ONE_6D_POINT_ONE_CASE 作为唯一生产路线名称       -> HISTORICAL / SUPERSEDED
+  默认 200000 候选数                              -> HISTORICAL DEFAULT
+  FINAL_N_TRAIN_MAX / N_TEST / FINAL_N_LADDER     -> 参考值 / 候选梯度
+  生产规模冻结作为本地几何生成前置条件              -> 不再适用
+
+继续有效:
+  N = usable training case count（定义不变）
+  训练集 / 验证集 / 测试集分离原则
+  几何算法 / legacy 回归 / GeomTurbo 格式 / Generator 契约 / QC 契约
+  11D 方案 A 参数范围数值、SS1=3.2、SS2=0.8
+```
+
+```text
+旧章节适用范围（避免再次把历史命令当当前任务）:
+  §3 / §14 / §15 / §16 / §17       几何生成 / 模板 / QC / 可视化   -> 继续有效
+  §6.1–§6.6                        物理与数据硬边界               -> 继续有效
+  §6.7                             见该节内新增说明（训练已进入规划阶段，仍未执行）
+  §7 / §8 / §18                    本地目录 / 环境 / 校外优先事项  -> 继续有效
+  §11 / §12 / §13                 01_generate_design.py 与 6D 采样 -> HISTORICAL
+  §19–§45                          NUMECA / CFX / CFD-Post / CFD 数据
+                                   -> 由师兄在独立服务器负责，本地不执行；
+                                      §36–§45 的 canonical dataset 设计原则仍可参考
+  §46 / §57                       旧优先级 / 旧首批任务            -> HISTORICAL
+  §53 / §54 / §55                 6D 阶段门控 / 6D 范围 / 复用语义  -> 部分 HISTORICAL
+  §56 / §59                       原则与红线                      -> 继续有效
+```
+
+```text
+旧冻结记录（保留原文，不再是当前规划约束）:
+  docs/DESIGN_FREEZE_2026-10-13.md
+  docs/DOE_DECISION.md（DOE 方法决策保留）
+  docs/SCALING_EXPERIMENT_DESIGN.md（统计原则保留）
+  docs/PARAMETER_SPACE_RECONCILIATION.md
+  docs/GEOMTURBO_PRODUCTION_200K.md（200000 为历史默认值）
+```
+
+```text
+本轮（2026-10-23）没有做的事:
+  未修改任何 Python / 测试 / YAML / 模板 / 历史数据
+  未生成 GeomTurbo；未启动 CFD；未启动 GPU 训练
+  未创建新的 FINAL / FROZEN 决策
+```
+
+---
+
+# 0-L. 2026-10-21 状态快照（HISTORICAL — 不再作为执行命令）
+
+> 以下内容是 2026-10-21 当时的权威快照，保留作为历史记录。
+> 其中 6D 生产 DOE、seed=1 单一序列、200000 默认计数等表述已被 §0 取代。
+
+> 本节记录**当时已冻结的事实**。若与下文历史描述冲突，**以本节为准**。
+
+```text
+2026-10-21 快照（HISTORICAL；当前权威状态见 §0）:
+FINAL_DOE  = SCRAMBLED_SOBOL          （方法决策保留）
+SOBOL_SEED = 1                        （HISTORICAL DEFAULT；三组种子 PENDING）
+             scipy.stats.qmc.Sobol(d=6, scramble=True, seed=1)
+ordering   = native Sobol sequence order
+nested     = D_N = 前 N 个点（prefix nesting）
+参数顺序   = [Xthick, Tmax, Metal2, Solidity, Incidence, Mach]   （6D，历史）
+```
+
+```text
+N 定义（RETAINED）:
 N = usable training case count
     （test / validation / failed / rejected 均不计入 N）
 
-FINAL_N_TRAIN_MAX           = 100000 usable training cases
-FINAL_N_TEST                = 20000 usable test cases（fixed）
-TRAIN_TEST_RATIO            = 5:1
-MIN_USABLE_TRAIN_TEST_CASES = 120000
+FINAL_N_TRAIN_MAX           = 100000 usable training cases        参考值
+FINAL_N_TEST                = 20000 usable test cases（fixed）     参考值
+TRAIN_TEST_RATIO            = 5:1                                 参考值
+MIN_USABLE_TRAIN_TEST_CASES = 120000                              参考值
 FINAL_N_LADDER              = [1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]
+                                                                 候选梯度
 
-GEOMETRY_REUSE              = DISABLED / NOT ACTIVE
-PRODUCTION_ROUTE            = ONE_6D_POINT_ONE_CASE
+GEOMETRY_REUSE              = DISABLED / NOT ACTIVE               （默认假设保留）
+PRODUCTION_ROUTE            = ONE_6D_POINT_ONE_CASE               （名称 HISTORICAL）
 
-SOBOL_MASTER_M              = m >= 17（下界，非最终长度；FINAL m 仍 PENDING）
+SOBOL_MASTER_M              = m >= 17（历史下界，不再是当前约束）
 
-FINAL_VALIDATION_POLICY     = PENDING
-FINAL_N_VALIDATION          = PENDING
-FINAL_PRODUCTION_RANGES     = PENDING    <- 当前最主要 blocker
-FINAL_RAW_CFD_ATTEMPTS      = PENDING
+FINAL_VALIDATION_POLICY     = PENDING（验证集将用于 Early Stopping）
+FINAL_N_VALIDATION          = PENDING（当前计划目标 10000）
+FINAL_PRODUCTION_RANGES     = PENDING（CFD 侧；不再阻塞本地几何生成）
+FINAL_RAW_CFD_ATTEMPTS      = PENDING（CFD 侧）
 FAILURE_RESERVE_POLICY      = PENDING（等真实 CFD failure rate）
 
 （旧的 FINAL_NMAX 一词已退役：不得再用来表示
   training N_max / usable total / raw CFD attempts 中的任何单一概念。）
-权威冻结记录: docs/DESIGN_FREEZE_2026-10-13.md
-该冻结 session 记录: docs/SESSION_DELIVERY_2026-10-13.md
-最新 session 记录: docs/SESSION_DELIVERY_2026-10-17.md（几何参数研究，探索性）
+历史冻结记录: docs/DESIGN_FREEZE_2026-10-13.md（HISTORICAL / SUPERSEDED）
+当前规划:     docs/PROJECT_TRANSITION_PLAN.md
 ```
 
 ```text
@@ -167,37 +267,38 @@ Incidence / Mach 不参与本次几何采样
 
 生产入口（新增）：code/generate_geomturbo_production.py
   PREPARED / NOT EXECUTED（本仓库未生成任何实际 GeomTurbo）
-  默认 200000（暂定）/ seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
-  ⚠ 200000 只是代码默认值：PROVISIONAL / NOT FINAL
-    实际生产数量 PENDING USER DECISION（可用 --count 修改）
+  代码默认 200000 / seed 1 / d 11 / batch 5000 / 输出 production_geomturbo/
+  ⚠ 200000 只是历史代码默认值（HISTORICAL DEFAULT）
+    当前计划：Train 150000 / Validation 15000 / Test 30000（PROPOSED / NOT EXECUTED）
   必须 --execute 才写文件；--plan 只读
   文档：docs/GEOMTURBO_PRODUCTION_200K.md
 
-当前状态（以此为准）：
-  Geometry parameter ranges : FROZEN_FOR_GEOMTURBO_GENERATION
+2026-10-21 状态（HISTORICAL — 当前状态见 §0）：
+  Geometry parameter ranges : CURRENT_BASELINE（方案 A 数值未改）
   Batch generator           : PREPARED / NOT EXECUTED
-  Default sample count      : 200000 (PROVISIONAL / NOT FINAL)
-  Actual production count   : PENDING USER DECISION
+  Default sample count      : 200000 (HISTORICAL DEFAULT)
+  Current production plan   : 150000 / 15000 / 30000 候选（PROPOSED）
+  Seed values               : PENDING
   GeomTurbo files generated : 0
-  CFD production            : NOT STARTED
-  FINAL_PRODUCTION_RANGES   : PENDING
+  CFD production            : 师兄独立服务器（本地不执行）
+  AI training               : PROPOSED / NOT STARTED
+  FINAL_PRODUCTION_RANGES   : PENDING（CFD 侧）
 ```
 
-已准备的 production 代码：
+已准备的 production 代码（6D 两条已 HISTORICAL）：
 
 ```text
-code/01_generate_design.py        PREPARED / NOT EXECUTED
-code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED
-code/generate_geomturbo_production.py  PREPARED / NOT EXECUTED
-                                  (11-D frozen scheme A; default 200000 is
-                                   provisional, actual count pending; requires
-                                   --execute; see production guide)
+code/01_generate_design.py        PREPARED / NOT EXECUTED / HISTORICAL
+code/generate_geomturbo_batch.py  PREPARED / NOT EXECUTED / HISTORICAL
+code/generate_geomturbo_production.py  PREPARED / NOT EXECUTED / CURRENT ENTRY
+                                  (11-D scheme A; requires --execute;
+                                   see docs/GEOMTURBO_PRODUCTION_200K.md)
 
 ranges 为 runtime configurable（--ranges PATH）
 legacy ranges 不是正式 production ranges
 ```
 
-一键命令（**当前 DO NOT RUN**）：
+一键命令（**HISTORICAL 6D 路径，DO NOT RUN**）：
 
 ```bash
 conda run -n ai4s python code/generate_geomturbo_batch.py \
@@ -213,11 +314,12 @@ conda run -n ai4s python code/generate_geomturbo_batch.py \
 --ranges config/ranges_production_v1.yaml
 ```
 
-下一步规则：
+下一步规则（HISTORICAL — 仅针对 6D 生产路线，已 SUPERSEDED）：
 
 ```text
 Do not RUN any production design / geometry generation until
 FINAL_PRODUCTION_RANGES are frozen.
+（当前 11D 几何生成不受此条阻塞；仍需用户显式 --execute）
 
 Historical note: the retired term FINAL_NMAX is replaced by the explicit
 FINAL_N_TRAIN_MAX / FINAL_N_TEST / MIN_USABLE_TRAIN_TEST_CASES /
@@ -236,11 +338,16 @@ geometry/geometry_qc.csv               （bring-up 报告，保留）
 production QC 未来使用独立路径 geometry/geometry_qc_production.csv
 ```
 
-新会话 Console 必须先：
+新会话 Console 必须先（HISTORICAL — 6D 路线专用）：
 
 ```text
 ask/resolve FINAL_PRODUCTION_RANGES first
 before starting any production design generation
+```
+
+```text
+2026-10-23 起：新会话先读 §0 与 docs/PROJECT_TRANSITION_PLAN.md；
+当前几何生成不需要等待 FINAL_PRODUCTION_RANGES，但必须由用户显式启动。
 ```
 
 长期红线（不变）：
@@ -251,6 +358,10 @@ do not guess Mach implementation
 do not modify legacy files
 do not fake-repair failed CFD cases
 ```
+
+> 本节结束（2026-10-21 历史快照）。以下 `# 1.` 起为项目长期说明；
+> 其中任何与 §0 冲突的规划性表述（6D DOE、200000、单一 seed、DO-NOT-RUN 的 6D 阻塞）
+> 均以 §0 为准。
 
 ---
 
@@ -272,7 +383,8 @@ $$
 2. U-Net
 3. FNO
 
-但是**当前阶段不做训练**。
+但是**当前阶段（2026-10-23 起）不做训练执行**：训练已进入规划（`docs/TRAINING_TRANSITION_PLAN.md`），
+但本仓库没有任何训练代码、Slurm 作业或训练结果；训练启动需用户单独明确指示。
 
 当前阶段只做：
 
@@ -511,6 +623,10 @@ Agent 可以：
 
 ## 5.3 学校 HPC
 
+> 2026-10-23 更新：CFD 计算现由师兄在独立服务器完成，本地不负责 NUMECA/CFX 的
+> HPC 调度。本人的 GPU HPC（Slurm）用于后续 AI 训练；配额、分区与队列规则
+> 仍未确认，禁止猜测（见 `docs/TRAINING_TRANSITION_PLAN.md` §1）。
+
 主要用于高计算量任务。
 
 包括：
@@ -702,7 +818,10 @@ ml_usable = false
 
 ---
 
-### 6.7 当前不做模型训练
+### 6.7 当前不做模型训练执行
+
+> 2026-10-23 更新：训练进入**规划阶段**（`docs/TRAINING_TRANSITION_PLAN.md`，
+> PROPOSED），但**不执行**：不写训练代码、不提交 Slurm 作业、不跑训练。
 
 Agent 此阶段不应主动开展：
 
@@ -924,7 +1043,13 @@ Golden Case 的用途：
 
 ---
 
-# 11. 第三步：重构参数采样
+# 11. 第三步：重构参数采样（HISTORICAL — 6D 路径已 SUPERSEDED）
+
+> 2026-10-23：本节描述的是 2026-10-13 之前规划的 `01_generate_design.py` +
+> 6 维 `master_design.csv` + `C000001` 命名。该路线现为 `HISTORICAL / SUPERSEDED`，
+> **不是**当前几何生成入口。当前入口是 `code/generate_geomturbo_production.py`
+> （11 维 Sobol，输出 `G0000001` 形式的 case_id），见
+> `docs/PROJECT_TRANSITION_PLAN.md`。
 
 将旧脚本拆分。
 
@@ -1004,10 +1129,10 @@ D_{4096}
 D_{8192}
 $$
 
-> 上例只是 2^k 示意。正式 `FINAL_N_LADDER` 已于 2026-10-13 冻结为
-> `[1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]`
-> （含非 2^k 档位；仍使用同一 master sequence 的前 N 个点并保持 nested）。
-> 见 `docs/DESIGN_FREEZE_2026-10-13.md`。
+> 上例只是 2^k 示意。`FINAL_N_LADDER` 曾于 2026-10-13 记录为
+> `[1000, 2000, 5000, 10000, 20000, 35000, 50000, 70000, 100000]`；
+> 2026-10-23 起该数值降为**候选梯度**（非强制），仍使用同一组内序列的前 N 个点并保持 nested。
+> 见 `docs/TRAINING_TRANSITION_PLAN.md` 与 `docs/PROJECT_TRANSITION_PLAN.md`。
 
 如果导师要求继续使用 LHS：
 
@@ -1335,7 +1460,13 @@ BLOCKED_BY_CAMPUS
 
 ---
 
-# 19. 回学校后的第一个任务：确认 NUMECA 环境
+# 19. 回学校后的第一个任务：确认 NUMECA 环境（HISTORICAL — CFD 现由师兄负责）
+
+> 2026-10-23：§19–§45 是历史上“本人负责 CFX/NUMECA/HPC 全流程”的阶段说明。
+> 当前 CFD 网格、边界条件、工况、求解、收敛检查与调度由师兄在独立服务器完成，
+> **本地 Agent 不执行、不管理、不猜测这些设置**。
+> 其中 §36–§45（raw post 目录、canonical dataset、metadata、manifest、dataset QC）
+> 作为**接收 CFD 结果后的数据设计参考**仍然有价值，但不得据此编造 CFD 侧配置。
 
 需要确认实际软件：
 
@@ -2195,7 +2326,10 @@ coordinate channels
 
 ---
 
-# 46. 当前 Agent 的近期执行优先级
+# 46. 当前 Agent 的近期执行优先级（HISTORICAL — 已被 §0 与过渡规划取代）
+
+> 2026-10-23：本节是早期“校外阶段”的优先级清单（含 01_generate_design.py 等 6D 路线）。
+> 当前执行顺序见 `docs/PROJECT_TRANSITION_PLAN.md` §9 与 §0。
 
 在目前“校外、无法直接使用 HPC”的条件下：
 
@@ -2452,7 +2586,10 @@ submit_preview
 
 ---
 
-# 53. 大规模计算的阶段门控
+# 53. 大规模计算的阶段门控（历史原则；CFD 侧执行）
+
+> 2026-10-23：以下分阶段放量原则仍然有价值，但 CFD 侧由师兄执行；
+> 本地只负责几何生成与数据管理，不再以 6D Golden Case 作为本地门控条件。
 
 必须按阶段：
 
@@ -2478,7 +2615,11 @@ runtime statistics
 
 ---
 
-# 54. 关于参数范围扩大的要求
+# 54. 关于参数范围扩大的要求（HISTORICAL — 11D 基线已确定）
+
+> 2026-10-23：本节针对历史 6D 参数空间的扩范围讨论。
+> 当前几何生成范围已按方案 A 固定（数值未改），不再进行 6D 扩范围决策。
+> K_m 上界 / Metal2 下界仍属开放的人工决策项（见 `PROJECT_HANDOFF.md`）。
 
 目前不要自行决定新的最终范围。
 
@@ -2553,14 +2694,17 @@ Mach
 
 因此只能作为后续实验设计选项，不能由 Agent 自动启用。
 
-当前权威状态（2026-10-13 冻结）：
+当前权威状态（2026-10-13 冻结；2026-10-23 起为 `HISTORICAL / SUPERSEDED`）：
 
 ```text
-GEOMETRY_REUSE   = DISABLED / NOT ACTIVE
-PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE
+GEOMETRY_REUSE   = DISABLED / NOT ACTIVE（作为默认假设继续有效）
+PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE（名称 HISTORICAL；
+                   实际仍是“一个参数点一个 case”，不新增几何/工况复用）
 ```
 
-即当前 production 采样结构保持“一个六维参数点对应一个 CFD case”。
+即当前 production 采样结构仍保持“一个参数点对应一个 CFD case”；
+6D 名称与 13 维目标均不再作为当前规划依据。当前几何采样为 11 维
+（`config/geometry_ranges_frozen_a.yaml`，三组独立 Sobol，PROPOSED / NOT EXECUTED）。
 
 ---
 
@@ -2588,7 +2732,10 @@ PRODUCTION_ROUTE = ONE_6D_POINT_ONE_CASE
 
 ---
 
-# 57. 当前 Agent 启动后的第一批建议任务
+# 57. 当前 Agent 启动后的第一批建议任务（HISTORICAL）
+
+> 2026-10-23：本节是项目启动期的清单（目录、venv、legacy 复制、01/02/03 脚本等），
+> 已完成或已被取代。当前第一批任务见 `docs/PROJECT_TRANSITION_PLAN.md` §9。
 
 Agent 启动本项目后，可以按以下顺序主动推进：
 
@@ -2626,30 +2773,27 @@ Agent 启动本项目后，可以按以下顺序主动推进：
 
 # 58. 当前阶段的完成目标
 
+> 2026-10-23 更新：新增“三组 11D 候选几何池 + 数据快照与训练规划”目标；
+> 原有 01_generate_design.py / canonical HDF5 schema 等条目属历史阶段目标。
+
 校外阶段完成后，应至少得到：
 
 ```text
 一个干净的项目仓库
-一个可重复的参数采样器
-一个可重复的 geomTurbo generator
-一个 geometry QC 系统
-一个统一 case_id 系统
-一个 manifest 管理系统
+三组独立 11D Sobol 候选几何池（Train / Validation / Test；PROPOSED）
+一个可重复的 geomTurbo generator（现有生产入口）
+一个 geometry QC 系统（契约不变）+ 生产池适配器（PENDING）
+统一 case 身份与 manifest 管理系统（含 group / seed / sobol_index）
 一个版本化配置系统
-一个 canonical dataset schema
-一个 HPC/CFX/NUMECA 待办清单
+CFD 数据交接清单与数据快照规范（PENDING 格式）
+训练规划文档（GPU HPC / Slurm / Early Stopping / 防泄漏）
+一个 canonical dataset schema（接收 CFD 结果后使用）
 ```
-
-回学校以后只需把真实的：
 
 ```text
-NUMECA
-CFX
-HPC
-CFD-Post
+不在本地完成：NUMECA / CFX / CFD 求解 / CFD 调度（师兄独立服务器）
+不在本轮完成：任何实际生成、CFD 运行或 GPU 训练
 ```
-
-环境接进已有 pipeline。
 
 ---
 
